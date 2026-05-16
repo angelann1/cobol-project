@@ -1,0 +1,33 @@
+{% extends 'clinic/base.html' %}
+{% block content %}
+<div class="d-flex align-items-center justify-content-center" style="min-height:100vh;">
+  <div style="background:white;border-radius:20px;padding:2.5rem;width:420px;box-shadow:0 8px 32px rgba(171,71,188,.2);">
+    <div class="text-center mb-4">
+      <div style="width:70px;height:70px;background:linear-gradient(135deg,#ce93d8,#ab47bc);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+        <i class="bi bi-hospital-fill text-white" style="font-size:1.8rem;"></i>
+      </div>
+      <h4 class="fw-bold" style="color:#6a1b9a;">School Clinic System</h4>
+      <p class="text-muted small">Filamer Christian University</p>
+    </div>
+    <form method="post">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label class="form-label">Username</label>
+        <input type="text" name="username" class="form-control" required autofocus>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input type="password" name="password" class="form-control" required>
+      </div>
+      {% if form.errors %}
+        <div class="alert py-2 small" style="background:#fce4ec;color:#c62828;border-radius:10px;border:none;">
+          Invalid username or password.
+        </div>
+      {% endif %}
+      <button type="submit" class="btn btn-primary w-100 mt-2" style="padding:.6rem;">
+        <i class="bi bi-box-arrow-in-right me-2"></i>Sign in
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}

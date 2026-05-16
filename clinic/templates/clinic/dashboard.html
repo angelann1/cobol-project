@@ -1,0 +1,88 @@
+{% extends 'clinic/base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h4 class="fw-semibold mb-0">Dashboard</h4>
+  <span class="text-muted small">Welcome back, {{ user.username }}!</span>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-3">
+    <div class="card-stat d-flex align-items-center gap-3">
+      <div class="stat-icon purple"><i class="bi bi-people-fill"></i></div>
+      <div>
+        <h2 class="fw-bold mb-0" style="color:#ab47bc;">{{ total_students }}</h2>
+        <p class="text-muted small mb-0">Total Students</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card-stat d-flex align-items-center gap-3">
+      <div class="stat-icon pink"><i class="bi bi-capsule-pill"></i></div>
+      <div>
+        <h2 class="fw-bold mb-0" style="color:#e91e63;">{{ total_medicines }}</h2>
+        <p class="text-muted small mb-0">Medicines Tracked</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card-stat d-flex align-items-center gap-3">
+      <div class="stat-icon orange"><i class="bi bi-exclamation-triangle-fill"></i></div>
+      <div>
+        <h2 class="fw-bold mb-0" style="color:#ff9800;">{{ low_stock|length }}</h2>
+        <p class="text-muted small mb-0">Low Stock Alerts</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card-stat d-flex align-items-center gap-3">
+      <div class="stat-icon blue"><i class="bi bi-calendar-check-fill"></i></div>
+      <div>
+        <h2 class="fw-bold mb-0" style="color:#2196f3;">{{ upcoming_appointments|length }}</h2>
+        <p class="text-muted small mb-0">Appointments</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="stat-card">
+      <h6 class="fw-semibold mb-3">
+        <i class="bi bi-exclamation-circle text-warning me-2"></i>Low Stock Medicines
+      </h6>
+      {% if low_stock %}
+        <ul class="list-unstyled mb-0">
+          {% for m in low_stock %}
+            <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
+              <span>{{ m.name }}</span>
+              <span class="badge-low">{{ m.quantity }} {{ m.unit }} left</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="text-muted small mb-0">All medicines sufficiently stocked.</p>
+      {% endif %}
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="stat-card">
+      <h6 class="fw-semibold mb-3">
+        <i class="bi bi-clock-history text-primary me-2"></i>Recent Medical Records
+      </h6>
+      {% if recent_records %}
+        <ul class="list-unstyled mb-0">
+          {% for r in recent_records %}
+            <li class="py-2 border-bottom">
+              <span class="fw-medium">{{ r.student }}</span>
+              <span class="text-muted small ms-2">{{ r.date }}</span>
+              <p class="mb-0 text-muted small">{{ r.chief_complaint|truncatechars:60 }}</p>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="text-muted small mb-0">No records yet.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

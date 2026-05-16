@@ -1,0 +1,267 @@
+{% extends 'clinic/base.html' %}
+{% block content %}
+
+<style>
+  .form-page-wrapper {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid rgba(220, 53, 100, 0.12);
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .form-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: #1a1a2e;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .form-title-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #e83e8c, #c2185b);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 1rem;
+    border-radius: 8px;
+    border: 1.5px solid #dde1ea;
+    background: white;
+    color: #5a6070;
+    font-size: 0.82rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .btn-back:hover {
+    border-color: #c2185b;
+    color: #c2185b;
+    background: #fff5f8;
+  }
+
+  .form-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04);
+    overflow: hidden;
+  }
+
+  .form-body {
+    padding: 1.8rem 2rem;
+  }
+
+  .field-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem 1.5rem;
+  }
+
+  .field-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .field-wrap.full-width {
+    grid-column: 1 / -1;
+  }
+
+  .field-wrap label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #4a5068;
+    margin: 0;
+  }
+
+  .field-wrap input[type="text"],
+  .field-wrap input[type="date"],
+  .field-wrap input[type="number"],
+  .field-wrap input[type="email"],
+  .field-wrap input[type="tel"],
+  .field-wrap select,
+  .field-wrap textarea {
+    width: 100%;
+    padding: 0.6rem 0.85rem;
+    border: 1.5px solid #e2e6f0;
+    border-radius: 9px;
+    font-size: 0.88rem;
+    color: #1a1a2e;
+    background: #fafbfd;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    outline: none;
+    font-family: inherit;
+    box-sizing: border-box;
+  }
+
+  .field-wrap input:focus,
+  .field-wrap select:focus,
+  .field-wrap textarea:focus {
+    border-color: #e83e8c;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(232, 62, 140, 0.1);
+  }
+
+  .field-wrap select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238892a4' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.85rem center;
+    background-color: #fafbfd;
+    padding-right: 2.2rem;
+    cursor: pointer;
+  }
+
+  .field-wrap textarea {
+    resize: vertical;
+    min-height: 60px;
+    max-height: 80px;
+  }
+
+  .field-error {
+    font-size: 0.75rem;
+    color: #e83e8c;
+    margin-top: 0.1rem;
+  }
+
+  .form-footer {
+    padding: 1.2rem 2rem;
+    background: #fafbfd;
+    border-top: 1px solid #f0f2f7;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .btn-save {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.6rem 1.6rem;
+    border-radius: 9px;
+    background: linear-gradient(135deg, #e83e8c, #c2185b);
+    color: white;
+    border: none;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 3px 12px rgba(232, 62, 140, 0.3);
+  }
+
+  .btn-save:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 18px rgba(232, 62, 140, 0.4);
+  }
+
+  .btn-cancel {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 9px;
+    border: 1.5px solid #dde1ea;
+    background: white;
+    color: #5a6070;
+    font-size: 0.88rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .btn-cancel:hover {
+    border-color: #aab0bf;
+    color: #1a1a2e;
+  }
+
+  @media (max-width: 600px) {
+    .field-grid { grid-template-columns: 1fr; }
+    .field-wrap.full-width { grid-column: 1; }
+    .form-body { padding: 1.2rem 1rem; }
+    .form-footer { padding: 1rem; }
+  }
+</style>
+
+<div class="form-page-wrapper">
+
+  <div class="form-header">
+    <h5 class="form-title">
+      <span class="form-title-icon"><i class="bi bi-person-plus-fill"></i></span>
+      {{ title }}
+    </h5>
+    <a href="javascript:history.back()" class="btn-back">
+      <i class="bi bi-arrow-left"></i> Back
+    </a>
+  </div>
+
+  <div class="form-card">
+    <form method="post" novalidate>
+      {% csrf_token %}
+      <div class="form-body">
+        <div class="field-grid">
+          {% for field in form %}
+            <div class="field-wrap">
+              <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+              {{ field }}
+              {% if field.errors %}
+                <div class="field-error">{{ field.errors.as_text }}</div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="form-footer">
+        <button type="submit" class="btn-save">
+          Save
+        </button>
+        <a href="javascript:history.back()" class="btn-cancel">Cancel</a>
+      </div>
+    </form>
+  </div>
+
+</div>
+
+<script>
+  
+  document.querySelectorAll('.field-wrap input, .field-wrap select, .field-wrap textarea').forEach(el => {
+    el.classList.remove('form-control', 'form-select');
+  });
+
+  
+
+  /* Dropdown of the gender and year level*/
+  document.querySelectorAll('.field-wrap select option').forEach(opt => {
+    if (/^-+$/.test(opt.text.trim())) {
+      const label = opt.closest('.field-wrap')?.querySelector('label')?.textContent?.trim();
+      opt.text = label ? 'Select ' + label : 'Select an option';
+    }
+  });
+</script>
+
+{% endblock %}

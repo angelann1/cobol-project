@@ -1,0 +1,10 @@
+* { font-family: 'Segoe UI', sans-serif; }
+    body { background: linear-gradient(135deg, #fce4ec, #f3e5f5, #ede7f6); min-height: 100vh; }
+
+:root {
+--body-bg: linear-gradient(135deg, #fce4ec, #f3e5f5, #ede7f6);
+--sidebar-bg: linear-gradient(180deg, #f48fb1, #f06292, #ec407a);
+--card-bg: #ffffff;
+--text-primary: #2d2d2d;
+--text-secondary: #6b7280;
+}

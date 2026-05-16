@@ -1,0 +1,389 @@
+{% extends 'clinic/base.html' %}
+{% block content %}
+
+<style>
+  .detail-page-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+ 
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.8rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid rgba(220, 53, 100, 0.12);
+  }
+
+  .student-name-wrap h4 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    color: #1a1a2e;
+    margin: 0 0 0.15rem 0;
+  }
+
+  .student-name-wrap .student-meta {
+    font-size: 0.78rem;
+    color: #8892a4;
+    font-weight: 500;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary-custom {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.55rem 1.1rem;
+    border-radius: 9px;
+    background: linear-gradient(135deg, #e83e8c, #c2185b);
+    color: white;
+    border: none;
+    font-size: 0.83rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 3px 10px rgba(232, 62, 140, 0.25);
+  }
+
+  .btn-primary-custom:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 16px rgba(232, 62, 140, 0.35);
+    color: white;
+  }
+
+  .btn-outline-custom {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.55rem 1rem;
+    border-radius: 9px;
+    border: 1.5px solid #dde1ea;
+    background: white;
+    color: #5a6070;
+    font-size: 0.83rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .btn-outline-custom:hover {
+    border-color: #c2185b;
+    color: #c2185b;
+    background: #fff5f8;
+  }
+
+  /*Cards*/
+  .info-card {
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.05), 0 0 0 1px rgba(0,0,0,0.04);
+    overflow: hidden;
+    height: 100%;
+  }
+
+  .card-header-custom {
+    padding: 1.1rem 1.4rem;
+    background: linear-gradient(135deg, #fdf2f7, #fff);
+    border-bottom: 1px solid #f0e6ef;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #c2185b;
+  }
+
+  .card-body-custom {
+    padding: 1.2rem 1.4rem;
+  }
+
+  /*Info Table */
+  .info-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+
+  .info-table tr {
+    border-bottom: 1px solid #f5f7fb;
+  }
+
+  .info-table tr:last-child {
+    border-bottom: none;
+  }
+
+  .info-table td {
+    padding: 0.6rem 0.3rem;
+    vertical-align: top;
+  }
+
+  .info-table td:first-child {
+    color: #8892a4;
+    font-weight: 500;
+    width: 42%;
+    font-size: 0.8rem;
+    padding-right: 0.8rem;
+  }
+
+  .info-table td:last-child {
+    color: #1a1a2e;
+    font-weight: 500;
+  }
+
+  /* Appointments */
+  .appointment-item {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f5f7fb;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .appointment-item:last-child {
+    border-bottom: none;
+  }
+
+  .appt-datetime {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #1a1a2e;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .status-badge {
+    display: inline-block;
+    padding: 0.15rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    background: #f0e6ef;
+    color: #c2185b;
+  }
+
+  .appt-purpose {
+    font-size: 0.78rem;
+    color: #8892a4;
+  }
+
+  /* Records Table*/
+  .records-card {
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.05), 0 0 0 1px rgba(0,0,0,0.04);
+    overflow: hidden;
+  }
+
+  .records-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.84rem;
+  }
+
+  .records-table thead tr {
+    background: linear-gradient(135deg, #fdf2f7, #fff);
+    border-bottom: 2px solid #f0e6ef;
+  }
+
+  .records-table th {
+    padding: 0.85rem 1rem;
+    text-align: left;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: #c2185b;
+    white-space: nowrap;
+  }
+
+  .records-table tbody tr {
+    border-bottom: 1px solid #f5f7fb;
+    transition: background 0.15s;
+  }
+
+  .records-table tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  .records-table tbody tr:hover {
+    background: #fdf7fa;
+  }
+
+  .records-table td {
+    padding: 0.85rem 1rem;
+    color: #2a2e40;
+    vertical-align: top;
+  }
+
+  .records-table td:first-child {
+    font-weight: 600;
+    color: #1a1a2e;
+    white-space: nowrap;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 2.5rem 1rem;
+    color: #9098aa;
+    font-size: 0.85rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .empty-state i {
+    font-size: 2rem;
+    opacity: 0.3;
+  }
+
+  @media (max-width: 768px) {
+    .page-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    .records-table {
+      font-size: 0.78rem;
+    }
+    .records-table th,
+    .records-table td {
+      padding: 0.65rem 0.6rem;
+    }
+  }
+</style>
+
+<div class="detail-page-wrapper">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="student-name-wrap">
+      <h4>{{ student.get_full_name }}</h4>
+      <span class="student-meta">
+        <i class="bi bi-person-badge me-1"></i>{{ student.student_id }}
+        &nbsp;·&nbsp;
+        <i class="bi bi-mortarboard me-1"></i>{{ student.year_level }}
+        {% if student.section %} – {{ student.section }}{% endif %}
+      </span>
+    </div>
+    <div class="header-actions">
+      <a href="{% url 'record_add' student.pk %}" class="btn-primary-custom">
+        <i class="bi bi-plus-lg"></i> Add Medical Record
+      </a>
+      <a href="{% url 'student_list' %}" class="btn-outline-custom">
+        <i class="bi bi-arrow-left"></i> Back
+      </a>
+    </div>
+  </div>
+
+  <!-- Top Row: Student Info + Appointments -->
+  <div class="row g-3 mb-3">
+
+    <!-- Student Information -->
+    <div class="col-md-6">
+      <div class="info-card">
+        <div class="card-header-custom">
+          <i class="bi bi-person-lines-fill"></i> Student Information
+        </div>
+        <div class="card-body-custom">
+          <table class="info-table">
+            <tr><td>Student ID</td><td>{{ student.student_id }}</td></tr>
+            <tr><td>Full Name</td><td>{{ student.get_full_name }}</td></tr>
+            <tr><td>Gender</td><td>{{ student.gender }}</td></tr>
+            <tr><td>Date of Birth</td><td>{{ student.date_of_birth }}</td></tr>
+            <tr><td>Year Level</td><td>{{ student.year_level }}</td></tr>
+            <tr><td>Section</td><td>{{ student.section|default:"—" }}</td></tr>
+            <tr><td>Course / Strand</td><td>{{ student.course_or_strand|default:"—" }}</td></tr>
+            <tr><td>Contact Number</td><td>{{ student.contact_number|default:"—" }}</td></tr>
+            <tr><td>Guardian</td><td>{{ student.guardian_name|default:"—" }}</td></tr>
+            <tr><td>Guardian Contact</td><td>{{ student.guardian_contact|default:"—" }}</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Appointments -->
+    <div class="col-md-6">
+      <div class="info-card">
+        <div class="card-header-custom">
+          <i class="bi bi-calendar2-check"></i> Appointments
+        </div>
+        <div class="card-body-custom">
+          {% if appointments %}
+            {% for a in appointments %}
+              <div class="appointment-item">
+                <div class="appt-datetime">
+                  <i class="bi bi-clock text-muted" style="font-size:0.75rem;"></i>
+                  {{ a.date }} &nbsp;{{ a.time }}
+                  <span class="status-badge">{{ a.status }}</span>
+                </div>
+                <div class="appt-purpose">{{ a.purpose }}</div>
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="empty-state">
+              <i class="bi bi-calendar-x"></i>
+              No appointments on record.
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Medical Records -->
+  <div class="records-card">
+    <div class="card-header-custom" style="padding: 1.1rem 1.5rem;">
+      <i class="bi bi-file-earmark-medical-fill"></i> Medical Records
+    </div>
+    {% if records %}
+      <div style="overflow-x: auto;">
+        <table class="records-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Chief Complaint</th>
+              <th>Diagnosis</th>
+              <th>Treatment</th>
+              <th>Recorded By</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in records %}
+            <tr>
+              <td>{{ r.date }}</td>
+              <td>{{ r.chief_complaint }}</td>
+              <td>{{ r.diagnosis|truncatechars:55 }}</td>
+              <td>{{ r.treatment_given|truncatechars:55 }}</td>
+              <td>{{ r.recorded_by }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <i class="bi bi-file-earmark-x"></i>
+        No medical records found for this student.
+      </div>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}
