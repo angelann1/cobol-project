@@ -9,7 +9,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'css/theme.css' %}">
   <link rel="stylesheet" href="{% static 'css/output.css' %}">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=block" />  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=block" />
   <style>
     * { font-family: 'Segoe UI', sans-serif; }
     body { background: linear-gradient(135deg, #fce4ec, #f3e5f5, #ede7f6); min-height: 100vh; }
@@ -22,6 +22,8 @@
       top: 0; left: 0;
       padding-top: 1rem;
       box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+      overflow: hidden;
+      z-index: 999;
     }
     .sidebar .brand {
       padding: 1rem 1.2rem 1.2rem;
@@ -30,11 +32,6 @@
       display: flex;
       align-items: center;
       gap: 10px;
-    }
-    .sidebar .brand img {
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      object-fit: cover;
     }
     .sidebar .brand-text {
       font-size: 1.1rem;
@@ -80,8 +77,41 @@
       align-items: center;
       gap: 6px;
     }
+    .dark-toggle-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #FC89AC;
+      border: none;
+      border-radius: 8px;
+      padding: 0.4rem 0.8rem;
+      color: white;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    .toggle-track {
+      width: 36px; height: 20px;
+      background: rgba(255,255,255,0.3);
+      border-radius: 999px;
+      position: relative;
+      transition: 0.3s;
+    }
+    .toggle-knob {
+      position: absolute;
+      top: 3px; left: 3px;
+      width: 14px; height: 14px;
+      background: white;
+      border-radius: 50%;
+      transition: 0.3s;
+    }
 
-    .main-content { margin-left: 220px; padding: 2rem; }
+    .main-content {
+      margin-left: 220px;
+      padding: 2rem;
+      position: relative;
+      z-index: 1;
+    }
 
     .card-stat {
       background: white;
@@ -90,8 +120,6 @@
       box-shadow: 0 2px 12px rgba(171,71,188,.1);
       border: none;
     }
-
-    /* Table styles */
     .table-card {
       background: white;
       border-radius: 16px;
@@ -112,8 +140,7 @@
     .table tbody tr:hover { background: #fce4ec; }
     .table td { vertical-align: middle; font-size: .9rem; padding: .8rem 1rem; }
 
-    /* Buttons */
-      .btn-primary {
+    .btn-primary {
       background: linear-gradient(135deg, #f48fb1, #ec407a);
       border: none;
       border-radius: 20px;
@@ -121,18 +148,18 @@
       font-weight: 500;
     }
     .btn-primary:hover {
-      background: linear-gradient(135deg, #ba68c8, #9c27b0);
+      background: linear-gradient(135deg, #e91e63, #c2185b);
       border: none;
     }
     .btn-outline-primary {
-      border-color: #ab47bc;
-      color: #ab47bc;
+      border-color: #ec407a;
+      color: #ec407a;
       border-radius: 20px;
       padding: .3rem 1rem;
       font-size: .85rem;
     }
     .btn-outline-primary:hover {
-      background: #ab47bc;
+      background: #ec407a;
       color: white;
     }
     .btn-outline-secondary {
@@ -150,19 +177,17 @@
       font-size: .85rem;
     }
 
-    /* Form controls */
     .form-control, .form-select {
       border-radius: 10px;
       border: 1.5px solid #e1bee7;
       padding: .5rem 1rem;
     }
     .form-control:focus, .form-select:focus {
-      border-color: #ab47bc;
-      box-shadow: 0 0 0 .2rem rgba(171,71,188,.15);
+      border-color: #ec407a;
+      box-shadow: 0 0 0 .2rem rgba(236,64,122,.15);
     }
-    .form-label { font-weight: 500; color: #2d3142;}
+    .form-label { font-weight: 500; color: #2d3142; }
 
-    /* Badges */
     .badge-low {
       background: #fce4ec;
       color: #c62828;
@@ -180,15 +205,13 @@
       font-weight: 500;
     }
 
-    /* Page title */
     .page-title {
       font-size: 1.5rem;
       font-weight: 700;
-       color: #c2185b;
+      color: #c2185b;
       margin-bottom: 0;
     }
 
-    /* Stat icon circles */
     .stat-icon {
       width: 56px; height: 56px;
       border-radius: 50%;
@@ -201,6 +224,37 @@
     .stat-icon.pink { background: #fce4ec; color: #e91e63; }
     .stat-icon.orange { background: #fff3e0; color: #ff9800; }
     .stat-icon.blue { background: #e3f2fd; color: #2196f3; }
+
+    /* Toast animations */
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; transform: translateY(-10px); }
+    }
+
+    /* Dark mode */
+    body.dark-mode { background: #1a1a2e; }
+    body.dark-mode .main-content { color: #f0f0f0; }
+    body.dark-mode .card-stat,
+    body.dark-mode .table-card,
+    body.dark-mode .stat-box { background: #2a2a3e; color: #f0f0f0; }
+    body.dark-mode .students-table tbody tr:hover { background: #3a3a4e; }
+    body.dark-mode .students-table td { color: #f0f0f0; }
+    body.dark-mode .student-name { color: #f0f0f0; }
+    body.dark-mode .stat-val { color: #f0f0f0; }
+    body.dark-mode .form-card { background: #2a2a3e; color: #f0f0f0; }
+    body.dark-mode .form-body { background: #2a2a3e; }
+    body.dark-mode .form-footer { background: #222236; }
+    body.dark-mode .field-wrap input,
+    body.dark-mode .field-wrap select,
+    body.dark-mode .field-wrap textarea {
+      background: #1a1a2e;
+      color: #f0f0f0;
+      border-color: #444;
+    }
   </style>
 </head>
 <body>
@@ -223,56 +277,114 @@
   <div class="nav-section mt-2">Clinic</div>
   <a href="{% url 'appointment_list' %}"><i class="bi bi-calendar-check"></i>Appointments</a>
 
+  <!-- Dark Mode Toggle -->
+  <div style="position:absolute; bottom:7rem; left:0; right:0; padding:0 1.2rem;">
+    <button onclick="toggleDark()" class="dark-toggle-btn">
+      <span style="display:flex;align-items:center;gap:6px;">
+        <span id="mode-icon" class="material-symbols-outlined" style="font-size:18px;">moon_stars</span>
+        Dark Mode
+      </span>
+      <div class="toggle-track" id="toggle-track">
+        <div class="toggle-knob" id="toggle-knob"></div>
+      </div>
+    </button>
+  </div>
+
   <div class="user-bottom">
     <div class="user-info">
       <i class="bi bi-person-circle"></i>{{ user.username }}
     </div>
     <a href="{% url 'logout' %}"><i class="bi bi-box-arrow-left"></i>Logout</a>
   </div>
-
-  {% comment %} Dark Mode Toggle {% endcomment %}
-   <div style="position:absolute; bottom:7rem; left:0; right:0; padding:0 1.2rem;">
-    <button onclick="toggleDark()" style="width:100%; display:flex;align-items:center; justify-content:space-between; background:#FC89AC; border:none;border-radius:8px; 
-    padding:0.4rem 0.8rem; color:white; cursor:pointer; font-size:0.85rem;">
-      <span id="dark-label" style="display:flex;align-items:center;gap:6px;">
-        <span id="mode-icon" class="material-symbols-outlined" style="font-size:18px;">moon_stars</span>
-        Dark Mode
-      </span>
-      <div id="toggle-track" style="width:36px;height:20px;background:rgba(255,255,255,0.3);border-radius:999px;position:relative;transition:0.3s;">
-        <div id="toggle-knob" style="position:absolute;top:3px;left:3px;width:14px;height:14px;background:white;border-radius:50%;transition:0.3s;"></div>
-      </div>
-    </button>
-  </div>
-
 </div>
+
 <div class="main-content">
 {% endif %}
+
   {% if messages %}
+  <div style="
+    position: fixed;
+    top: 1.2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  ">
     {% for message in messages %}
-      <div class="alert alert-dismissible fade show" style="border-radius:12px;background:#f3e5f5;border:1px solid #ce93d8;color:#6a1b9a;" role="alert">
-        <i class="bi bi-check-circle me-2"></i>{{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-      </div>
-<div style="padding: 0.5rem 1.2rem; margin-bottom: 0.5rem;">
-  <button onclick="toggleDark()" style="
-      width: 100%;
+    <div class="toast-item" style="
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      background: rgba(255,255,255,0.15);
-      border: none;
-      border-radius: 8px;
-      padding: 0.4rem 0.8rem;
-      color: white;
-      cursor: pointer;
-      font-size: 0.85rem;
-    ">
+      width: 100%;
+      max-width: 360px;
+      padding: 0.85rem 1.2rem;
+      background: white;
+      border-radius: 12px;
+      border: 1px solid #fce4ec;
+      box-shadow: 0 4px 20px rgba(236,64,122,0.15);
+      animation: slideDown 0.3s ease;
+    " role="alert">
 
+      {% if message.tags == 'error' %}
+      <div style="
+        display:inline-flex;align-items:center;justify-content:center;
+        width:32px;height:32px;background:#fee2e2;border-radius:50%;flex-shrink:0;">
+        <svg style="width:16px;height:16px;" fill="#dc2626" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+        </svg>
+      </div>
+      {% else %}
+      <div style="
+        display:inline-flex;align-items:center;justify-content:center;
+        width:32px;height:32px;background:#fce4ec;border-radius:50%;flex-shrink:0;">
+        <svg style="width:16px;height:16px;" fill="#e83e8c" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+        </svg>
+      </div>
+      {% endif %}
 
+      <div style="margin-left:0.75rem;font-size:0.88rem;font-weight:500;color:#1a1a2e;flex:1;">
+        {{ message }}
+      </div>
+
+      <button onclick="closeToast(this)" style="
+        margin-left:auto;background:none;border:none;
+        color:#f48fb1;cursor:pointer;padding:0.3rem;
+        border-radius:6px;display:inline-flex;
+        align-items:center;justify-content:center;
+      ">
+        <svg style="width:12px;height:12px;" fill="none" viewBox="0 0 14 14">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+        </svg>
+      </button>
+    </div>
     {% endfor %}
+  </div>
   {% endif %}
+
   {% block content %}{% endblock %}
+
 {% if user.is_authenticated %}</div>{% endif %}
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Toast
+  function closeToast(btn) {
+    const toast = btn.closest('.toast-item');
+    toast.style.animation = 'fadeOut 0.3s ease forwards';
+    setTimeout(() => toast.remove(), 300);
+  }
+
+  document.querySelectorAll('.toast-item').forEach(toast => {
+    setTimeout(() => {
+      toast.style.animation = 'fadeOut 0.3s ease forwards';
+      setTimeout(() => toast.remove(), 300);
+    }, 2500);
+  });
+
+  
+</script>
 </body>
 </html>

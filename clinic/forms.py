@@ -1,5 +1,5 @@
 from django import forms
-from .models import Student, MedicalRecord, Medicine, StockMovement, Appointment
+from .models import Student, MedicalRecord, Appointment
 
 class StudentForm(forms.ModelForm):
     class Meta:
@@ -23,21 +23,6 @@ class MedicalRecordForm(forms.ModelForm):
             'treatment_given': forms.Textarea(attrs={'rows': 3}),
             'medicines_dispensed': forms.Textarea(attrs={'rows': 2}),
         }
-
-class MedicineForm(forms.ModelForm):
-    class Meta:
-        model = Medicine
-        fields = ['name', 'generic_name', 'unit', 'quantity',
-                  'low_stock_threshold', 'expiry_date', 'description']
-        widgets = {
-            'expiry_date': forms.DateInput(attrs={'type': 'date'}),
-            'description': forms.Textarea(attrs={'rows': 2}),
-        }
-
-class StockMovementForm(forms.ModelForm):
-    class Meta:
-        model = StockMovement
-        fields = ['movement_type', 'quantity', 'notes']
 
 class AppointmentForm(forms.ModelForm):
     class Meta:

@@ -1,20 +1,247 @@
 {% extends 'clinic/base.html' %}
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-  <h4 class="fw-semibold mb-0">Appointments</h4>
-  <a href="{% url 'appointment_add' %}" class="btn btn-primary">
-    <i class="bi bi-plus-lg me-1"></i>Schedule Appointment
+
+<style>
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.8rem;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0;
+  }
+
+  .btn-add {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.6rem 1.3rem;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #e83e8c, #c2185b);
+    color: white;
+    border: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    box-shadow: 0 3px 12px rgba(232,62,140,0.3);
+  }
+
+  .btn-add:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 18px rgba(232,62,140,0.4);
+    color: white;
+  }
+
+  /* Stats summary row */
+  .stats-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .stat-chip {
+    background: white;
+    border-radius: 12px;
+    padding: 0.7rem 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    border: 1px solid #f0f2f7;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #4a5068;
+  }
+
+  .stat-chip-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* Table card */
+  .table-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04);
+    overflow: hidden;
+  }
+
+  .appt-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+
+  .appt-table thead tr {
+    background: linear-gradient(135deg, #f9e4ef, #fdf0f6);
+    border-bottom: 2px solid #f0d6e8;
+  }
+
+  .appt-table th {
+    padding: 0.95rem 1.3rem;
+    text-align: left;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.9px;
+    color: #c2185b;
+    white-space: nowrap;
+  }
+
+  .appt-table tbody tr {
+    border-bottom: 1px solid #f5f7fb;
+    transition: background 0.15s;
+  }
+
+  .appt-table tbody tr:last-child { border-bottom: none; }
+  .appt-table tbody tr:hover { background: #fdf7fa; }
+
+  .appt-table td {
+    padding: 1rem 1.3rem;
+    vertical-align: middle;
+  }
+
+  /* Student cell */
+  .student-name {
+    font-weight: 600;
+    color: #1a1a2e;
+    font-size: 0.88rem;
+  }
+
+  .student-id-sub {
+    font-size: 0.75rem;
+    color: #c2185b;
+    font-family: monospace;
+    font-weight: 600;
+    background: #fdf0f6;
+    padding: 0.1rem 0.45rem;
+    border-radius: 5px;
+    border: 1px solid #f0d6e8;
+    display: inline-block;
+    margin-top: 0.2rem;
+  }
+
+  /* Date cell */
+  .date-text {
+    font-weight: 600;
+    color: #1a1a2e;
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+
+  /* Time cell */
+  .time-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: #f5f7fb;
+    border: 1px solid #e8eaf0;
+    border-radius: 6px;
+    padding: 0.25rem 0.6rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #4a5068;
+    white-space: nowrap;
+  }
+
+  /* Purpose */
+  .purpose-text {
+    color: #5a6070;
+    font-size: 0.84rem;
+  }
+
+  /* Status */
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.73rem;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: inline-block;
+  }
+
+  .badge-scheduled  { background: #e8f4fd; color: #1565c0; }
+  .badge-scheduled .status-dot  { background: #1565c0; }
+  .badge-completed  { background: #e8f5e9; color: #2e7d32; }
+  .badge-completed .status-dot  { background: #2e7d32; }
+  .badge-cancelled  { background: #fdecea; color: #c62828; }
+  .badge-cancelled .status-dot  { background: #c62828; }
+  .badge-default    { background: #f0f2f7; color: #5a6070; }
+  .badge-default .status-dot    { background: #9098aa; }
+
+  /* Assigned to — plain text + icon, no avatar box */
+  .assigned-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: #2a2e40;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
+  .assigned-cell i {
+    color: #c2185b;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 4rem 1rem;
+    color: #9098aa;
+  }
+
+  .empty-state i {
+    font-size: 3rem;
+    color: #f0c4d8;
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+
+  .empty-state p {
+    font-size: 0.9rem;
+    margin: 0;
+  }
+</style>
+
+<div class="page-header">
+  <h4 class="page-title">
+    <i class="bi bi-calendar2-check me-2" style="color:#c2185b;"></i>Appointments
+  </h4>
+  <a href="{% url 'appointment_add' %}" class="btn-add">
+    <i class="bi bi-plus-lg"></i> Schedule Appointment
   </a>
 </div>
 
-<div class="stat-card">
-  <table class="table table-hover mb-0">
+<div class="table-card">
+  <table class="appt-table">
     <thead>
       <tr>
         <th>Student Name</th>
         <th>Date</th>
         <th>Time</th>
-        <th>Purpose</th> 
+        <th>Purpose</th>
         <th>Status</th>
         <th>Assigned To</th>
       </tr>
@@ -22,27 +249,49 @@
     <tbody>
       {% for appointment in appointments %}
       <tr>
-        <td>{{ appointment.student }}</td>
-        <td>{{ appointment.date }}</td>
-        <td>{{ appointment.time }}</td>
-        <td>{{ appointment.purpose }}</td>
+        <td>
+          <span class="student-name">{{ appointment.student.last_name }}, {{ appointment.student.first_name }}</span>
+          <br>
+          <span class="student-id-sub">{{ appointment.student.student_id }}</span>
+        </td>
+        <td><span class="date-text">{{ appointment.date }}</span></td>
+        <td>
+          <span class="time-text">
+            <i class="bi bi-clock" style="font-size:0.7rem;"></i>
+            {{ appointment.time }}
+          </span>
+        </td>
+        <td><span class="purpose-text">{{ appointment.purpose }}</span></td>
         <td>
           {% if appointment.status == 'Scheduled' %}
-            <span class="badge bg-primary">{{ appointment.status }}</span>
+            <span class="status-badge badge-scheduled"><span class="status-dot"></span>{{ appointment.status }}</span>
           {% elif appointment.status == 'Completed' %}
-            <span class="badge bg-success">{{ appointment.status }}</span>
+            <span class="status-badge badge-completed"><span class="status-dot"></span>{{ appointment.status }}</span>
           {% elif appointment.status == 'Cancelled' %}
-            <span class="badge bg-danger">{{ appointment.status }}</span>
+            <span class="status-badge badge-cancelled"><span class="status-dot"></span>{{ appointment.status }}</span>
           {% else %}
-            <span class="badge bg-secondary">{{ appointment.status }}</span>
+            <span class="status-badge badge-default"><span class="status-dot"></span>{{ appointment.status }}</span>
           {% endif %}
         </td>
-        <td>{{ appointment.assigned_to }}</td>
+        <td>
+          <span class="assigned-cell">
+            <i class="bi bi-person-circle"></i>
+            {{ appointment.assigned_to }}
+          </span>
+        </td>
       </tr>
       {% empty %}
-      <tr><td colspan="6" class="text-center text-muted py-4">No appointments yet.</td></tr>
+      <tr>
+        <td colspan="6">
+          <div class="empty-state">
+            <i class="bi bi-calendar-x"></i> #ano pa kulang
+            <p>No appointments scheduled yet.</p>
+          </div>
+        </td>
+      </tr>
       {% endfor %}
     </tbody>
   </table>
 </div>
-{% endblock %}
+
+{% endblock %} 

@@ -1,50 +1,604 @@
 {% extends 'clinic/base.html' %}
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-  <h4 class="fw-semibold mb-0">Students</h4>
-  <a href="{% url 'student_add' %}" class="btn btn-primary">
-    <i class="bi bi-plus-lg me-1"></i>Add Student
+
+<style>
+  * { box-sizing: border-box; }
+
+  /*Header */
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .page-title i { color: #c2185b; }
+
+  .btn-add {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.6rem 1.3rem;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #e83e8c, #c2185b);
+    color: white;
+    border: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    box-shadow: 0 3px 12px rgba(232,62,140,0.3);
+  }
+  .btn-add:hover { transform: translateY(-1px); box-shadow: 0 5px 18px rgba(232,62,140,0.4); color: white; }
+
+  /*Stats Strip*/
+  .stats-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .stat-box {
+    background: white;
+    border-radius: 14px;
+    padding: 1rem 1.2rem;
+    border: 1px solid #f0f2f7;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    transition: transform 0.2s;
+  }
+  .stat-box:hover { transform: translateY(-2px); }
+
+  .stat-icon-wrap {
+    width: 42px; height: 42px;
+    border-radius: 11px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  .stat-label { font-size: 0.7rem; color: #8892a4; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .stat-val   { font-size: 1.5rem; font-weight: 700; color: #1a1a2e; line-height: 1.1; }
+
+  /* Toolbar */
+  .toolbar {
+    display: flex;
+    gap: 0.7rem;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .search-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 220px;
+  }
+
+  .search-wrap i {
+    position: absolute;
+    left: 0.9rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #c2185b;
+    font-size: 0.95rem;
+    pointer-events: none;
+  }
+
+  #live-search {
+    width: 100%;
+    padding: 0.65rem 2.8rem 0.65rem 2.5rem;
+    border: 1.5px solid #e2e6f0;
+    border-radius: 10px;
+    font-size: 0.87rem;
+    background: white;
+    color: #1a1a2e;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    font-family: inherit;
+  }
+  #live-search:focus { border-color: #e83e8c; box-shadow: 0 0 0 3px rgba(232,62,140,0.1); }
+
+  .search-clear {
+    position: absolute;
+    right: 0.8rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #9098aa;
+    cursor: pointer;
+    font-size: 0.85rem;
+    display: none;
+    padding: 0;
+    line-height: 1;
+  }
+  .search-clear:hover { color: #c2185b; }
+
+  .filter-select {
+    padding: 0.65rem 1rem;
+    border: 1.5px solid #e2e6f0;
+    border-radius: 10px;
+    font-size: 0.84rem;
+    background: white;
+    color: #4a5068;
+    outline: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: border-color 0.2s;
+    min-width: 130px;
+  }
+  .filter-select:focus { border-color: #e83e8c; }
+
+  .results-count {
+    font-size: 0.78rem;
+    color: #8892a4;
+    font-weight: 500;
+    white-space: nowrap;
+    margin-left: auto;
+    padding: 0.5rem 0;
+  }
+
+  .results-count span { color: #c2185b; font-weight: 700; }
+
+  /*Table Card */
+  .table-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04);
+    overflow: hidden;
+  }
+
+  .students-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+
+  /* Sortable headers*/
+  .students-table thead tr {
+    background: linear-gradient(135deg, #f9e4ef, #fdf0f6);
+    border-bottom: 2px solid #f0d6e8;
+  }
+
+  .students-table th {
+    padding: 1rem 1.2rem;
+    text-align: left;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #c2185b;
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  .students-table th.sortable {
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .students-table th.sortable:hover { background: #f5d5e8; }
+
+  .sort-icon {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 1px;
+    margin-left: 5px;
+    vertical-align: middle;
+    opacity: 0.4;
+  }
+  .sort-icon span { display: block; width: 0; height: 0; }
+  .sort-icon .up   { border-left: 4px solid transparent; border-right: 4px solid transparent; border-bottom: 5px solid #c2185b; }
+  .sort-icon .down { border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 5px solid #c2185b; }
+
+  th.sort-asc  .sort-icon { opacity: 1; }
+  th.sort-asc  .sort-icon .down { opacity: 0.2; }
+  th.sort-desc .sort-icon { opacity: 1; }
+  th.sort-desc .sort-icon .up   { opacity: 0.2; }
+
+  /*Rows */
+  .students-table tbody tr {
+    border-bottom: 1px solid #f5f7fb;
+    transition: background 0.15s, transform 0.15s;
+    animation: fadeRow 0.25s ease both;
+  }
+
+  @keyframes fadeRow {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .students-table tbody tr:last-child { border-bottom: none; }
+  .students-table tbody tr:hover { background: #fdf7fa; }
+
+  .students-table td {
+    padding: 0.95rem 1.2rem;
+    color: #2a2e40;
+    vertical-align: middle;
+  }
+
+  /* Cell styles */
+  .student-id-badge {
+    display: inline-block;
+    font-family: monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #c2185b;
+    background: #fdf0f6;
+    padding: 0.22rem 0.55rem;
+    border-radius: 6px;
+    border: 1px solid #f0d6e8;
+  }
+
+  .student-avatar {
+    width: 34px; height: 34px;
+    border-radius: 9px;
+    background: linear-gradient(135deg, #f48fb1, #c2185b);
+    color: white;
+    font-weight: 700;
+    font-size: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-right: 0.6rem;
+  }
+
+  .student-name { font-weight: 600; color: #1a1a2e; }
+
+  .year-pill {
+    display: inline-block;
+    padding: 0.22rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.73rem;
+    font-weight: 700;
+    background: #f0e6ef;
+    color: #8b1a4a;
+  }
+
+  .section-dot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+    color: #c2185b;
+    font-weight: 700;
+    font-size: 0.82rem;
+  }
+
+  .contact-text {
+    color: #5a6070;
+    font-size: 0.82rem;
+    font-family: monospace;
+  }
+
+  /*Action buttones */
+  .action-wrap { display: flex; gap: 0.4rem; }
+
+  .btn-view, .btn-edit {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 8px;
+    border: 1.5px solid #f0d6e8;
+    background: white;
+    color: #c2185b;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .btn-view:hover, .btn-edit:hover {
+    background: linear-gradient(135deg, #e83e8c, #c2185b);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 3px 10px rgba(232,62,140,0.3);
+  }
+
+  /* Empty rowshit */
+  .empty-row td {
+    text-align: center;
+    padding: 3.5rem 1rem;
+    color: #9098aa;
+  }
+  .empty-icon { font-size: 3rem; color: #f0c4d8; display: block; margin-bottom: 0.6rem; }
+
+  /* No results bannertot */
+  #no-results {
+    display: none;
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #9098aa;
+    background: white;
+    border-radius: 0 0 16px 16px;
+  }
+  #no-results i { font-size: 2.5rem; color: #f0c4d8; display: block; margin-bottom: 0.5rem; }
+
+  /* Highlight match */
+  mark {
+    background: #fce4ec;
+    color: #c2185b;
+    border-radius: 3px;
+    padding: 0 2px;
+    font-weight: 700;
+  }
+
+  @media (max-width: 700px) {
+    .stats-strip { grid-template-columns: repeat(2,1fr); }
+    .toolbar { flex-direction: column; align-items: stretch; }
+    .results-count { margin-left: 0; }
+  }
+</style>
+
+<!-- Page Header -->
+<div class="page-header">
+  <h4 class="page-title">
+    <i class="bi bi-people-fill"></i> Students
+  </h4>
+  <a href="{% url 'student_add' %}" class="btn-add">
+    <i class="bi bi-plus-lg"></i> Add Student
   </a>
 </div>
 
-<div class="stat-card mb-3">
-  <form method="get" class="d-flex gap-2">
-    <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search by last name...">
-    <button type="submit" class="btn btn-primary">Search</button>
-    {% if query %}<a href="{% url 'student_list' %}" class="btn btn-outline-secondary">Clear</a>{% endif %}
-  </form>
+<!--Stats Strip -->
+<div class="stats-strip">
+  <div class="stat-box">
+    <div class="stat-icon-wrap" style="background:#fdf0f6;">
+      <i class="bi bi-people-fill" style="color:#c2185b;"></i>
+    </div>
+    <div>
+      <div class="stat-label">Total Students</div>
+      <div class="stat-val" id="total-count">{{ students|length }}</div>
+    </div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-icon-wrap" style="background:#e8f4fd;">
+      <i class="bi bi-mortarboard-fill" style="color:#1565c0;"></i>
+    </div>
+    <div>
+      <div class="stat-label">Showing</div>
+      <div class="stat-val" style="color:#1565c0;" id="showing-count">{{ students|length }}</div>
+    </div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-icon-wrap" style="background:#e8f5e9;">
+      <i class="bi bi-person-check-fill" style="color:#2e7d32;"></i>
+    </div>
+    <div>
+      <div class="stat-label">College</div>
+      <div class="stat-val" style="color:#2e7d32;" id="college-count">0</div>
+    </div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-icon-wrap" style="background:#fff3e0;">
+      <i class="bi bi-book-fill" style="color:#e65100;"></i>
+    </div>
+    <div>
+      <div class="stat-label">Senior High</div>
+      <div class="stat-val" style="color:#e65100;" id="shs-count">0</div>
+    </div>
+  </div>
 </div>
 
-<div class="stat-card">
-  <table class="table table-hover mb-0">
+<!-- Toolbar na walang bar -->
+<div class="toolbar">
+  <div class="search-wrap">
+    <i class="bi bi-search"></i>
+    <input type="text" id="live-search" placeholder="Search name, ID, section, contact..." autocomplete="off">
+    <button class="search-clear" id="clear-btn" onclick="clearSearch()" title="Clear">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+
+  <select class="filter-select" id="year-filter" onchange="applyFilters()">
+    <option value="">All Year Levels</option>
+    <option value="Grade 7">Grade 7</option>
+    <option value="Grade 8">Grade 8</option>
+    <option value="Grade 9">Grade 9</option>
+    <option value="Grade 10">Grade 10</option>
+    <option value="Grade 11">Grade 11</option>
+    <option value="Grade 12">Grade 12</option>
+    <option value="1st Year">1st Year</option>
+    <option value="2nd Year">2nd Year</option>
+    <option value="3rd Year">3rd Year</option>
+    <option value="4th Year">4th Year</option>
+  </select>
+
+  <select class="filter-select" id="section-filter" onchange="applyFilters()">
+    <option value="">All Sections</option>
+  </select>
+
+  <div class="results-count">Showing <span id="shown-label">{{ students|length }}</span> of {{ students|length }} students</div>
+</div>
+
+<!--Table shit -->
+<div class="table-card">
+  <table class="students-table" id="student-table">
     <thead>
-      <tr style="background:linear-gradient(to right, #f472b6, #a855f7); color:#fff;">
-        <th>Student ID</th>
-        <th>Name</th>
-        <th>Year Level</th>
-        <th>Section</th>
+      <tr>
+        <th class="sortable" data-col="0" onclick="sortTable(0)">
+          Student ID <span class="sort-icon"><span class="up"></span><span class="down"></span></span>
+        </th>
+        <th class="sortable" data-col="1" onclick="sortTable(1)">
+          Name <span class="sort-icon"><span class="up"></span><span class="down"></span></span>
+        </th>
+        <th class="sortable" data-col="2" onclick="sortTable(2)">
+          Year Level <span class="sort-icon"><span class="up"></span><span class="down"></span></span>
+        </th>
+        <th class="sortable" data-col="3" onclick="sortTable(3)">
+          Section <span class="sort-icon"><span class="up"></span><span class="down"></span></span>
+        </th>
         <th>Contact</th>
         <th>Action</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody id="student-tbody">
       {% for student in students %}
-      <tr>
-        <td>{{ student.student_id }}</td>
-        <td>{{ student.last_name }}, {{ student.first_name }}</td>
-        <td>{{ student.year_level }}</td>
-        <td>{{ student.section }}</td>
-        <td>{{ student.contact_number }}</td>
+      <tr
+        data-id="{{ student.student_id }}"
+        data-name="{{ student.last_name }}, {{ student.first_name }}"
+        data-year="{{ student.year_level }}"
+        data-section="{{ student.section }}"
+        data-contact="{{ student.contact_number }}">
+        <td><span class="student-id-badge">{{ student.student_id }}</span></td>
         <td>
-          <a href="{% url 'student_detail' student.pk %}" class="btn btn-sm btn-outline-primary">
-            <i class="bi bi-eye"></i> View
-          </a>
+          <div style="display:flex;align-items:center;">
+            <div class="student-avatar">{{ student.first_name|slice:":1" }}{{ student.last_name|slice:":1" }}</div>
+            <span class="student-name">{{ student.last_name }}, {{ student.first_name }}</span>
+          </div>
+        </td>
+        <td><span class="year-pill">{{ student.year_level }}</span></td>
+        <td><span class="section-dot">{{ student.section }}</span></td>
+        <td><span class="contact-text">{{ student.contact_number }}</span></td>
+        <td>
+          <div class="action-wrap">
+            <a href="{% url 'student_detail' student.pk %}" class="btn-view">
+              <i class="bi bi-eye"></i> View
+            </a>
+            <a href="{% url 'student_edit' student.pk %}" class="btn-edit">
+              <i class="bi bi-pencil"></i> Edit
+            </a>
+          </div>
         </td>
       </tr>
       {% empty %}
-      <tr><td colspan="6" class="text-center text-muted py-4">No students found.</td></tr>
+      <tr class="empty-row">
+        <td colspan="6">
+          <i class="bi bi-people empty-icon"></i>
+          <div>No students found.</div>
+        </td>
+      </tr>
       {% endfor %}
     </tbody>
   </table>
+  <div id="no-results">
+    <i class="bi bi-search"></i>
+    <div style="font-size:0.9rem;margin-bottom:0.3rem;">No students match your search.</div>
+    <div style="font-size:0.78rem;">Try a different name, ID, or filter.</div>
+  </div>
 </div>
+
+<script>
+  const tbody = document.getElementById('student-tbody');
+  const allRows = Array.from(tbody.querySelectorAll('tr[data-name]'));
+  let sortCol = -1, sortDir = 1;
+
+  /* section filter gina populate ya */
+  const sections = [...new Set(allRows.map(r => r.dataset.section).filter(Boolean))].sort();
+  const secSel = document.getElementById('section-filter');
+  sections.forEach(s => {
+    const o = document.createElement('option');
+    o.value = s; o.textContent = 'Section ' + s;
+    secSel.appendChild(o);
+  });
+
+  /* Count stats */
+  function updateStats(visible) {
+    const college = visible.filter(r => ['1st Year','2nd Year','3rd Year','4th Year'].includes(r.dataset.year)).length;
+    const shs     = visible.filter(r => r.dataset.year && r.dataset.year.startsWith('Grade')).length;
+    document.getElementById('showing-count').textContent = visible.length;
+    document.getElementById('shown-label').textContent   = visible.length;
+    document.getElementById('college-count').textContent = college;
+    document.getElementById('shs-count').textContent     = shs;
+  }
+
+  /* Highlight search term  */
+  function highlight(text, term) {
+    if (!term) return text;
+    const re = new RegExp('(' + term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')', 'gi');
+    return text.replace(re, '<mark>$1</mark>');
+  }
+
+  /* Apply search na may filters */
+  function applyFilters() {
+    const q    = document.getElementById('live-search').value.trim().toLowerCase();
+    const year = document.getElementById('year-filter').value;
+    const sec  = document.getElementById('section-filter').value;
+
+    document.getElementById('clear-btn').style.display = q ? 'block' : 'none';
+
+    let visible = [];
+    allRows.forEach(row => {
+      const matchQ    = !q || [row.dataset.id, row.dataset.name, row.dataset.section, row.dataset.contact]
+                          .some(v => v && v.toLowerCase().includes(q));
+      const matchYear = !year || row.dataset.year === year;
+      const matchSec  = !sec  || row.dataset.section === sec;
+      const show      = matchQ && matchYear && matchSec;
+
+      row.style.display = show ? '' : 'none';
+      if (show) visible.push(row);
+
+      /* Highlight the name and ID cells */
+      if (show && q) {
+        const nameCell = row.cells[1];
+        const nameSpan = nameCell.querySelector('.student-name');
+        if (nameSpan) nameSpan.innerHTML = highlight(row.dataset.name, q);
+        const idCell = row.cells[0];
+        const idSpan = idCell.querySelector('.student-id-badge');
+        if (idSpan) idSpan.innerHTML = highlight(row.dataset.id, q);
+      } else {
+        const nameSpan = row.cells[1]?.querySelector('.student-name');
+        if (nameSpan) nameSpan.textContent = row.dataset.name;
+        const idSpan = row.cells[0]?.querySelector('.student-id-badge');
+        if (idSpan) idSpan.textContent = row.dataset.id;
+      }
+    });
+
+    document.getElementById('no-results').style.display = visible.length === 0 ? 'block' : 'none';
+    updateStats(visible);
+  }
+
+  function clearSearch() {
+    document.getElementById('live-search').value = '';
+    applyFilters();
+    document.getElementById('live-search').focus();
+  }
+
+  document.getElementById('live-search').addEventListener('input', applyFilters);
+
+  /* sort tableshit */
+  function sortTable(col) {
+    const ths = document.querySelectorAll('.students-table th');
+    ths.forEach(th => th.classList.remove('sort-asc','sort-desc'));
+
+    if (sortCol === col) { sortDir *= -1; }
+    else { sortCol = col; sortDir = 1; }
+
+    ths[col].classList.add(sortDir === 1 ? 'sort-asc' : 'sort-desc');
+
+    const keys = ['id','name','year','section'];
+    const key  = keys[col];
+
+    const sorted = allRows.sort((a, b) => {
+      const va = (a.dataset[key] || '').toLowerCase();
+      const vb = (b.dataset[key] || '').toLowerCase();
+      return va < vb ? -sortDir : va > vb ? sortDir : 0;
+    });
+
+    sorted.forEach(r => tbody.appendChild(r));
+    applyFilters();
+  }
+
+  
+  updateStats(allRows);
+</script>
+
 {% endblock %}
