@@ -1,7 +1,33 @@
 from django import forms
 from .models import Student, MedicalRecord, Appointment
 
+COURSE_CHOICES = [
+    ('', 'Select Course or Strand'),
+    ('Senior High School', (
+        ('STEM', 'STEM — Science, Technology, Engineering & Math'),
+        ('HUMSS', 'HUMSS — Humanities & Social Sciences'),
+        ('ABM', 'ABM — Accountancy, Business & Management'),
+        ('ICT', 'ICT — Information & Communications Technology'),
+        ('TVL', 'TVL — Technical-Vocational-Livelihood'),
+        ('GAS', 'GAS — General Academic Strand'),
+    )),
+    ('College', (
+        ('CN', 'CN — College of Nursing'),
+        ('CHTM', 'CHTM — College of Hospitality & Tourism Management'),
+        ('ECE', 'ECE — Electronics & Communications Engineering'),
+        ('CCS', 'CCS — College of Computer Studies'),
+        ('CBA', 'CBA — College of Business Administration'),
+        ('CAS', 'CAS — College of Arts & Sciences'),
+        ('COE', 'COE — College of Engineering'),
+    )),
+]
+
 class StudentForm(forms.ModelForm):
+    course_or_strand = forms.ChoiceField(
+        choices=COURSE_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+
     class Meta:
         model = Student
         fields = ['student_id', 'first_name', 'last_name', 'date_of_birth',
@@ -11,6 +37,7 @@ class StudentForm(forms.ModelForm):
             'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
             'address': forms.Textarea(attrs={'rows': 3}),
         }
+
 
 class MedicalRecordForm(forms.ModelForm):
     class Meta:
@@ -23,6 +50,7 @@ class MedicalRecordForm(forms.ModelForm):
             'treatment_given': forms.Textarea(attrs={'rows': 3}),
             'medicines_dispensed': forms.Textarea(attrs={'rows': 2}),
         }
+
 
 class AppointmentForm(forms.ModelForm):
     class Meta:

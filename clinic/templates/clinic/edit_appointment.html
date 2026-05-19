@@ -1,0 +1,275 @@
+{% extends 'clinic/base.html' %}
+{% block content %}
+
+<!-- Page Header -->
+<div class="flex items-center justify-between mb-7">
+  <h4 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
+    <i class="bi bi-calendar2-check text-pink-700"></i>
+    Edit Appointment
+  </h4>
+
+  <a href="{% url 'appointment_list' %}"
+     class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-100 border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-200 hover:text-slate-900 transition">
+    <i class="bi bi-arrow-left"></i>
+    Back to Appointments
+  </a>
+</div>
+
+<!-- Messages -->
+{% if messages %}
+  {% for message in messages %}
+    <div class="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium mb-5
+      {% if message.tags == 'success' %}
+        bg-green-50 text-green-700 border border-green-200
+      {% else %}
+        bg-red-50 text-red-700 border border-red-200
+      {% endif %}">
+      
+      <i class="bi {% if message.tags == 'success' %}bi-check-circle-fill{% else %}bi-exclamation-circle-fill{% endif %}"></i>
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+
+<!-- Form Card -->
+<div class="bg-white rounded-2xl shadow-[0_2px_20px_rgba(0,0,0,0.06)] border border-slate-100 overflow-hidden">
+
+  <!-- Header -->
+  <div class="bg-gradient-to-r from-pink-100 to-pink-50 border-b-2 border-pink-100 px-7 py-5 flex items-center gap-3">
+    <i class="bi bi-pencil-square text-pink-700 text-xl"></i>
+
+    <div>
+      <h5 class="text-base font-bold text-slate-900">
+        Update Appointment Details
+      </h5>
+
+      <p class="text-xs text-purple-500">
+        All fields marked with
+        <span class="text-pink-500">*</span>
+        are required
+      </p>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="p-7">
+
+    <form method="post">
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+      <div class="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium mb-5 bg-red-50 text-red-700 border border-red-200">
+        <i class="bi bi-exclamation-circle-fill"></i>
+        {{ form.non_field_errors|join:", " }}
+      </div>
+      {% endif %}
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+        <!-- Student -->
+        <div class="md:col-span-2">
+          <label for="{{ form.student.id_for_label }}"
+                 class="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-pink-700 mb-2">
+            <i class="bi bi-person-fill text-sm"></i>
+            Student
+            <span class="text-pink-500">*</span>
+          </label>
+
+          <select name="{{ form.student.html_name }}"
+                  id="{{ form.student.id_for_label }}"
+                  class="w-full rounded-xl border-2 px-4 py-3 text-sm bg-slate-50 focus:outline-none focus:ring-4 focus:ring-pink-100 focus:border-pink-500 transition
+                  {% if form.student.errors %}
+                    border-red-500
+                  {% else %}
+                    border-slate-200
+                  {% endif %}">
+            
+            {% for value, label in form.student.field.choices %}
+              <option value="{{ value }}"
+                {% if form.student.value|stringformat:"s" == value|stringformat:"s" %}selected{% endif %}>
+                {{ label }}
+              </option>
+            {% endfor %}
+          </select>
+
+          {% if form.student.errors %}
+          <div class="flex items-center gap-1 text-xs text-red-600 mt-1">
+            <i class="bi bi-exclamation-circle"></i>
+            {{ form.student.errors|join:", " }}
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Date -->
+        <div>
+          <label for="{{ form.date.id_for_label }}"
+                 class="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-pink-700 mb-2">
+            <i class="bi bi-calendar3 text-sm"></i>
+            Date
+            <span class="text-pink-500">*</span>
+          </label>
+
+          <input type="date"
+                 name="{{ form.date.html_name }}"
+                 id="{{ form.date.id_for_label }}"
+                 value="{{ form.date.value|date:'Y-m-d' }}"
+                 class="w-full rounded-xl border-2 px-4 py-3 text-sm bg-slate-50 focus:outline-none focus:ring-4 focus:ring-pink-100 focus:border-pink-500 transition
+                 {% if form.date.errors %}
+                   border-red-500
+                 {% else %}
+                   border-slate-200
+                 {% endif %}">
+
+          {% if form.date.errors %}
+          <div class="flex items-center gap-1 text-xs text-red-600 mt-1">
+            <i class="bi bi-exclamation-circle"></i>
+            {{ form.date.errors|join:", " }}
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Time -->
+        <div>
+          <label for="{{ form.time.id_for_label }}"
+                 class="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-pink-700 mb-2">
+            <i class="bi bi-clock text-sm"></i>
+            Time
+            <span class="text-pink-500">*</span>
+          </label>
+
+          <input type="time"
+                 name="{{ form.time.html_name }}"
+                 id="{{ form.time.id_for_label }}"
+                 value="{{ form.time.value|time:'H:i' }}"
+                 class="w-full rounded-xl border-2 px-4 py-3 text-sm bg-slate-50 focus:outline-none focus:ring-4 focus:ring-pink-100 focus:border-pink-500 transition
+                 {% if form.time.errors %}
+                   border-red-500
+                 {% else %}
+                   border-slate-200
+                 {% endif %}">
+
+          {% if form.time.errors %}
+          <div class="flex items-center gap-1 text-xs text-red-600 mt-1">
+            <i class="bi bi-exclamation-circle"></i>
+            {{ form.time.errors|join:", " }}
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Purpose -->
+        <div class="md:col-span-2">
+          <label for="{{ form.purpose.id_for_label }}"
+                 class="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-pink-700 mb-2">
+            <i class="bi bi-card-text text-sm"></i>
+            Purpose
+            <span class="text-pink-500">*</span>
+          </label>
+
+          <input type="text"
+                 name="{{ form.purpose.html_name }}"
+                 id="{{ form.purpose.id_for_label }}"
+                 value="{{ form.purpose.value|default_if_none:'' }}"
+                 placeholder="e.g. Check-up, Follow-up, Vaccination…"
+                 class="w-full rounded-xl border-2 px-4 py-3 text-sm bg-slate-50 focus:outline-none focus:ring-4 focus:ring-pink-100 focus:border-pink-500 transition
+                 {% if form.purpose.errors %}
+                   border-red-500
+                 {% else %}
+                   border-slate-200
+                 {% endif %}">
+
+          {% if form.purpose.errors %}
+          <div class="flex items-center gap-1 text-xs text-red-600 mt-1">
+            <i class="bi bi-exclamation-circle"></i>
+            {{ form.purpose.errors|join:", " }}
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Status -->
+        <div class="md:col-span-2">
+          <label for="{{ form.status.id_for_label }}"
+                 class="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-pink-700 mb-2">
+            <i class="bi bi-check2-circle text-sm"></i>
+            Status
+            <span class="text-pink-500">*</span>
+          </label>
+
+          <select name="{{ form.status.html_name }}"
+                  id="{{ form.status.id_for_label }}"
+                  class="w-full rounded-xl border-2 px-4 py-3 text-sm bg-slate-50 focus:outline-none focus:ring-4 focus:ring-pink-100 focus:border-pink-500 transition
+                  {% if form.status.errors %}
+                    border-red-500
+                  {% else %}
+                    border-slate-200
+                  {% endif %}">
+            
+            {% for value, label in form.status.field.choices %}
+              <option value="{{ value }}"
+                {% if form.status.value == value %}selected{% endif %}>
+                {{ label }}
+              </option>
+            {% endfor %}
+          </select>
+
+          {% if form.status.errors %}
+          <div class="flex items-center gap-1 text-xs text-red-600 mt-1">
+            <i class="bi bi-exclamation-circle"></i>
+            {{ form.status.errors|join:", " }}
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Assigned To -->
+        {% if form.assigned_to %}
+        <div class="md:col-span-2">
+          <label for="{{ form.assigned_to.id_for_label }}"
+                 class="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-pink-700 mb-2">
+            <i class="bi bi-person-circle text-sm"></i>
+            Assigned To
+          </label>
+
+          <input type="text"
+                 name="{{ form.assigned_to.html_name }}"
+                 id="{{ form.assigned_to.id_for_label }}"
+                 value="{{ form.assigned_to.value|default_if_none:'' }}"
+                 placeholder="Nurse / Doctor name"
+                 class="w-full rounded-xl border-2 px-4 py-3 text-sm bg-slate-50 focus:outline-none focus:ring-4 focus:ring-pink-100 focus:border-pink-500 transition
+                 {% if form.assigned_to.errors %}
+                   border-red-500
+                 {% else %}
+                   border-slate-200
+                 {% endif %}">
+
+          {% if form.assigned_to.errors %}
+          <div class="flex items-center gap-1 text-xs text-red-600 mt-1">
+            <i class="bi bi-exclamation-circle"></i>
+            {{ form.assigned_to.errors|join:", " }}
+          </div>
+          {% endif %}
+        </div>
+        {% endif %}
+
+      </div>
+
+      <!-- Actions -->
+      <div class="flex items-center gap-3 mt-8 pt-6 border-t border-slate-100">
+
+        <button type="submit"
+                class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-pink-700 text-white text-sm font-semibold shadow-lg shadow-pink-200 hover:-translate-y-0.5 hover:shadow-xl transition">
+          <i class="bi bi-floppy"></i>
+          Save Changes
+        </button>
+
+        <a href="{% url 'appointment_list' %}"
+           class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-100 border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-200 hover:text-slate-900 transition">
+          <i class="bi bi-x-lg"></i>
+          Cancel
+        </a>
+
+      </div>
+
+    </form>
+  </div>
+</div>
+
+{% endblock %}

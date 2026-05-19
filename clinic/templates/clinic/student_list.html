@@ -346,6 +346,8 @@
     .toolbar { flex-direction: column; align-items: stretch; }
     .results-count { margin-left: 0; }
   }
+
+  
 </style>
 
 <!-- Page Header -->
@@ -452,17 +454,19 @@
     </thead>
     <tbody id="student-tbody">
       {% for student in students %}
-      <tr
-        data-id="{{ student.student_id }}"
-        data-name="{{ student.last_name }}, {{ student.first_name }}"
-        data-year="{{ student.year_level }}"
-        data-section="{{ student.section }}"
-        data-contact="{{ student.contact_number }}">
+       <tr
+          data-id="{{ student.student_id }}"
+          data-firstname="{{ student.first_name }}"
+          data-lastname="{{ student.last_name }}"
+          data-name="{{ student.last_name }}, {{ student.first_name }}"
+          data-year="{{ student.year_level }}"
+          data-section="{{ student.section }}"
+          data-contact="{{ student.contact_number }}">
         <td><span class="student-id-badge">{{ student.student_id }}</span></td>
         <td>
           <div style="display:flex;align-items:center;">
-            <div class="student-avatar">{{ student.first_name|slice:":1" }}{{ student.last_name|slice:":1" }}</div>
-            <span class="student-name">{{ student.last_name }}, {{ student.first_name }}</span>
+           <div class="student-avatar">{{ student.first_name|slice:":1" }}{{ student.last_name|slice:":1" }}</div>
+            <span class="student-name">{{ student.last_name }}, {{ student.first_name }}</span>         
           </div>
         </td>
         <td><span class="year-pill">{{ student.year_level }}</span></td>
@@ -494,6 +498,10 @@
     <div style="font-size:0.9rem;margin-bottom:0.3rem;">No students match your search.</div>
     <div style="font-size:0.78rem;">Try a different name, ID, or filter.</div>
   </div>
+</div>
+
+<div id="loadingSpinner" style="text-align:center; padding:16px; display:none;">
+  <span style="font-size:13px; color:#f9a8d4;">Loading more users...</span>
 </div>
 
 <script>
@@ -537,8 +545,8 @@
 
     let visible = [];
     allRows.forEach(row => {
-      const matchQ    = !q || [row.dataset.id, row.dataset.name, row.dataset.section, row.dataset.contact]
-                          .some(v => v && v.toLowerCase().includes(q));
+      const matchQ = !q || [row.dataset.id, row.dataset.firstname, row.dataset.lastname, row.dataset.section, row.dataset.contact]
+                  .some(v => v && v.toLowerCase().includes(q));
       const matchYear = !year || row.dataset.year === year;
       const matchSec  = !sec  || row.dataset.section === sec;
       const show      = matchQ && matchYear && matchSec;
@@ -548,15 +556,18 @@
 
       /* Highlight the name and ID cells */
       if (show && q) {
-        const nameCell = row.cells[1];
-        const nameSpan = nameCell.querySelector('.student-name');
-        if (nameSpan) nameSpan.innerHTML = highlight(row.dataset.name, q);
-        const idCell = row.cells[0];
-        const idSpan = idCell.querySelector('.student-id-badge');
+        const nameSpan = row.cells[1]?.querySelector('.student-name');
+        if (nameSpan) {
+          const display = row.dataset.lastname + ', ' + row.dataset.firstname;
+          nameSpan.innerHTML = highlight(display, q);
+        }
+        const idSpan = row.cells[0]?.querySelector('.student-id-badge');
         if (idSpan) idSpan.innerHTML = highlight(row.dataset.id, q);
       } else {
         const nameSpan = row.cells[1]?.querySelector('.student-name');
-        if (nameSpan) nameSpan.textContent = row.dataset.name;
+        if (nameSpan) {
+          nameSpan.textContent = row.dataset.lastname + ', ' + row.dataset.firstname;
+        }
         const idSpan = row.cells[0]?.querySelector('.student-id-badge');
         if (idSpan) idSpan.textContent = row.dataset.id;
       }
@@ -599,6 +610,9 @@
 
   
   updateStats(allRows);
+
+
+  
 </script>
 
 {% endblock %}

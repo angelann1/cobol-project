@@ -6,7 +6,7 @@
 
 <div style="padding: 30px 40px;">
 
-    <form method="POST" action="{% url 'student_edit' student.pk %}">
+  <form method="POST" action="{% url 'student_edit' student.pk %}">
     {% csrf_token %}
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
 
@@ -26,132 +26,6 @@
           onfocus="this.style.borderColor='#ec4899'" onblur="this.style.borderColor='#f9a8d4'" />
       </div>
 
-      <!-- Gender -->
-
-    <div>
-        <label style="display:block; font-size:13px; font-weight:500; color:#374151; margin-bottom:6px;">Gender</label>
-        <div style="position:relative;">
-            <select name="gender" required
-            style="width:100%; padding:9px 36px 9px 12px; border:1px solid #f9a8d4; border-radius:6px; font-size:13px; color:#111; background:#fff; appearance:none; -webkit-appearance:none; box-sizing:border-box; outline:none; cursor:pointer;"
-            onfocus="this.style.borderColor='#ec4899'" onblur="this.style.borderColor='#f9a8d4'">
-            <option value="" disabled>Select Gender</option>
-            <option value="Male" {% if student.gender == 'Male' %}selected{% endif %}>Male</option>
-            <option value="Female" {% if student.gender == 'Female' %}selected{% endif %}>Female</option>
-            </select>
-            <span style="position:absolute; right:12px; top:50%; transform:translateY(-50%); pointer-events:none; color:#ec4899;">
-            <svg style="width:14px;height:14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-            </svg>
-            </span>
-        </div>
-    </div>
-
-      <!-- Date of Birth -->
-      <div>
-        <label style="display:block; font-size:13px; font-weight:500; color:#374151; margin-bottom:6px;">Date of Birth</label>
-        <input type="date" name="date_of_birth" value="{{ student.date_of_birth|date:'Y-m-d' }}" required
-          style="width:100%; padding:9px 12px; border:1px solid #f9a8d4; border-radius:6px; font-size:13px; color:#111; box-sizing:border-box; outline:none;"
-          onfocus="this.style.borderColor='#ec4899'" onblur="this.style.borderColor='#f9a8d4'" />
-      </div>
-
-      <!-- Year Level -->
-      <div>
-        <label style="display:block; font-size:13px; font-weight:500; color:#374151; margin-bottom:6px;">Year Level</label>
-        <input type="text" name="year_level" value="{{ student.year_level }}" required
-          style="width:100%; padding:9px 12px; border:1px solid #f9a8d4; border-radius:6px; font-size:13px; color:#111; box-sizing:border-box; outline:none;"
-          onfocus="this.style.borderColor='#ec4899'" onblur="this.style.borderColor='#f9a8d4'" />
-      </div>
-
-      <!-- Section -->
-      <div>
-        <label style="display:block; font-size:13px; font-weight:500; color:#374151; margin-bottom:6px;">Section</label>
-        <input type="text" name="section" value="{{ student.section }}"
-          style="width:100%; padding:9px 12px; border:1px solid #f9a8d4; border-radius:6px; font-size:13px; color:#111; box-sizing:border-box; outline:none;"
-          onfocus="this.style.borderColor='#ec4899'" onblur="this.style.borderColor='#f9a8d4'" />
-      </div>
-
-      <!-- Course / Strand -->
-      <div>
-        <label style="display:block; font-size:13px; font-weight:500; color:#374151; margin-bottom:6px;">Course / Strand</label>
-        <input type="text" name="course_or_strand" value="{{ student.course_or_strand }}"
-          style="width:100%; padding:9px 12px; border:1px solid #f9a8d4; border-radius:6px; font-size:13px; color:#111; box-sizing:border-box; outline:none;"
-          onfocus="this.style.borderColor='#ec4899'" onblur="this.style.borderColor='#f9a8d4'" />
-      </div>
-
-      <!-- Contact Number -->
-      <div>
-        <label style="display:block; font-size:13px; font-weight:500; color:#374151; margin-bottom:6px;">Contact Number</label>
-        <input type="text" name="contact_number" value="{{ student.contact_number }}" maxlength="11"
-          style="width:100%; padding:9px 12px; border:1px solid #f9a8d4; border-radius:6px; font-size:13px; color:#111; box-sizing:border-box; outline:none;"
-          onfocus="this.style.borderColor='#ec4899'" onblur="this.style.borderColor='#f9a8d4'" />
-      </div>
-
-      <!-- Guardian Name -->
-      <div>
-        <label style="display:block; font-size:13px; font-weight:500; color:#374151; margin-bottom:6px;">Guardian Name</label>
-        <input type="text" name="guardian_name" value="{{ student.guardian_name }}"
-          style="width:100%; padding:9px 12px; border:1px solid #f9a8d4; border-radius:6px; font-size:13px; color:#111; box-sizing:border-box; outline:none;"
-          onfocus="this.style.borderColor='#ec4899'" onblur="this.style.borderColor='#f9a8d4'" />
-      </div>
-
-      <!-- Guardian Contact -->
-      <div>
-        <label style="display:block; font-size:13px; font-weight:500; color:#374151; margin-bottom:6px;">Guardian Contact</label>
-        <input type="text" name="guardian_contact" value="{{ student.guardian_contact }}" maxlength="11"
-          style="width:100%; padding:9px 12px; border:1px solid #f9a8d4; border-radius:6px; font-size:13px; color:#111; box-sizing:border-box; outline:none;"
-          onfocus="this.style.borderColor='#ec4899'" onblur="this.style.borderColor='#f9a8d4'" />
-      </div>
-
-    </div>
-
-    <!-- Buttons -->
-    <div style="margin-top:28px; display:flex; gap:10px;">
-      <button type="submit"
-        style="background:linear-gradient(to right, #f87171, #dc2626); color:#fff; padding:9px 24px; border:none; border-radius:20px; font-size:13px; font-weight:600; cursor:pointer; transition: opacity 0.2s;"
-        onmouseover="this.style.opacity='0.85'"
-        onmouseout="this.style.opacity='1'">
-        Update Student
-      </button>
-      <a href="/student/list"
-        style="background:#fce7f3; color:#be185d; padding:9px 24px; border-radius:20px; font-size:13px; font-weight:600; text-decoration:none; border:1px solid #f9a8d4; transition: background 0.2s;"
-        onmouseover="this.style.background='#fbcfe8'"
-        onmouseout="this.style.background='#fce7f3'">
-        Cancel
-      </a>
-    </div>
-
-  </form>
-</div>
-{% endblock %}
-
-
-{% extends 'clinic/base.html' %}
-
-{% block title %}Edit Student{% endblock %}
-
-{% block content %}
-
-<div style="padding: 30px 40px;">
-
-  <form method="POST" action="{% url 'student_edit' student.pk %}">
-    {% csrf_token %}
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
-
-      <!-- Student ID -->
-      <div>
-        <label style="display:block; font-size:13px; font-weight:500; color:#374151; margin-bottom:6px;">Student ID</label>
-        <input type="text" name="student_id" value="{{ student.student_id }}" required
-          style="width:100%; padding:9px 12px; border:1px solid #f9a8d4; border-radius:6px; font-size:13px; color:#111; box-sizing:border-box; outline:none;"
-          onfocus="this.style.borderColor='#ec4899'" onblur="this.style.borderColor='#f9a8d4'" />
-      </div>
-
-      <!-- Full Name -->
-        <div>
-            <label style="display:block; font-size:13px; font-weight:500; color:#374151; margin-bottom:6px;">Full Name</label>
-            <input type="text" name="full_name" value="{{ student.get_full_name }}" required
-            style="width:100%; padding:9px 12px; border:1px solid #f9a8d4; border-radius:6px; font-size:13px; color:#111; box-sizing:border-box; outline:none;"
-            onfocus="this.style.borderColor='#ec4899'" onblur="this.style.borderColor='#f9a8d4'" />
-        </div>
       <!-- Gender -->
       <div>
         <label style="display:block; font-size:13px; font-weight:500; color:#374151; margin-bottom:6px;">Gender</label>
@@ -240,7 +114,7 @@
     <!-- Buttons -->
     <div style="margin-top:28px; display:flex; gap:10px;">
       <button type="submit"
-        style="background:linear-gradient(to right, #f87171, #dc2626); color:#fff; padding:9px 24px; border:none; border-radius:20px; font-size:13px; font-weight:600; cursor:pointer; transition: opacity 0.2s;"
+        style="background:#f7538A; color:#fff; padding:9px 24px; border:none; border-radius:20px; font-size:13px; font-weight:600; cursor:pointer; transition: opacity 0.2s;"
         onmouseover="this.style.opacity='0.85'"
         onmouseout="this.style.opacity='1'">
         Update Student
@@ -255,4 +129,5 @@
 
   </form>
 </div>
+
 {% endblock %}

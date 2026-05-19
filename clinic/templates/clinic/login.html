@@ -1,33 +1,497 @@
-{% extends 'clinic/base.html' %}
-{% block content %}
-<div class="d-flex align-items-center justify-content-center" style="min-height:100vh;">
-  <div style="background:white;border-radius:20px;padding:2.5rem;width:420px;box-shadow:0 8px 32px rgba(171,71,188,.2);">
-    <div class="text-center mb-4">
-      <div style="width:70px;height:70px;background:linear-gradient(135deg,#ce93d8,#ab47bc);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
-        <i class="bi bi-hospital-fill text-white" style="font-size:1.8rem;"></i>
-      </div>
-      <h4 class="fw-bold" style="color:#6a1b9a;">School Clinic System</h4>
-      <p class="text-muted small">Filamer Christian University</p>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>School Clinic — Login</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(160deg, #fce4ec 0%, #f8bbd0 30%, #f48fb1 60%, #ec407a 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* SVG flower background */
+    .bg-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Wave at bottom */
+    .wave {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 200px;
+      background: rgba(194,24,91,0.18);
+      border-radius: 100% 100% 0 0 / 70px 70px 0 0;
+      z-index: 1;
+    }
+    .wave-2 {
+      position: absolute;
+      bottom: 0; left: -5%; right: -5%;
+      height: 130px;
+      background: rgba(255,255,255,0.07);
+      border-radius: 100% 100% 0 0 / 50px 50px 0 0;
+      z-index: 1;
+    }
+
+    /* Main wrapper */
+    .main-wrap {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 560px;
+      padding: 0 1.2rem;
+    }
+
+    /* Avatar */
+    .avatar-ring {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #fce4ec, #f48fb1);
+      border: 6px solid white;
+      box-shadow: 0 8px 24px rgba(194,24,91,0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-bottom: -55px;
+      position: relative;
+      z-index: 20;
+      flex-shrink: 0;
+    }
+
+    .avatar-ring img {
+      width: 78%;
+      height: 78%;
+      object-fit: contain;
+      filter: brightness(0) saturate(100%) invert(18%) sepia(80%) saturate(1200%) hue-rotate(310deg) brightness(80%);
+    }
+
+    /* Card */
+    .login-card {
+      width: 100%;
+      background: white;
+      border-radius: 32px;
+      padding: 5rem 3.5rem 3.5rem;
+      box-shadow: 0 24px 70px rgba(194,24,91,0.28), 0 4px 20px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    /* FCU logo row — centered */
+    .fcu-row {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+      margin-bottom: 1rem;
+    }
+
+    .fcu-row img {
+      width: 46px;
+      height: 46px;
+      object-fit: contain;
+    }
+
+    .school-clinic-label {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #c2185b;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .fcu-sub {
+      font-size: 0.68rem;
+      color: #8892a4;
+      text-align: center;
+    }
+
+    /* Login title */
+    .login-title {
+      font-size: 1.9rem;
+      font-weight: 800;
+      color: #1a1a2e;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 0.2rem;
+    }
+
+    .login-sub {
+      font-size: 0.78rem;
+      color: #8892a4;
+      font-weight: 500;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 1.6rem;
+    }
+
+    /* Error */
+    .error-box {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #fdecea;
+      border: 1px solid #f5c6c6;
+      border-radius: 10px;
+      padding: 0.65rem 1rem;
+      font-size: 0.82rem;
+      color: #c62828;
+      margin-bottom: 1.1rem;
+      text-align: left;
+    }
+
+    /* Inputs */
+    .field-wrap {
+      position: relative;
+      margin-bottom: 1rem;
+    }
+
+    .field-icon {
+      position: absolute;
+      right: 1.1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #c2185b;
+      font-size: 1.05rem;
+      pointer-events: none;
+    }
+
+    .toggle-pw { pointer-events: all; cursor: pointer; transition: opacity 0.2s; }
+    .toggle-pw:hover { opacity: 0.7; }
+
+    .login-input {
+      width: 100%;
+      padding: 0.92rem 3rem 0.92rem 0.85rem;
+      border: 1.5px solid #f0d6e8;
+      border-radius: 14px;
+      font-size: 0.88rem;
+      color: #1a1a2e;
+      background: #fafbfd;
+      outline: none;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .login-input::placeholder {
+      color: #aab0bf;
+      letter-spacing: 1px;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+    }
+
+    .login-input:focus {
+      border-color: #e83e8c;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(232,62,140,0.1);
+    }
+
+    /* Remember me */
+    .remember-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.1rem;
+    }
+
+    .remember-left {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      color: #5a6070;
+      font-size: 0.82rem;
+      cursor: pointer;
+    }
+
+    input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: #c2185b;
+      cursor: pointer;
+    }
+
+    /* Login button */
+    .btn-login {
+      width: 100%;
+      padding: 1rem;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #e83e8c, #c2185b);
+      color: white;
+      border: none;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 5px 18px rgba(232,62,140,0.4);
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      margin-bottom: 1.1rem;
+    }
+
+    .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(232,62,140,0.5);
+    }
+
+    .btn-login:active { transform: translateY(0); }
+
+    /* Footer */
+    .card-footer-text {
+      font-size: 0.73rem;
+      color: #9098aa;
+    }
+
+    .card-footer-text span {
+      font-style: italic;
+      font-weight: 700;
+      color: #c2185b;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- petal background -->
+  <svg class="bg-svg" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+
+  
+    <defs>
+      <!-- petal shape -->
+      <ellipse id="petal" cx="0" cy="-18" rx="7" ry="18" fill="currentColor"/>
+    </defs>
+
+    <!-- Flower 1 — top left large -->
+    <g transform="translate(80,90)" opacity="0.22">
+      <g fill="white">
+        <ellipse cx="0" cy="-26" rx="9" ry="26"/>
+        <ellipse cx="0" cy="-26" rx="9" ry="26" transform="rotate(72)"/>
+        <ellipse cx="0" cy="-26" rx="9" ry="26" transform="rotate(144)"/>
+        <ellipse cx="0" cy="-26" rx="9" ry="26" transform="rotate(216)"/>
+        <ellipse cx="0" cy="-26" rx="9" ry="26" transform="rotate(288)"/>
+      </g>
+      <circle cx="0" cy="0" r="9" fill="rgba(255,200,220,0.6)"/>
+    </g>
+
+    <!-- Flower 2 — top left small -->
+    <g transform="translate(160,40)" opacity="0.16">
+      <g fill="white">
+        <ellipse cx="0" cy="-16" rx="6" ry="16"/>
+        <ellipse cx="0" cy="-16" rx="6" ry="16" transform="rotate(72)"/>
+        <ellipse cx="0" cy="-16" rx="6" ry="16" transform="rotate(144)"/>
+        <ellipse cx="0" cy="-16" rx="6" ry="16" transform="rotate(216)"/>
+        <ellipse cx="0" cy="-16" rx="6" ry="16" transform="rotate(288)"/>
+      </g>
+      <circle cx="0" cy="0" r="6" fill="rgba(255,200,220,0.5)"/>
+    </g>
+
+    <!-- Flower 3 — top right -->
+    <g transform="translate(1360,70)" opacity="0.2">
+      <g fill="white">
+        <ellipse cx="0" cy="-30" rx="10" ry="30"/>
+        <ellipse cx="0" cy="-30" rx="10" ry="30" transform="rotate(72)"/>
+        <ellipse cx="0" cy="-30" rx="10" ry="30" transform="rotate(144)"/>
+        <ellipse cx="0" cy="-30" rx="10" ry="30" transform="rotate(216)"/>
+        <ellipse cx="0" cy="-30" rx="10" ry="30" transform="rotate(288)"/>
+      </g>
+      <circle cx="0" cy="0" r="10" fill="rgba(255,200,220,0.5)"/>
+    </g>
+
+    <!-- Flower 4 — right mid -->
+    <g transform="translate(1390,400)" opacity="0.18">
+      <g fill="white">
+        <ellipse cx="0" cy="-20" rx="7" ry="20"/>
+        <ellipse cx="0" cy="-20" rx="7" ry="20" transform="rotate(72)"/>
+        <ellipse cx="0" cy="-20" rx="7" ry="20" transform="rotate(144)"/>
+        <ellipse cx="0" cy="-20" rx="7" ry="20" transform="rotate(216)"/>
+        <ellipse cx="0" cy="-20" rx="7" ry="20" transform="rotate(288)"/>
+      </g>
+      <circle cx="0" cy="0" r="7" fill="rgba(255,200,220,0.5)"/>
+    </g>
+
+    <!-- Flower 5 — bottom left -->
+    <g transform="translate(60,780)" opacity="0.2">
+      <g fill="white">
+        <ellipse cx="0" cy="-24" rx="8" ry="24"/>
+        <ellipse cx="0" cy="-24" rx="8" ry="24" transform="rotate(72)"/>
+        <ellipse cx="0" cy="-24" rx="8" ry="24" transform="rotate(144)"/>
+        <ellipse cx="0" cy="-24" rx="8" ry="24" transform="rotate(216)"/>
+        <ellipse cx="0" cy="-24" rx="8" ry="24" transform="rotate(288)"/>
+      </g>
+      <circle cx="0" cy="0" r="8" fill="rgba(255,200,220,0.5)"/>
+    </g>
+
+    <!-- Flower 6 — bottom right -->
+    <g transform="translate(1380,820)" opacity="0.22">
+      <g fill="white">
+        <ellipse cx="0" cy="-28" rx="9" ry="28"/>
+        <ellipse cx="0" cy="-28" rx="9" ry="28" transform="rotate(72)"/>
+        <ellipse cx="0" cy="-28" rx="9" ry="28" transform="rotate(144)"/>
+        <ellipse cx="0" cy="-28" rx="9" ry="28" transform="rotate(216)"/>
+        <ellipse cx="0" cy="-28" rx="9" ry="28" transform="rotate(288)"/>
+      </g>
+      <circle cx="0" cy="0" r="9" fill="rgba(255,200,220,0.5)"/>
+    </g>
+
+    <!-- Flower 7 — top center-left -->
+    <g transform="translate(320,30)" opacity="0.13">
+      <g fill="white">
+        <ellipse cx="0" cy="-14" rx="5" ry="14"/>
+        <ellipse cx="0" cy="-14" rx="5" ry="14" transform="rotate(72)"/>
+        <ellipse cx="0" cy="-14" rx="5" ry="14" transform="rotate(144)"/>
+        <ellipse cx="0" cy="-14" rx="5" ry="14" transform="rotate(216)"/>
+        <ellipse cx="0" cy="-14" rx="5" ry="14" transform="rotate(288)"/>
+      </g>
+      <circle cx="0" cy="0" r="5" fill="rgba(255,200,220,0.4)"/>
+    </g>
+
+    <!-- Flower 8 — mid left -->
+    <g transform="translate(30,450)" opacity="0.15">
+      <g fill="white">
+        <ellipse cx="0" cy="-18" rx="6" ry="18"/>
+        <ellipse cx="0" cy="-18" rx="6" ry="18" transform="rotate(72)"/>
+        <ellipse cx="0" cy="-18" rx="6" ry="18" transform="rotate(144)"/>
+        <ellipse cx="0" cy="-18" rx="6" ry="18" transform="rotate(216)"/>
+        <ellipse cx="0" cy="-18" rx="6" ry="18" transform="rotate(288)"/>
+      </g>
+      <circle cx="0" cy="0" r="6" fill="rgba(255,200,220,0.4)"/>
+    </g>
+
+    <!-- Flower 9 — top center right -->
+    <g transform="translate(1100,50)" opacity="0.14">
+      <g fill="white">
+        <ellipse cx="0" cy="-16" rx="5" ry="16"/>
+        <ellipse cx="0" cy="-16" rx="5" ry="16" transform="rotate(72)"/>
+        <ellipse cx="0" cy="-16" rx="5" ry="16" transform="rotate(144)"/>
+        <ellipse cx="0" cy="-16" rx="5" ry="16" transform="rotate(216)"/>
+        <ellipse cx="0" cy="-16" rx="5" ry="16" transform="rotate(288)"/>
+      </g>
+      <circle cx="0" cy="0" r="5" fill="rgba(255,200,220,0.4)"/>
+    </g>
+
+    <!-- Flower 10 — bottom center -->
+    <g transform="translate(720,860)" opacity="0.17">
+      <g fill="white">
+        <ellipse cx="0" cy="-22" rx="8" ry="22"/>
+        <ellipse cx="0" cy="-22" rx="8" ry="22" transform="rotate(72)"/>
+        <ellipse cx="0" cy="-22" rx="8" ry="22" transform="rotate(144)"/>
+        <ellipse cx="0" cy="-22" rx="8" ry="22" transform="rotate(216)"/>
+        <ellipse cx="0" cy="-22" rx="8" ry="22" transform="rotate(288)"/>
+      </g>
+      <circle cx="0" cy="0" r="8" fill="rgba(255,200,220,0.4)"/>
+    </g>
+
+    <!-- tiny flowers -->
+    <g opacity="0.12" fill="white">
+      <circle cx="250" cy="200" r="5"/>
+      <circle cx="270" cy="190" r="3"/>
+      <circle cx="230" cy="210" r="4"/>
+      <circle cx="1200" cy="300" r="5"/>
+      <circle cx="1220" cy="285" r="3"/>
+      <circle cx="1180" cy="315" r="4"/>
+      <circle cx="400" cy="820" r="5"/>
+      <circle cx="420" cy="808" r="3"/>
+      <circle cx="380" cy="832" r="4"/>
+      <circle cx="1050" cy="750" r="5"/>
+      <circle cx="1070" cy="738" r="3"/>
+      <circle cx="1030" cy="762" r="4"/>
+    </g>
+
+  </svg>
+
+  <div class="wave"></div>
+  <div class="wave-2"></div>
+
+  <!-- Main content -->
+  <div class="main-wrap">
+
+    <!-- Avatar above card -->
+    <div class="avatar-ring">
+      <img
+        src="{% static '445380667_478128701252900_3265241005611973908_n.png' %}"
+        alt="User"
+        onerror="this.style.display='none';this.parentElement.innerHTML='<i class=\'bi bi-person-fill\' style=\'font-size:3rem;color:#c2185b;\'></i>'"
+      >
     </div>
-    <form method="post">
-      {% csrf_token %}
-      <div class="mb-3">
-        <label class="form-label">Username</label>
-        <input type="text" name="username" class="form-control" required autofocus>
+
+    <!-- Card -->
+    <div class="login-card">
+
+      <!-- FCU Logo -->
+      <div class="fcu-row">
+        <img
+          src="{% static 'Filamer_Christian_University__Inc.png' %}"
+          alt="FCU Logo"
+          onerror="this.style.display='none'"
+        >
+        <div class="school-clinic-label">School Clinic</div>
+        <div class="fcu-sub">Filamer Christian University · Medical Records System</div>
       </div>
-      <div class="mb-3">
-        <label class="form-label">Password</label>
-        <input type="password" name="password" class="form-control" required>
-      </div>
+
+      <div class="login-title">Login</div>
+      <div class="login-sub">Welcome</div>
+
       {% if form.errors %}
-        <div class="alert py-2 small" style="background:#fce4ec;color:#c62828;border-radius:10px;border:none;">
+        <div class="error-box">
+          <i class="bi bi-exclamation-circle-fill"></i>
           Invalid username or password.
         </div>
       {% endif %}
-      <button type="submit" class="btn btn-primary w-100 mt-2" style="padding:.6rem;">
-        <i class="bi bi-box-arrow-in-right me-2"></i>Sign in
-      </button>
-    </form>
+
+      <form method="post" novalidate>
+        {% csrf_token %}
+
+        <div class="field-wrap">
+          <input type="text" name="username" class="login-input" placeholder="User Name" required autofocus>
+          <i class="bi bi-person field-icon"></i>
+        </div>
+
+        <div class="field-wrap">
+          <input type="password" name="password" id="pw" class="login-input" placeholder="Password" required>
+          <i class="bi bi-eye-slash field-icon toggle-pw" id="pw-icon" onclick="togglePw()"></i>
+        </div>
+
+        <div class="remember-row">
+          <label class="remember-left">
+            <input type="checkbox"> Remember me
+          </label>
+        </div>
+
+        <button type="submit" class="btn-login">Login</button>
+
+      </form>
+
+      <div class="card-footer-text">
+        &copy; 2026 <span>Filamer Christian University</span>
+      </div>
+
+    </div>
   </div>
-</div>
-{% endblock %}
+
+  <script>
+    function togglePw() {
+      const f = document.getElementById('pw');
+      const i = document.getElementById('pw-icon');
+      f.type = f.type === 'password' ? 'text' : 'password';
+      i.className = f.type === 'password'
+        ? 'bi bi-eye-slash field-icon toggle-pw'
+        : 'bi bi-eye field-icon toggle-pw';
+    }
+  </script>
+
+</body>
+</html>
