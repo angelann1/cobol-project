@@ -8,7 +8,6 @@
     padding: 0 1rem;
   }
 
- 
   .page-header {
     display: flex;
     justify-content: space-between;
@@ -82,7 +81,6 @@
     background: #fff5f8;
   }
 
-  /*Cards*/
   .info-card {
     background: white;
     border-radius: 14px;
@@ -109,7 +107,6 @@
     padding: 1.2rem 1.4rem;
   }
 
-  /*Info Table */
   .info-table {
     width: 100%;
     border-collapse: collapse;
@@ -142,7 +139,6 @@
     font-weight: 500;
   }
 
-  /* Appointments */
   .appointment-item {
     padding: 0.75rem 0;
     border-bottom: 1px solid #f5f7fb;
@@ -181,7 +177,6 @@
     color: #8892a4;
   }
 
-  /* Records Table*/
   .records-card {
     background: white;
     border-radius: 14px;
@@ -252,6 +247,57 @@
     opacity: 0.3;
   }
 
+  /* Lazy loading skeleton */
+  .skeleton-wrapper {
+    padding: 1.2rem 1.4rem;
+  }
+
+  .skeleton-line {
+    height: 14px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #f0e6ef 25%, #fdf2f7 50%, #f0e6ef 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
+    margin-bottom: 0.75rem;
+  }
+
+  .skeleton-line:last-child {
+    margin-bottom: 0;
+  }
+
+  .skeleton-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #f5f7fb;
+    align-items: center;
+  }
+
+  .skeleton-row:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+
+  .skeleton-cell {
+    height: 13px;
+    border-radius: 5px;
+    background: linear-gradient(90deg, #f0e6ef 25%, #fdf2f7 50%, #f0e6ef 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* Lazy-load observer targets */
+  .lazy-section {
+    min-height: 80px;
+  }
+
   @media (max-width: 768px) {
     .page-header {
       flex-direction: column;
@@ -265,11 +311,12 @@
     .records-table td {
       padding: 0.65rem 0.6rem;
     }
+  }
 </style>
 
 <div class="detail-page-wrapper">
 
-  <!-- Page Header -->
+  <!-- Page Header (always visible, no lazy load needed) -->
   <div class="page-header">
     <div class="student-name-wrap">
       <h4>{{ student.get_full_name }}</h4>
@@ -293,7 +340,7 @@
   <!-- Top Row: Student Info + Appointments -->
   <div class="row g-3 mb-3">
 
-    <!-- Student Information -->
+    <!-- Student Information (above the fold — load immediately) -->
     <div class="col-md-6">
       <div class="info-card">
         <div class="card-header-custom">
@@ -316,13 +363,37 @@
       </div>
     </div>
 
-    <!-- Appointments -->
+    <!-- Appointments — lazy loaded -->
     <div class="col-md-6">
       <div class="info-card">
         <div class="card-header-custom">
           <i class="bi bi-calendar2-check"></i> Appointments
         </div>
-        <div class="card-body-custom">
+
+        <!-- Skeleton shown while waiting for IntersectionObserver -->
+        <div id="appointments-skeleton" class="skeleton-wrapper" aria-hidden="true">
+          <div class="skeleton-row">
+            <div class="skeleton-cell" style="width:90px;"></div>
+            <div class="skeleton-cell" style="width:55px;"></div>
+            <div class="skeleton-cell" style="width:60px;"></div>
+          </div>
+          <div class="skeleton-row">
+            <div class="skeleton-cell" style="width:90px;"></div>
+            <div class="skeleton-cell" style="width:55px;"></div>
+            <div class="skeleton-cell" style="width:60px;"></div>
+          </div>
+          <div class="skeleton-row" style="border-bottom:none;">
+            <div class="skeleton-cell" style="width:90px;"></div>
+            <div class="skeleton-cell" style="width:55px;"></div>
+            <div class="skeleton-cell" style="width:45px;"></div>
+          </div>
+        </div>
+
+        <!-- Actual content, hidden until revealed by observer -->
+        <div id="appointments-content"
+             class="card-body-custom lazy-section"
+             data-lazy="appointments"
+             style="display:none;">
           {% if appointments %}
             {% for a in appointments %}
               <div class="appointment-item">
@@ -341,48 +412,126 @@
             </div>
           {% endif %}
         </div>
+
       </div>
     </div>
 
   </div>
 
-  <!-- Medical Records -->
-  <div class="records-card">
+  <!-- Medical Records — lazy loaded -->
+  <div class="records-card lazy-section" data-lazy="records">
+
     <div class="card-header-custom" style="padding: 1.1rem 1.5rem;">
       <i class="bi bi-file-earmark-medical-fill"></i> Medical Records
     </div>
-    {% if records %}
-      <div style="overflow-x: auto;">
-        <table class="records-table">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Chief Complaint</th>
-              <th>Diagnosis</th>
-              <th>Treatment</th>
-              <th>Recorded By</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for r in records %}
-            <tr>
-              <td>{{ r.date }}</td>
-              <td>{{ r.chief_complaint }}</td>
-              <td>{{ r.diagnosis|truncatechars:55 }}</td>
-              <td>{{ r.treatment_given|truncatechars:55 }}</td>
-              <td>{{ r.recorded_by }}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+
+    <!-- Skeleton -->
+    <div id="records-skeleton" aria-hidden="true" style="padding: 0.5rem 0;">
+      <div style="padding: 0 1rem;">
+        <!-- Fake thead -->
+        <div style="display:flex; gap:1rem; padding:0.7rem 0; border-bottom:2px solid #f0e6ef;">
+          <div class="skeleton-cell" style="width:70px; height:11px;"></div>
+          <div class="skeleton-cell" style="width:120px; height:11px;"></div>
+          <div class="skeleton-cell" style="width:100px; height:11px;"></div>
+          <div class="skeleton-cell" style="width:100px; height:11px;"></div>
+          <div class="skeleton-cell" style="width:90px; height:11px;"></div>
+        </div>
+        {% for i in "12345" %}
+        <div style="display:flex; gap:1rem; padding:0.75rem 0; border-bottom:1px solid #f5f7fb; align-items:center;">
+          <div class="skeleton-cell" style="width:75px;"></div>
+          <div class="skeleton-cell" style="width:{% cycle '140px' '110px' '130px' '120px' '100px' %};"></div>
+          <div class="skeleton-cell" style="width:{% cycle '115px' '130px' '95px' '120px' '110px' %};"></div>
+          <div class="skeleton-cell" style="width:{% cycle '105px' '120px' '110px' '90px' '125px' %};"></div>
+          <div class="skeleton-cell" style="width:85px;"></div>
+        </div>
+        {% endfor %}
       </div>
-    {% else %}
-      <div class="empty-state">
-        <i class="bi bi-file-earmark-x"></i>
-        No medical records found for this student.
-      </div>
-    {% endif %}
+    </div>
+
+    <!-- Actual content -->
+    <div id="records-content" style="display:none;">
+      {% if records %}
+        <div style="overflow-x: auto;">
+          <table class="records-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Chief Complaint</th>
+                <th>Diagnosis</th>
+                <th>Treatment</th>
+                <th>Recorded By</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for r in records %}
+              <tr>
+                <td>{{ r.date }}</td>
+                <td>{{ r.chief_complaint }}</td>
+                <td>{{ r.diagnosis|truncatechars:55 }}</td>
+                <td>{{ r.treatment_given|truncatechars:55 }}</td>
+                <td>{{ r.recorded_by }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="empty-state">
+          <i class="bi bi-file-earmark-x"></i>
+          No medical records found for this student.
+        </div>
+      {% endif %}
+    </div>
+
   </div>
 
 </div>
+
+<script>
+  (function () {
+    // Reveal a section: hide its skeleton, show its content
+    function reveal(lazy) {
+      if (lazy === 'appointments') {
+        document.getElementById('appointments-skeleton').style.display = 'none';
+        document.getElementById('appointments-content').style.display = 'block';
+      } else if (lazy === 'records') {
+        document.getElementById('records-skeleton').style.display = 'none';
+        document.getElementById('records-content').style.display = 'block';
+      }
+    }
+
+    // Small artificial delay to give the page a moment to paint first,
+    // then use IntersectionObserver to load each section as it scrolls near.
+    var DELAY_MS = 120;
+
+    if (!('IntersectionObserver' in window)) {
+      // Fallback: reveal everything immediately if API unavailable
+      setTimeout(function () {
+        reveal('appointments');
+        reveal('records');
+      }, DELAY_MS);
+      return;
+    }
+
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          var lazy = entry.target.dataset.lazy;
+          // Small delay so skeleton is visible briefly — avoids flash
+          setTimeout(function () { reveal(lazy); }, DELAY_MS);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      rootMargin: '0px 0px 120px 0px', // trigger slightly before fully in view
+      threshold: 0
+    });
+
+    document.querySelectorAll('[data-lazy]').forEach(function (el) {
+      observer.observe(el);
+    });
+  })();
+</script>
+
 {% endblock %}
+

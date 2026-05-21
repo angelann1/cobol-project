@@ -68,13 +68,39 @@
           style="width:100%; padding:9px 12px; border:1px solid #f9a8d4; border-radius:6px; font-size:13px; color:#111; box-sizing:border-box; outline:none;"
           onfocus="this.style.borderColor='#ec4899'" onblur="this.style.borderColor='#f9a8d4'" />
       </div>
-
+      
       <!-- Course / Strand -->
       <div>
         <label style="display:block; font-size:13px; font-weight:500; color:#374151; margin-bottom:6px;">Course / Strand</label>
-        <input type="text" name="course_or_strand" value="{{ student.course_or_strand }}"
-          style="width:100%; padding:9px 12px; border:1px solid #f9a8d4; border-radius:6px; font-size:13px; color:#111; box-sizing:border-box; outline:none;"
-          onfocus="this.style.borderColor='#ec4899'" onblur="this.style.borderColor='#f9a8d4'" />
+        <div style="position:relative;">
+          <select name="course_or_strand"
+            style="width:100%; padding:9px 36px 9px 12px; border:1px solid #f9a8d4; border-radius:6px; font-size:13px; color:#111; background:#fff; appearance:none; -webkit-appearance:none; box-sizing:border-box; outline:none; cursor:pointer;"
+            onfocus="this.style.borderColor='#ec4899'" onblur="this.style.borderColor='#f9a8d4'">
+            <option value="">Select Course or Strand</option>
+            <optgroup label="Senior High School">
+              <option value="STEM"  {% if student.course_or_strand == 'STEM'  %}selected{% endif %}>STEM — Science, Technology, Engineering & Math</option>
+              <option value="HUMSS" {% if student.course_or_strand == 'HUMSS' %}selected{% endif %}>HUMSS — Humanities & Social Sciences</option>
+              <option value="ABM"   {% if student.course_or_strand == 'ABM'   %}selected{% endif %}>ABM — Accountancy, Business & Management</option>
+              <option value="ICT"   {% if student.course_or_strand == 'ICT'   %}selected{% endif %}>ICT — Information & Communications Technology</option>
+              <option value="TVL"   {% if student.course_or_strand == 'TVL'   %}selected{% endif %}>TVL — Technical-Vocational-Livelihood</option>
+              <option value="GAS"   {% if student.course_or_strand == 'GAS'   %}selected{% endif %}>GAS — General Academic Strand</option>
+            </optgroup>
+            <optgroup label="College">
+              <option value="CN"   {% if student.course_or_strand == 'CN'   %}selected{% endif %}>CN — College of Nursing</option>
+              <option value="CHTM" {% if student.course_or_strand == 'CHTM' %}selected{% endif %}>CHTM — College of Hospitality & Tourism Management</option>
+              <option value="ECE"  {% if student.course_or_strand == 'ECE'  %}selected{% endif %}>ECE — Electronics & Communications Engineering</option>
+              <option value="CCS"  {% if student.course_or_strand == 'CCS'  %}selected{% endif %}>CCS — College of Computer Studies</option>
+              <option value="CBA"  {% if student.course_or_strand == 'CBA'  %}selected{% endif %}>CBA — College of Business Administration</option>
+              <option value="CAS"  {% if student.course_or_strand == 'CAS'  %}selected{% endif %}>CAS — College of Arts & Sciences</option>
+              <option value="COE"  {% if student.course_or_strand == 'COE'  %}selected{% endif %}>COE — College of Engineering</option>
+            </optgroup>
+          </select>
+          <span style="position:absolute; right:12px; top:50%; transform:translateY(-50%); pointer-events:none; color:#ec4899;">
+            <svg style="width:14px;height:14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </span>
+        </div>
       </div>
 
       <!-- Contact Number -->

@@ -128,3 +128,6 @@ STATICFILES_DIRS = [BASE_DIR / 'clinic' / 'static']
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/login/'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR / 'staticfiles'

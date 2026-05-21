@@ -346,11 +346,8 @@
     .toolbar { flex-direction: column; align-items: stretch; }
     .results-count { margin-left: 0; }
   }
-
-  
 </style>
 
-<!-- Page Header -->
 <div class="page-header">
   <h4 class="page-title">
     <i class="bi bi-people-fill"></i> Students
@@ -360,7 +357,6 @@
   </a>
 </div>
 
-<!--Stats Strip -->
 <div class="stats-strip">
   <div class="stat-box">
     <div class="stat-icon-wrap" style="background:#fdf0f6;">
@@ -377,7 +373,7 @@
     </div>
     <div>
       <div class="stat-label">Showing</div>
-      <div class="stat-val" style="color:#1565c0;" id="showing-count">{{ students|length }}</div>
+      <div class="stat-val" style="color:#1565c0;" id="showing-count">0</div>
     </div>
   </div>
   <div class="stat-box">
@@ -400,7 +396,6 @@
   </div>
 </div>
 
-<!-- Toolbar na walang bar -->
 <div class="toolbar">
   <div class="search-wrap">
     <i class="bi bi-search"></i>
@@ -428,10 +423,9 @@
     <option value="">All Sections</option>
   </select>
 
-  <div class="results-count">Showing <span id="shown-label">{{ students|length }}</span> of {{ students|length }} students</div>
+  <div class="results-count">Showing <span id="shown-label">0</span> of {{ students|length }} students</div>
 </div>
 
-<!--Table shit -->
 <div class="table-card">
   <table class="students-table" id="student-table">
     <thead>
@@ -500,16 +494,27 @@
   </div>
 </div>
 
-<div id="loadingSpinner" style="text-align:center; padding:16px; display:none;">
-  <span style="font-size:13px; color:#f9a8d4;">Loading more users...</span>
+<div id="loadingSpinner" style="text-align:center; padding:20px; display:none; font-weight:600; background:white; border-radius:0 0 16px 16px;">
+  <div class="spinner-border text-pink" role="status" style="width: 1.3rem; height: 1.3rem; border-color: #e83e8c #fdf0f6 #fdf0f6; border-style: solid; border-width: 2px; border-radius: 50%; display: inline-block; animation: spin 0.75s linear infinite; margin-right: 8px; vertical-align: middle;"></div>
+  <span style="font-size:13px; color:#c2185b; vertical-align: middle;">Loading more students...</span>
 </div>
+
+<style>
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
 
 <script>
   const tbody = document.getElementById('student-tbody');
   const allRows = Array.from(tbody.querySelectorAll('tr[data-name]'));
   let sortCol = -1, sortDir = 1;
 
-  /* section filter gina populate ya */
+  /* Lazy Loading Pagination Variables */
+  const ITEMS_PER_PAGE = 15;
+  let currentVisibleCount = ITEMS_PER_PAGE;
+  let filteredRows = [...allRows]; 
+  let isThrottled = false;
+
+  /* Section filter configuration */
   const sections = [...new Set(allRows.map(r => r.dataset.section).filter(Boolean))].sort();
   const secSel = document.getElementById('section-filter');
   sections.forEach(s => {
@@ -518,24 +523,25 @@
     secSel.appendChild(o);
   });
 
-  /* Count stats */
-  function updateStats(visible) {
-    const college = visible.filter(r => ['1st Year','2nd Year','3rd Year','4th Year'].includes(r.dataset.year)).length;
-    const shs     = visible.filter(r => r.dataset.year && r.dataset.year.startsWith('Grade')).length;
-    document.getElementById('showing-count').textContent = visible.length;
-    document.getElementById('shown-label').textContent   = visible.length;
+  /* Count stats based on overall matches */
+  function updateStats(matchedRows) {
+    const college = matchedRows.filter(r => ['1st Year','2nd Year','3rd Year','4th Year'].includes(r.dataset.year)).length;
+    const shs     = matchedRows.filter(r => r.dataset.year && r.dataset.year.startsWith('Grade')).length;
+    
+    document.getElementById('showing-count').textContent = matchedRows.length;
+    document.getElementById('shown-label').textContent   = matchedRows.length;
     document.getElementById('college-count').textContent = college;
     document.getElementById('shs-count').textContent     = shs;
   }
 
-  /* Highlight search term  */
+  /* Highlight matching terms */
   function highlight(text, term) {
     if (!term) return text;
     const re = new RegExp('(' + term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')', 'gi');
     return text.replace(re, '<mark>$1</mark>');
   }
 
-  /* Apply search na may filters */
+  /* Filter and show items up to current visible limit */
   function applyFilters() {
     const q    = document.getElementById('live-search').value.trim().toLowerCase();
     const year = document.getElementById('year-filter').value;
@@ -543,19 +549,24 @@
 
     document.getElementById('clear-btn').style.display = q ? 'block' : 'none';
 
-    let visible = [];
-    allRows.forEach(row => {
+    // 1. Determine which rows match criteria
+    filteredRows = allRows.filter(row => {
       const matchQ = !q || [row.dataset.id, row.dataset.firstname, row.dataset.lastname, row.dataset.section, row.dataset.contact]
                   .some(v => v && v.toLowerCase().includes(q));
       const matchYear = !year || row.dataset.year === year;
       const matchSec  = !sec  || row.dataset.section === sec;
-      const show      = matchQ && matchYear && matchSec;
+      return matchQ && matchYear && matchSec;
+    });
 
-      row.style.display = show ? '' : 'none';
-      if (show) visible.push(row);
+    // 2. Hide everything first
+    allRows.forEach(row => row.style.display = 'none');
 
-      /* Highlight the name and ID cells */
-      if (show && q) {
+    // 3. Render items matching the visibility slice limit
+    const rowsToDisplay = filteredRows.slice(0, currentVisibleCount);
+    rowsToDisplay.forEach(row => {
+      row.style.display = '';
+
+      if (q) {
         const nameSpan = row.cells[1]?.querySelector('.student-name');
         if (nameSpan) {
           const display = row.dataset.lastname + ', ' + row.dataset.firstname;
@@ -565,27 +576,59 @@
         if (idSpan) idSpan.innerHTML = highlight(row.dataset.id, q);
       } else {
         const nameSpan = row.cells[1]?.querySelector('.student-name');
-        if (nameSpan) {
-          nameSpan.textContent = row.dataset.lastname + ', ' + row.dataset.firstname;
-        }
+        if (nameSpan) nameSpan.textContent = row.dataset.lastname + ', ' + row.dataset.firstname;
         const idSpan = row.cells[0]?.querySelector('.student-id-badge');
         if (idSpan) idSpan.textContent = row.dataset.id;
       }
     });
 
-    document.getElementById('no-results').style.display = visible.length === 0 ? 'block' : 'none';
-    updateStats(visible);
+    document.getElementById('no-results').style.display = filteredRows.length === 0 ? 'block' : 'none';
+    updateStats(filteredRows);
+    checkScrollRequirement();
+  }
+
+  /* Infinite Scroll Listener */
+  function handleScroll() {
+    if (isThrottled) return;
+
+    // Trigger load when scrolled within 60px of page bottom
+    if ((window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight - 60) {
+      if (currentVisibleCount < filteredRows.length) {
+        isThrottled = true;
+        const spinner = document.getElementById('loadingSpinner');
+        spinner.style.display = 'block';
+
+        setTimeout(() => {
+          currentVisibleCount += ITEMS_PER_PAGE;
+          applyFilters();
+          spinner.style.display = 'none';
+          isThrottled = false;
+        }, 2000); // Tiny artificial lag for a cleaner aesthetic feel
+      }
+    }
+  }
+
+  /* Fallback in case screen height fits the whole initial slice */
+  function checkScrollRequirement() {
+    if (currentVisibleCount < filteredRows.length && document.documentElement.scrollHeight <= window.innerHeight) {
+      currentVisibleCount += ITEMS_PER_PAGE;
+      applyFilters();
+    }
   }
 
   function clearSearch() {
     document.getElementById('live-search').value = '';
+    currentVisibleCount = ITEMS_PER_PAGE; // Reset slice depth on reset
     applyFilters();
     document.getElementById('live-search').focus();
   }
 
-  document.getElementById('live-search').addEventListener('input', applyFilters);
+  document.getElementById('live-search').addEventListener('input', () => {
+    currentVisibleCount = ITEMS_PER_PAGE; // Reset window view back to start on key typing
+    applyFilters();
+  });
 
-  /* sort tableshit */
+  /* Sort Logic */
   function sortTable(col) {
     const ths = document.querySelectorAll('.students-table th');
     ths.forEach(th => th.classList.remove('sort-asc','sort-desc'));
@@ -598,21 +641,21 @@
     const keys = ['id','name','year','section'];
     const key  = keys[col];
 
-    const sorted = allRows.sort((a, b) => {
+    allRows.sort((a, b) => {
       const va = (a.dataset[key] || '').toLowerCase();
       const vb = (b.dataset[key] || '').toLowerCase();
       return va < vb ? -sortDir : va > vb ? sortDir : 0;
     });
 
-    sorted.forEach(r => tbody.appendChild(r));
+    allRows.forEach(r => tbody.appendChild(r));
     applyFilters();
   }
 
-  
-  updateStats(allRows);
+  // Bind Scroll Engine
+  window.addEventListener('scroll', handleScroll);
 
-
-  
+  // Initialize view layout
+  applyFilters();
 </script>
 
 {% endblock %}

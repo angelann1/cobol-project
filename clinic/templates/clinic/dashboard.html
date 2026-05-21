@@ -1,418 +1,480 @@
-{% extends 'clinic/base.html' %} {% block content %}
+{% extends 'clinic/base.html' %}
+{% block content %}
 
 <style>
-  .activity-card,
-  .stat-card,
-  .card-stat {
-    background: white;
+  /* ── Greeting Bar ── */
+  .greeting-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.8rem;
+  }
+  .greeting-title {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin: 0;
+    letter-spacing: -0.5px;
+  }
+  .greeting-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1.2rem;
+    background: linear-gradient(135deg, #e83e8c, #c2185b);
+    color: white;
+    border-radius: 999px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(232,62,140,0.35);
+    animation: greetPulse 3s ease infinite;
+  }
+  @keyframes greetPulse {
+    0%,100% { box-shadow: 0 4px 15px rgba(232,62,140,0.35); }
+    50% { box-shadow: 0 4px 25px rgba(232,62,140,0.6); }
+  }
+
+  /* ── Notification Banner ── */
+  .notif-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, #e3f2fd, #f8f9ff);
     border-radius: 16px;
-    box-shadow:
-      0 2px 20px rgba(0, 0, 0, 0.06),
-      0 0 0 1px rgba(0, 0, 0, 0.04);
-    padding: 1.4rem 1.6rem;
+    padding: 1rem 1.4rem;
+    margin-bottom: 1.8rem;
+    border: 1.5px solid #bbdefb;
+    box-shadow: 0 2px 12px rgba(33,150,243,0.08);
+    animation: slideIn 0.5s ease;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .notif-icon {
+    width: 46px; height: 46px;
+    background: linear-gradient(135deg, #2196f3, #1565c0);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: white;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    animation: bellShake 2s ease infinite;
+  }
+  @keyframes bellShake {
+    0%,100% { transform: rotate(0); }
+    10%,30% { transform: rotate(-12deg); }
+    20%,40% { transform: rotate(12deg); }
+    50% { transform: rotate(0); }
+  }
+  .notif-view-btn {
+    background: linear-gradient(135deg, #2196f3, #1565c0);
+    color: white;
+    border: none;
+    border-radius: 999px;
+    padding: 0.45rem 1.3rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .notif-view-btn:hover {
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(33,150,243,0.4);
+  }
+
+  /* ── Stat Cards ── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.8rem;
+  }
+  .stat-card-new {
+    background: white;
+    border-radius: 18px;
+    padding: 1.4rem 1.5rem;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+    border: 1px solid rgba(0,0,0,0.04);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.25s, box-shadow 0.25s;
+    cursor: default;
+  }
+  .stat-card-new:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.1);
+  }
+  .stat-card-new::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    border-radius: 18px 18px 0 0;
+  }
+  .stat-card-new.s-purple::before { background: linear-gradient(90deg, #ab47bc, #7b1fa2); }
+  .stat-card-new.s-blue::before   { background: linear-gradient(90deg, #2196f3, #0d47a1); }
+  .stat-card-new.s-green::before  { background: linear-gradient(90deg, #43a047, #1b5e20); }
+  .stat-card-new.s-red::before    { background: linear-gradient(90deg, #e53935, #b71c1c); }
+
+  .stat-card-new .sc-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.25rem;
+    color: white;
+    margin-bottom: 1rem;
+  }
+  .s-purple .sc-icon { background: linear-gradient(135deg, #ce93d8, #ab47bc); }
+  .s-blue   .sc-icon { background: linear-gradient(135deg, #64b5f6, #2196f3); }
+  .s-green  .sc-icon { background: linear-gradient(135deg, #81c784, #43a047); }
+  .s-red    .sc-icon { background: linear-gradient(135deg, #ef9a9a, #e53935); }
+
+  .stat-card-new .sc-number {
+    font-size: 2.2rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+  .s-purple .sc-number { color: #ab47bc; }
+  .s-blue   .sc-number { color: #2196f3; }
+  .s-green  .sc-number { color: #43a047; }
+  .s-red    .sc-number { color: #e53935; }
+
+  .stat-card-new .sc-label {
+    font-size: 0.78rem;
+    color: #9098aa;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .stat-card-new .sc-bg-icon {
+    position: absolute;
+    bottom: -8px; right: -8px;
+    font-size: 5rem;
+    opacity: 0.05;
+    pointer-events: none;
+  }
+
+  /* ── Bottom cards ── */
+  .bottom-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .info-card {
+    background: white;
+    border-radius: 18px;
+    padding: 1.5rem 1.6rem;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+    border: 1px solid rgba(0,0,0,0.04);
     height: 100%;
   }
-
-  /* ICON STYLES */
-  .stat-icon {
-    width: 55px;
-    height: 55px;
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-
-  .stat-icon i {
-    font-size: 1.3rem;
-    color: white;
-  }
-
-  .stat-icon.purple {
-    background: #ab47bc;
-  }
-  .stat-icon.blue {
-    background: #2196f3;
-  }
-  .stat-icon.green {
-    background: #2e7d32;
-  }
-  .stat-icon.red {
-    background: #c62828;
-  }
-
-  /* NOTIFICATION */
-  .notification-alert {
-    background: #eef7ff;
-    border-radius: 16px;
-    padding: 1rem 1.2rem;
-    border: none;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
-  }
-
-  .notification-icon {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    background: #2196f3;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  /* ACTIVITY */
-  .activity-card h6 {
+  .info-card-title {
     font-size: 0.88rem;
     font-weight: 700;
     color: #1a1a2e;
     margin-bottom: 1.1rem;
-  }
-
-  .activity-item {
-    display: flex;
-    gap: 0.85rem;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid #f5f7fb;
-  }
-
-  .activity-item:last-child {
-    border-bottom: none;
-  }
-
-  .activity-dot {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
     display: flex;
     align-items: center;
+    gap: 0.5rem;
+  }
+  .info-card-title i {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
+    font-size: 0.85rem;
+    color: white;
+  }
+  .title-icon-pink { background: linear-gradient(135deg, #f48fb1, #e83e8c); }
+  .title-icon-blue { background: linear-gradient(135deg, #64b5f6, #2196f3); }
+
+  /* Record items */
+  .record-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid #f5f7fb;
+    animation: fadeRow 0.3s ease both;
+  }
+  .record-item:last-child { border-bottom: none; }
+  @keyframes fadeRow {
+    from { opacity: 0; transform: translateX(-8px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  .record-avatar {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #f48fb1, #c2185b);
+    color: white;
+    font-weight: 700;
+    font-size: 0.78rem;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .record-name {
+    font-size: 0.87rem;
+    font-weight: 600;
+    color: #1a1a2e;
+  }
+  .record-complaint {
+    font-size: 0.78rem;
+    color: #9098aa;
+    margin-top: 1px;
+  }
+  .record-date {
+    margin-left: auto;
+    font-size: 0.72rem;
+    color: #b0b8c8;
+    white-space: nowrap;
+    padding-top: 2px;
+    flex-shrink: 0;
   }
 
-  .dot-record {
-    background: #fde8f0;
-    color: #c2185b;
+  /* Activity items */
+  .activity-item-new {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid #f5f7fb;
+    animation: fadeRow 0.3s ease both;
   }
-  .dot-appt {
-    background: #e8f4fd;
-    color: #1565c0;
+  .activity-item-new:last-child { border-bottom: none; }
+  .activity-dot-new {
+    width: 38px; height: 38px;
+    border-radius: 11px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
   }
-
-  .activity-text {
-    font-size: 0.84rem;
-    font-weight: 500;
+  .dot-record-new { background: #fde8f0; color: #c2185b; }
+  .dot-appt-new   { background: #e8f4fd; color: #1565c0; }
+  .activity-name-new {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1a1a2e;
   }
-
-  .activity-meta {
-    font-size: 0.74rem;
+  .activity-action-new {
+    font-size: 0.78rem;
     color: #9098aa;
   }
-
-  .activity-time-badge {
-    background: #f5f7fb;
-    border: 1px solid #e8eaf0;
-    padding: 2px 6px;
-    border-radius: 5px;
+  .activity-badge-new {
+    margin-left: auto;
+    background: #fdf0f6;
+    color: #c2185b;
+    border-radius: 999px;
+    padding: 2px 10px;
     font-size: 0.7rem;
+    font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
-
-  .view-all-link {
+  .view-all-btn {
     display: block;
     text-align: center;
-    margin-top: 1rem;
+    margin-top: 1.2rem;
     color: #c2185b;
-    font-weight: 600;
+    font-weight: 700;
     text-decoration: none;
+    font-size: 0.85rem;
+    padding: 0.55rem;
+    border-radius: 10px;
+    background: #fdf0f6;
+    transition: all 0.2s;
   }
+  .view-all-btn:hover {
+    background: linear-gradient(135deg, #e83e8c, #c2185b);
+    color: white;
+  }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: #b0b8c8;
+  }
+  .empty-state i {
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #f0c4d8;
+  }
+  .empty-state p {
+    font-size: 0.85rem;
+    margin: 0;
+  }
+
+  @media (max-width: 900px) {
+    .stats-grid { grid-template-columns: repeat(2,1fr); }
+    .bottom-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Dark mode overrides */
+  html.dark .stat-card-new,
+  html.dark .info-card { background: #1E1D52 !important; border-color: #3B2F80 !important; }
+  html.dark .greeting-title { color: #EDE8FF !important; }
+  html.dark .sc-label { color: #8AACCF !important; }
+  html.dark .info-card-title { color: #EDE8FF !important; }
+  html.dark .record-name { color: #EDE8FF !important; }
+  html.dark .record-complaint,
+  html.dark .record-date,
+  html.dark .activity-action-new { color: #8AACCF !important; }
+  html.dark .activity-name-new { color: #EDE8FF !important; }
+  html.dark .record-item,
+  html.dark .activity-item-new { border-color: #2A2668 !important; }
+  html.dark .activity-badge-new { background: #2A2668 !important; color: #C79DD7 !important; }
+  html.dark .view-all-btn { background: #2A2668 !important; color: #C79DD7 !important; }
+  html.dark .view-all-btn:hover { background: linear-gradient(135deg, #673888, #38b9c6) !important; color: white !important; }
+  html.dark .notif-banner { background: #1a2035 !important; border-color: #1565c0 !important; }
+  html.dark .sc-bg-icon { opacity: 0.08 !important; }
 </style>
 
-<div class="container-fluid">
-  <!-- HEADER -->
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="fw-semibold mb-0">Dashboard</h4>
-    <div style="display: flex; align-items: center; gap: 1rem">
-      <!-- Weather Widget -->
-      <div
-        id="weather-widget"
-        style="
-          padding: 0.4rem 0.8rem;
-          background: rgba(244, 86, 138, 0.15);
-          border-radius: 10px;
-          font-size: 0.78rem;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        "
-      >
-        <span id="weather-icon" style="font-size: 1.1rem">⏳</span>
-        <span id="weather-temp" style="font-size: 0.9rem; font-weight: 700"
-          >--°C</span
-        >
-        <span id="weather-desc" style="opacity: 0.75">Loading...</span>
-        <span id="weather-location" style="opacity: 0.5; font-size: 0.7rem"
-          >📍</span
-        >
-      </div>
+<!-- Greeting -->
+<div class="greeting-bar">
+  <h4 class="greeting-title">Dashboard</h4>
+  <span class="greeting-badge" id="time-greeting"></span>
+</div>
 
-      <span class="text-muted small">Welcome back, {{ user.username }}!</span>
-    </div>
-  </div>
-
-  <!-- NOTIFICATION -->
-  {% if upcoming_appointments %}
-  <div
-    class="notification-alert d-flex justify-content-between align-items-center mb-4"
-  >
-    <div class="d-flex align-items-center gap-3">
-      <div class="notification-icon">
-        <i class="bi bi-bell-fill"></i>
-      </div>
-
-      <div>
-        <h6 class="mb-1 fw-bold text-primary">Upcoming Appointment</h6>
-        <p class="mb-0 small text-muted">
-          You have <strong>{{ upcoming_appointments|length }}</strong> upcoming
-          appointment(s).
-        </p>
-      </div>
-    </div>
-
-    <a
-      href="{% url 'appointment_list' %}"
-      class="btn btn-primary rounded-pill px-3"
-    >
-      View
-    </a>
-  </div>
-  {% endif %}
-
-  <!-- STATS -->
-  <div class="row g-3 mb-4">
-    <div class="col-md-3">
-      <div class="card-stat d-flex align-items-center gap-3">
-        <div class="stat-icon purple"><i class="bi bi-people-fill"></i></div>
-        <div>
-          <h2 class="fw-bold mb-0" style="color: #ab47bc">
-            {{ total_students }}
-          </h2>
-          <p class="text-muted small mb-0">Total Students</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-3">
-      <div class="card-stat d-flex align-items-center gap-3">
-        <div class="stat-icon blue">
-          <i class="bi bi-calendar-check-fill"></i>
-        </div>
-        <div>
-          <h2 class="fw-bold mb-0" style="color: #2196f3">
-            {{ scheduled_count }}
-          </h2>
-          <p class="text-muted small mb-0">Scheduled</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-3">
-      <div class="card-stat d-flex align-items-center gap-3">
-        <div class="stat-icon green">
-          <i class="bi bi-check-circle-fill"></i>
-        </div>
-        <div>
-          <h2 class="fw-bold mb-0" style="color: #2e7d32">
-            {{ completed_count }}
-          </h2>
-          <p class="text-muted small mb-0">Completed</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-3">
-      <div class="card-stat d-flex align-items-center gap-3">
-        <div class="stat-icon red"><i class="bi bi-x-circle-fill"></i></div>
-        <div>
-          <h2 class="fw-bold mb-0" style="color: #c62828">
-            {{ cancelled_count }}
-          </h2>
-          <p class="text-muted small mb-0">Cancelled</p>
-        </div>
+<!-- Notification -->
+{% if upcoming_appointments %}
+<div class="notif-banner">
+  <div style="display:flex;align-items:center;gap:1rem;">
+    <div class="notif-icon"><i class="bi bi-bell-fill"></i></div>
+    <div>
+      <div style="font-weight:700;color:#1565c0;font-size:0.95rem;">Upcoming Appointment</div>
+      <div style="font-size:0.84rem;color:#5a6070;margin-top:2px;">
+        You have <strong>{{ upcoming_appointments|length }}</strong> upcoming appointment(s).
       </div>
     </div>
   </div>
+  <a href="{% url 'appointment_list' %}" class="notif-view-btn">View</a>
+</div>
+{% endif %}
 
-  <!-- BOTTOM ROW -->
-  <div class="row g-3">
-    <!-- RECENT RECORDS -->
-    <div class="col-md-6">
-      <div class="stat-card">
-        <h6 class="fw-semibold mb-3">
-          <i class="bi bi-clock-history text-primary me-2"></i>
-          Recent Medical Records
-        </h6>
-
-        {% if recent_records %}
-        <ul class="list-unstyled mb-0">
-          {% for r in recent_records %}
-          <li class="py-2 border-bottom">
-            <span class="fw-semibold">{{ r.student }}</span>
-            <span class="text-muted small ms-2">{{ r.date }}</span>
-            <p class="mb-0 text-muted small">
-              {{ r.chief_complaint|truncatechars:60 }}
-            </p>
-          </li>
-          {% endfor %}
-        </ul>
-        {% else %}
-        <p class="text-muted small mb-0">No records yet.</p>
-        {% endif %}
-      </div>
-    </div>
-
-    <!-- ACTIVITY -->
-    <div class="col-md-6">
-      <div class="activity-card">
-        <h6><i class="bi bi-activity"></i> Recent Activity</h6>
-
-        {% if recent_records or upcoming_appointments %}
-
-          <!-- Recent Records -->
-          {% for r in recent_records %}
-          <div class="activity-item">
-            <div class="activity-dot dot-record">
-              <i class="bi bi-file-earmark-medical"></i>
-            </div>
-
-            <div>
-              <div class="activity-text">
-                <strong>
-                  {{ r.student.last_name }}, {{ r.student.first_name }}
-                </strong>
-                added a record
-              </div>
-
-              <div class="activity-meta">
-                <span class="activity-time-badge">
-                  {{ r.date }}
-                </span>
-              </div>
-            </div>
-          </div>
-          {% endfor %}
-
-          <!-- Upcoming Appointments -->
-          {% for a in upcoming_appointments %}
-          <div class="activity-item">
-            <div class="activity-dot dot-appt">
-              <i class="bi bi-calendar-check"></i>
-            </div>
-
-            <div>
-              <div class="activity-text">
-                <strong>
-                  {{ a.student.last_name }}, {{ a.student.first_name }}
-                </strong>
-                has appointment
-              </div>
-
-              <div class="activity-meta">
-                <span class="activity-time-badge">
-                  {{ a.date }} {{ a.time }}
-                </span>
-              </div>
-            </div>
-          </div>
-          {% endfor %}
-
-        {% else %}
-          <p class="text-muted small">No activity yet.</p>
-        {% endif %}
-
-        <a href="{% url 'appointment_list' %}" class="view-all-link">
-          View All Appointments →
-        </a>
-
-      </div>
-    </div>
+<!-- Stat Cards -->
+<div class="stats-grid">
+  <div class="stat-card-new s-purple">
+    <div class="sc-icon"><i class="bi bi-people-fill"></i></div>
+    <div class="sc-number">{{ total_students }}</div>
+    <div class="sc-label">Total Students</div>
+    <i class="bi bi-people-fill sc-bg-icon"></i>
+  </div>
+  <div class="stat-card-new s-blue">
+    <div class="sc-icon"><i class="bi bi-calendar-check-fill"></i></div>
+    <div class="sc-number">{{ scheduled_count }}</div>
+    <div class="sc-label">Scheduled</div>
+    <i class="bi bi-calendar-check-fill sc-bg-icon"></i>
+  </div>
+  <div class="stat-card-new s-green">
+    <div class="sc-icon"><i class="bi bi-check-circle-fill"></i></div>
+    <div class="sc-number">{{ completed_count }}</div>
+    <div class="sc-label">Completed</div>
+    <i class="bi bi-check-circle-fill sc-bg-icon"></i>
+  </div>
+  <div class="stat-card-new s-red">
+    <div class="sc-icon"><i class="bi bi-x-circle-fill"></i></div>
+    <div class="sc-number">{{ cancelled_count }}</div>
+    <div class="sc-label">Cancelled</div>
+    <i class="bi bi-x-circle-fill sc-bg-icon"></i>
   </div>
 </div>
 
-{% comment %} Weather Decider  {% endcomment %}
+<!-- Bottom Row -->
+<div class="bottom-grid">
+
+  <!-- Recent Medical Records -->
+  <div class="info-card">
+    <div class="info-card-title">
+      <i class="bi bi-file-earmark-medical-fill title-icon-pink"></i>
+      Recent Medical Records
+    </div>
+    {% if recent_records %}
+      {% for r in recent_records %}
+      <div class="record-item" style="animation-delay:{{ forloop.counter0 }}00ms">
+        <div class="record-avatar">
+          {{ r.student.first_name|slice:":1" }}{{ r.student.last_name|slice:":1" }}
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div class="record-name">{{ r.student.last_name }}, {{ r.student.first_name }}</div>
+          <div class="record-complaint">{{ r.chief_complaint|truncatechars:45 }}</div>
+        </div>
+        <div class="record-date">{{ r.date }}</div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty-state">
+        <i class="bi bi-file-earmark-x"></i>
+        <p>No records yet.</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Recent Activity -->
+  <div class="info-card">
+    <div class="info-card-title">
+      <i class="bi bi-activity title-icon-blue"></i>
+      Recent Activity
+    </div>
+    {% if recent_records or upcoming_appointments %}
+      {% for r in recent_records %}
+      <div class="activity-item-new" style="animation-delay:{{ forloop.counter0 }}00ms">
+        <div class="activity-dot-new dot-record-new">
+          <i class="bi bi-file-earmark-medical"></i>
+        </div>
+        <div>
+          <div class="activity-name-new">{{ r.student.last_name }}, {{ r.student.first_name }}</div>
+          <div class="activity-action-new">added a medical record</div>
+        </div>
+        <div class="activity-badge-new">{{ r.date }}</div>
+      </div>
+      {% endfor %}
+      {% for a in upcoming_appointments %}
+      <div class="activity-item-new" style="animation-delay:{{ forloop.counter0 }}00ms">
+        <div class="activity-dot-new dot-appt-new">
+          <i class="bi bi-calendar-check"></i>
+        </div>
+        <div>
+          <div class="activity-name-new">{{ a.student.last_name }}, {{ a.student.first_name }}</div>
+          <div class="activity-action-new">has appointment</div>
+        </div>
+        <div class="activity-badge-new">{{ a.date }} {{ a.time }}</div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty-state">
+        <i class="bi bi-calendar-x"></i>
+        <p>No activity yet.</p>
+      </div>
+    {% endif %}
+    <a href="{% url 'appointment_list' %}" class="view-all-btn">
+      View All Appointments →
+    </a>
+  </div>
+
+</div>
+
 <script>
-  function getWeatherIcon(code) {
-    if (code === 0) return "☀️";
-    if (code <= 2) return "⛅";
-    if (code <= 48) return "🌫️";
-    if (code <= 67) return "🌧️";
-    if (code <= 82) return "🌦️";
-    if (code <= 99) return "⛈️";
-    return "🌡️";
-  }
-
-  function getWeatherDesc(code) {
-    if (code === 0) return "Sunny";
-    if (code <= 2) return "Partly cloudy";
-    if (code <= 48) return "Foggy";
-    if (code <= 55) return "Light rain";
-    if (code <= 67) return "Rainy";
-    if (code <= 82) return "Rain showers";
-    if (code <= 99) return "Thunderstorm";
-    return "Hot & humid";
-  }
-
-  //User Location + Weather Getter
-  async function loadWeather() {
-    try {
-      navigator.geolocation.getCurrentPosition(
-        async (pos) => {
-          const { latitude, longitude } = pos.coords;
-
-    //Free API to get location coordinates
-          const weatherRes = await fetch(
-            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`,
-          );
-          const weatherData = await weatherRes.json();
-          const w = weatherData.current_weather;
-
-    //Calls nominatim which converts coordinates into a city name
-          const geoRes = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`,
-          );
-          const geoData = await geoRes.json();
-          const city =
-            geoData.address.city ||
-            geoData.address.town ||
-            geoData.address.municipality ||
-            "Your location";
-
-      //Updates weather widget icon + city name in dashboard 
-          document.getElementById("weather-icon").textContent = getWeatherIcon(
-            w.weathercode,
-          );
-          document.getElementById("weather-temp").textContent =
-            `${Math.round(w.temperature)}°C`;
-          document.getElementById("weather-desc").textContent = getWeatherDesc(
-            w.weathercode,
-          );
-          document.getElementById("weather-location").textContent =
-            `📍 ${city}`;
-        },
-        () => {
-          document.getElementById("weather-desc").textContent =
-            "Location denied";
-          document.getElementById("weather-icon").textContent = "📍";
-        },
-      );
-    } catch (err) {
-      document.getElementById("weather-desc").textContent = "Unavailable";
+  function setGreeting() {
+    const hour = new Date().getHours();
+    let icon, greeting;
+    if (hour >= 5 && hour < 12) {
+      icon = "☀︎"; greeting = "Good Morning";
+    } else if (hour >= 12 && hour < 18) {
+      icon = "☁︎"; greeting = "Good Afternoon";
+    } else if (hour >= 18 && hour < 22) {
+      icon = "🌙"; greeting = "Good Evening";
+    } else {
+      icon = "✦"; greeting = "Good Night";
     }
+    document.getElementById('time-greeting').textContent = `${icon} ${greeting}, {{ user.username }}!`;
   }
-  
-//Run on page load
-  loadWeather();
-//Run again every 10 mins
-  setInterval(loadWeather, 600000);
+  setGreeting();
 </script>
 
 {% endblock %}
