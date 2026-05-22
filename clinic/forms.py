@@ -1,5 +1,5 @@
 from django import forms
-from .models import Student, MedicalRecord, Appointment
+from .models import Student, MedicalRecord, Appointment, Medicine
 
 COURSE_CHOICES = [
     ('', 'Select Course or Strand'),
@@ -27,7 +27,6 @@ class StudentForm(forms.ModelForm):
         choices=COURSE_CHOICES,
         widget=forms.Select(attrs={'class': 'form-control'})
     )
-
     class Meta:
         model = Student
         fields = ['student_id', 'first_name', 'last_name', 'date_of_birth',
@@ -60,3 +59,30 @@ class AppointmentForm(forms.ModelForm):
             'date': forms.DateInput(attrs={'type': 'date'}),
             'time': forms.TimeInput(attrs={'type': 'time'}),
         }
+
+
+class MedicineForm(forms.ModelForm):
+    class Meta:
+        model = Medicine
+        fields = ['name', 'generic_name', 'unit', 'quantity', 'low_stock_threshold', 'expiry_date', 'description']
+        widgets = {
+            'name':               forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. Paracetamol'}),
+            'generic_name':       forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. Acetaminophen'}),
+            'unit':               forms.Select(attrs={'class': 'form-control'}),
+            'quantity':           forms.NumberInput(attrs={'class': 'form-control', 'min': 0}),
+            'low_stock_threshold':forms.NumberInput(attrs={'class': 'form-control', 'min': 1}),
+            'expiry_date':        forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'description':        forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if 'unit' in self.fields:
+            # 1. Handle ForeignKey relations
+            self.fields['unit'].empty_label = "Select Unit"
+            
+            # 2. Handle CharField choice lists (removes Django's fallback dashes option)
+            if hasattr(self.fields['unit'], 'choices'):
+                cleaned_choices = [choice for choice in self.fields['unit'].choices if choice[0] != '']
+                # Insert a clean placeholder text structure at the start instead
+                self.fields['unit'].choices = [('', 'Select Unit')] + cleaned_choices

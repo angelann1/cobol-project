@@ -4,12 +4,27 @@
 
 <style>
   /* ── Greeting Bar ── */
+  {% comment %} design sang js ni gail {% endcomment %}
   .greeting-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.8rem;
   }
+
+  #time-greeting {
+    display: inline-flex;
+    transition: transform 0.25s ease, color 0.25s ease;
+    position: relative;
+  }
+
+  #time-greeting:hover {
+    color: white;             
+    background: #ff7096;      
+    transform: scale(1.04);   
+  }
+  {% comment %} asta lang di {% endcomment %}
+
   .greeting-title {
     font-size: 1.6rem;
     font-weight: 800;
@@ -80,11 +95,13 @@
     text-decoration: none;
     transition: all 0.2s;
     white-space: nowrap;
+    transition: background-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
   }
   .notif-view-btn:hover {
+    background: linear-gradient(135deg, #0d47a1, #023e7d);
     color: white;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(33,150,243,0.4);
+    box-shadow: 0 4px 12px rgba(0, 180, 216, 0.4);
   }
 
 
@@ -481,7 +498,9 @@
 
 <script>
   function setGreeting() {
-    const hour = new Date().getHours();
+    //const hour = new Date().getHours();
+    const hour = 24 //time tester 
+
     let icon, greeting;
     if (hour >= 5 && hour < 12) {
       icon = "☀︎"; greeting = "Good Morning";

@@ -1,0 +1,512 @@
+{% extends 'clinic/base.html' %}
+{% block content %}
+<style>
+  .med-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  .page-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .page-title i { color: #c2185b; }
+
+  .btn-add {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.6rem 1.3rem;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #e83e8c, #c2185b);
+    color: white;
+    border: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    box-shadow: 0 3px 12px rgba(232,62,140,0.3);
+  }
+  .btn-add:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(232,62,140,0.45); color: white; }
+
+  /* Stats */
+  .stats-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .stat-box {
+    background: white;
+    border-radius: 14px;
+    padding: 1rem 1.2rem;
+    border: 1px solid #f0f2f7;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    transition: transform 0.2s;
+  }
+  .stat-box:hover { transform: translateY(-2px); }
+  .stat-icon-wrap {
+    width: 44px; height: 44px;
+    border-radius: 11px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.15rem;
+    flex-shrink: 0;
+  }
+  .stat-label { font-size: 0.7rem; color: #8892a4; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .stat-val   { font-size: 1.5rem; font-weight: 700; color: #1a1a2e; line-height: 1.1; }
+
+  /* Search */
+  .toolbar {
+    display: flex;
+    gap: 0.7rem;
+    margin-bottom: 1rem;
+    align-items: center;
+  }
+  .search-wrap { position: relative; flex: 1; }
+  .search-wrap i {
+    position: absolute; left: 0.9rem; top: 50%;
+    transform: translateY(-50%);
+    color: #c2185b; font-size: 0.9rem; pointer-events: none;
+  }
+  #med-search {
+    width: 100%;
+    padding: 0.65rem 1rem 0.65rem 2.4rem;
+    border: 1.5px solid #e2e6f0;
+    border-radius: 10px;
+    font-size: 0.87rem;
+    outline: none;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  #med-search:focus { border-color: #e83e8c; box-shadow: 0 0 0 3px rgba(232,62,140,0.1); }
+
+  /* ── MEDICINE CARDS GRID ── */
+  .med-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.1rem;
+  }
+
+  /* ── THE UNIQUE CARD ── */
+  .med-card {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #f0e8f4;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), box-shadow 0.3s ease;
+    cursor: default;
+  }
+
+  /* Unique hover — card lifts + left accent bar slides in */
+  .med-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, #f48fb1, #c2185b);
+    border-radius: 4px 0 0 4px;
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.3s cubic-bezier(.34,1.56,.64,1);
+  }
+
+  .med-card:hover {
+    transform: translateY(-6px) scale(1.015);
+    box-shadow: 0 16px 40px rgba(194,24,91,0.15);
+  }
+  .med-card:hover::before { transform: scaleY(1); }
+
+  /* Pill icon glow on hover */
+  .med-card:hover .med-icon {
+    background: linear-gradient(135deg, #e83e8c, #c2185b);
+    color: white;
+    transform: rotate(-8deg) scale(1.1);
+    box-shadow: 0 6px 18px rgba(232,62,140,0.4);
+  }
+
+  .med-card-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    padding: 1.1rem 1.1rem 0.6rem;
+  }
+
+  .med-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    background: #fdf0f6;
+    color: #c2185b;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
+  }
+
+  .med-name {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #1a1a2e;
+    margin: 0 0 2px;
+    line-height: 1.2;
+  }
+  .med-generic {
+    font-size: 0.75rem;
+    color: #9098aa;
+    margin: 0;
+  }
+
+  /* Stock bar */
+  .med-stock-wrap {
+    padding: 0 1.1rem 0.8rem;
+  }
+  .stock-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+    font-size: 0.78rem;
+  }
+  .stock-label { color: #8892a4; font-weight: 500; }
+  .stock-val { font-weight: 700; color: #1a1a2e; }
+
+  .stock-bar-bg {
+    height: 6px;
+    background: #f5e6f0;
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .stock-bar-fill {
+    height: 100%;
+    border-radius: 99px;
+    transition: width 0.6s ease;
+  }
+
+  /* Badges */
+  .med-badges {
+    display: flex;
+    gap: 6px;
+    padding: 0 1.1rem 0.9rem;
+    flex-wrap: wrap;
+  }
+  .badge-pill {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .badge-ok      { background: #e8f5e9; color: #2e7d32; }
+  .badge-low     { background: #fff3e0; color: #e65100; }
+  .badge-empty   { background: #fce4ec; color: #c62828; }
+  .badge-unit    { background: #f3e5f5; color: #7b1fa2; }
+  .badge-expiry  { background: #e3f2fd; color: #1565c0; }
+  .badge-expired { background: #fce4ec; color: #c62828; }
+
+  /* Divider */
+  .med-divider { height: 1px; background: #f5f0f8; margin: 0 1.1rem; }
+
+  /* Actions — slide up on hover */
+  .med-actions {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.8rem 1.1rem;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+  .med-card:hover .med-actions {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .btn-act {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 0.4rem 0.6rem;
+    border-radius: 8px;
+    font-size: 0.73rem;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-restock { background: #e8f5e9; color: #2e7d32; border-color: #c8e6c9; }
+  .btn-restock:hover { background: #2e7d32; color: white; }
+  .btn-edit-med { background: #e3f2fd; color: #1565c0; border-color: #bbdefb; }
+  .btn-edit-med:hover { background: #1565c0; color: white; }
+  .btn-del { background: #fce4ec; color: #c62828; border-color: #f8bbd0; }
+  .btn-del:hover { background: #c62828; color: white; }
+
+  /* Empty */
+  .empty-state {
+    text-align: center;
+    padding: 4rem 1rem;
+    color: #9098aa;
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #f0e8f4;
+  }
+  .empty-state i { font-size: 3rem; color: #f0c4d8; display: block; margin-bottom: 0.8rem; }
+
+  /* Restock modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal-box {
+    background: white;
+    border-radius: 16px;
+    padding: 1.8rem;
+    width: 100%;
+    max-width: 360px;
+    box-shadow: 0 20px 60px rgba(194,24,91,0.2);
+    animation: popIn 0.2s ease;
+  }
+  @keyframes popIn {
+    from { opacity:0; transform: scale(0.92); }
+    to   { opacity:1; transform: scale(1); }
+  }
+  .modal-box h5 { font-weight: 700; color: #1a1a2e; margin-bottom: 1rem; display:flex; align-items:center; gap:8px; }
+  .modal-box h5 i { color: #c2185b; }
+  .modal-input {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    border: 1.5px solid #f9a8d4;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    outline: none;
+    margin-bottom: 0.8rem;
+    box-sizing: border-box;
+    font-family: inherit;
+  }
+  .modal-input:focus { border-color: #e83e8c; box-shadow: 0 0 0 3px rgba(232,62,140,0.1); }
+  .modal-label { font-size: 0.8rem; font-weight: 600; color: #374151; margin-bottom: 5px; display: block; }
+  .modal-btns { display: flex; gap: 8px; margin-top: 1rem; }
+  .btn-confirm {
+    flex: 1; padding: 0.6rem; border-radius: 8px;
+    background: linear-gradient(135deg, #e83e8c, #c2185b);
+    color: white; border: none; font-weight: 600;
+    font-size: 0.85rem; cursor: pointer;
+  }
+  .btn-cancel-modal {
+    flex: 1; padding: 0.6rem; border-radius: 8px;
+    background: #f5f5f5; color: #5a6070;
+    border: none; font-weight: 500; font-size: 0.85rem; cursor: pointer;
+  }
+
+  #no-results-med {
+    display: none;
+    text-align: center;
+    padding: 3rem;
+    color: #9098aa;
+    background: white;
+    border-radius: 16px;
+  }
+  #no-results-med i { font-size: 2.5rem; color: #f0c4d8; display: block; margin-bottom: 0.5rem; }
+</style>
+
+<!-- Header -->
+<div class="med-header">
+  <h4 class="page-title"><i class="bi bi-capsule-pill"></i> Medicine Inventory</h4>
+  <a href="{% url 'medicine_add' %}" class="btn-add">
+    <i class="bi bi-plus-lg"></i> Add Medicine
+  </a>
+</div>
+
+<!-- Stats -->
+<div class="stats-strip">
+  <div class="stat-box">
+    <div class="stat-icon-wrap" style="background:#fdf0f6;">
+      <i class="bi bi-capsule-pill" style="color:#c2185b;"></i>
+    </div>
+    <div>
+      <div class="stat-label">Total Medicines</div>
+      <div class="stat-val">{{ total_count }}</div>
+    </div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-icon-wrap" style="background:#fff3e0;">
+      <i class="bi bi-exclamation-triangle-fill" style="color:#e65100;"></i>
+    </div>
+    <div>
+      <div class="stat-label">Low Stock</div>
+      <div class="stat-val" style="color:#e65100;">{{ low_stock_count }}</div>
+    </div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-icon-wrap" style="background:#e8f5e9;">
+      <i class="bi bi-check-circle-fill" style="color:#2e7d32;"></i>
+    </div>
+    <div>
+      <div class="stat-label">Sufficient Stock</div>
+      <div class="stat-val" style="color:#2e7d32;">{{ total_count|add:"-"|add:low_stock_count }}</div>
+    </div>
+  </div>
+</div>
+
+<!-- Search -->
+<div class="toolbar">
+  <div class="search-wrap">
+    <i class="bi bi-search"></i>
+    <input type="text" id="med-search" placeholder="Search medicine name or generic name...">
+  </div>
+</div>
+
+<!-- Cards -->
+{% if medicines %}
+<div class="med-grid" id="med-grid">
+  {% for med in medicines %}
+  {% with pct=med.quantity|stringformat:"d" %}
+  <div class="med-card"
+       data-name="{{ med.name|lower }}"
+       data-generic="{{ med.generic_name|lower }}">
+
+    <div class="med-card-top">
+      <div class="med-icon"><i class="bi bi-capsule"></i></div>
+      <div style="flex:1;min-width:0;">
+        <p class="med-name">{{ med.name }}</p>
+        <p class="med-generic">{{ med.generic_name|default:"—" }}</p>
+      </div>
+    </div>
+
+    <!-- Stock bar -->
+    <div class="med-stock-wrap">
+      <div class="stock-row">
+        <span class="stock-label">Stock</span>
+        <span class="stock-val">{{ med.quantity }} {{ med.unit }}</span>
+      </div>
+      <div class="stock-bar-bg">
+        {% if med.quantity == 0 %}
+          <div class="stock-bar-fill" style="width:5%;background:#ef5350;"></div>
+        {% elif med.is_low_stock %}
+          <div class="stock-bar-fill" style="width:30%;background:linear-gradient(90deg,#ff9800,#f57c00);"></div>
+        {% else %}
+          <div class="stock-bar-fill" style="width:80%;background:linear-gradient(90deg,#66bb6a,#2e7d32);"></div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Badges -->
+    <div class="med-badges">
+      {% if med.quantity == 0 %}
+        <span class="badge-pill badge-empty"><i class="bi bi-x-circle-fill"></i> Out of Stock</span>
+      {% elif med.is_low_stock %}
+        <span class="badge-pill badge-low"><i class="bi bi-exclamation-triangle-fill"></i> Low Stock</span>
+      {% else %}
+        <span class="badge-pill badge-ok"><i class="bi bi-check-circle-fill"></i> In Stock</span>
+      {% endif %}
+      <span class="badge-pill badge-unit"><i class="bi bi-box-seam"></i> {{ med.get_unit_display }}</span>
+      {% if med.expiry_date %}
+        <span class="badge-pill badge-expiry"><i class="bi bi-calendar3"></i> {{ med.expiry_date }}</span>
+      {% endif %}
+    </div>
+
+    <div class="med-divider"></div>
+
+    <!-- Actions (slide up on hover) -->
+    <div class="med-actions">
+      <button class="btn-act btn-restock"
+              onclick="openRestock({{ med.pk }}, '{{ med.name }}')">
+        <i class="bi bi-plus-circle"></i> Restock
+      </button>
+      <a href="{% url 'medicine_edit' med.pk %}" class="btn-act btn-edit-med">
+        <i class="bi bi-pencil"></i> Edit
+      </a>
+      <form method="post" action="{% url 'medicine_delete' med.pk %}" style="flex:1;"
+            onsubmit="return confirm('Delete {{ med.name }}?')">
+        {% csrf_token %}
+        <button type="submit" class="btn-act btn-del" style="width:100%;">
+          <i class="bi bi-trash"></i> Delete
+        </button>
+      </form>
+    </div>
+
+  </div>
+  {% endwith %}
+  {% endfor %}
+</div>
+
+<div id="no-results-med">
+  <i class="bi bi-search"></i>
+  <div>No medicines match your search.</div>
+</div>
+
+{% else %}
+<div class="empty-state">
+  <i class="bi bi-capsule-pill"></i>
+  <div style="font-size:1rem;font-weight:600;margin-bottom:4px;">No medicines yet</div>
+  <div style="font-size:0.85rem;">Click "Add Medicine" to start your inventory.</div>
+</div>
+{% endif %}
+
+<!-- Restock Modal -->
+<div class="modal-overlay" id="restockModal" onclick="closeRestock(event)">
+  <div class="modal-box">
+    <h5><i class="bi bi-plus-circle-fill"></i> Restock Medicine</h5>
+    <p id="restock-name" style="font-size:0.85rem;color:#8892a4;margin-bottom:1rem;"></p>
+    <form method="post" id="restock-form">
+      {% csrf_token %}
+      <label class="modal-label">Quantity to Add</label>
+      <input type="number" name="quantity" class="modal-input" min="1" placeholder="e.g. 50" required>
+      <label class="modal-label">Notes (optional)</label>
+      <input type="text" name="notes" class="modal-input" placeholder="e.g. Monthly restock">
+      <div class="modal-btns">
+        <button type="submit" class="btn-confirm"><i></i> Confirm Restock</button>
+        <button type="button" class="btn-cancel-modal" onclick="closeRestock()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Search
+  const cards = Array.from(document.querySelectorAll('.med-card'));
+  document.getElementById('med-search').addEventListener('input', function() {
+    const q = this.value.toLowerCase().trim();
+    let found = 0;
+    cards.forEach(card => {
+      const match = !q || card.dataset.name.includes(q) || card.dataset.generic.includes(q);
+      card.style.display = match ? '' : 'none';
+      if (match) found++;
+    });
+    document.getElementById('no-results-med').style.display = found === 0 ? 'block' : 'none';
+  });
+
+  // Restock modal
+  function openRestock(pk, name) {
+    document.getElementById('restock-form').action = `/medicines/restock/${pk}/`;
+    document.getElementById('restock-name').textContent = name;
+    document.getElementById('restockModal').classList.add('show');
+  }
+  function closeRestock(e) {
+    if (!e || e.target === document.getElementById('restockModal')) {
+      document.getElementById('restockModal').classList.remove('show');
+    }
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeRestock(); });
+</script>
+
+{% endblock %}  
