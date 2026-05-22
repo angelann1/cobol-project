@@ -1,5 +1,5 @@
 from django import forms
-from .models import Student, MedicalRecord, Appointment, Medicine
+from .models import Student, MedicalRecord, Appointment, Medicine, MedicalRecord
 
 COURSE_CHOICES = [
     ('', 'Select Course or Strand'),
@@ -41,14 +41,27 @@ class StudentForm(forms.ModelForm):
 class MedicalRecordForm(forms.ModelForm):
     class Meta:
         model = MedicalRecord
-        fields = ['weight_kg', 'height_cm', 'blood_pressure', 'temperature',
-                  'chief_complaint', 'diagnosis', 'treatment_given',
-                  'medicines_dispensed', 'referred_to_hospital', 'notes']
+        # Added 'student' as the very first field so your HTML template tag renders successfully
+        fields = [
+            'student', 'weight_kg', 'height_cm', 'blood_pressure', 'temperature',
+            'chief_complaint', 'diagnosis', 'treatment_given',
+            'medicines_dispensed', 'referred_to_hospital', 'notes'
+        ]
         widgets = {
-            'diagnosis': forms.Textarea(attrs={'rows': 3}),
-            'treatment_given': forms.Textarea(attrs={'rows': 3}),
-            'medicines_dispensed': forms.Textarea(attrs={'rows': 2}),
+            'chief_complaint': forms.Textarea(attrs={'rows': 3, 'placeholder': 'What are the current symptoms...'}),
+            'diagnosis': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Clinical impression or assessment...'}),
+            'treatment_given': forms.Textarea(attrs={'rows': 3, 'placeholder': 'First aid or treatment administered...'}),
+            'medicines_dispensed': forms.Textarea(attrs={'rows': 2, 'placeholder': 'e.g., Paracetamol 500mg x1...'}),
+            'notes': forms.Textarea(attrs={'rows': 2, 'placeholder': 'Additional health progression notes...'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Automatically links up form fields with your frontend layout classes
+        for field_name, field in self.fields.items():
+            # Apply class to everything EXCEPT checkboxes
+            if not isinstance(field.widget, forms.CheckboxInput):
+                field.widget.attrs.update({'class': 'form-control-rec'})
 
 
 class AppointmentForm(forms.ModelForm):
@@ -86,3 +99,16 @@ class MedicineForm(forms.ModelForm):
                 cleaned_choices = [choice for choice in self.fields['unit'].choices if choice[0] != '']
                 # Insert a clean placeholder text structure at the start instead
                 self.fields['unit'].choices = [('', 'Select Unit')] + cleaned_choices
+
+
+# class MedicalRecordForm(forms.ModelForm):
+#     class Meta:
+#         model = MedicalRecord
+#         # Update this list to match ONLY the field names that exist inside your models.py file
+#         fields = ['student', 'complaint', 'diagnosis', 'treatment']
+        
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         # Apply the layout CSS classes to match the look of your UI dashboard modal
+#         for field_name, field in self.fields.items():
+#             field.widget.attrs.update({'class': 'form-control-rec'})

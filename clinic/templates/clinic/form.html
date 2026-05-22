@@ -255,6 +255,14 @@
       </div>
     </form>
   </div>
+  <div class="form-group">
+    <label class="form-label" for="id_student">Select Student <span class="req">*</span></label>
+    {{ form.student }}
+    
+    {% if form.student.errors %}
+      <div class="error-text">{{ form.student.errors }}</div>
+    {% endif %}
+  </div>
 
 </div>
 
@@ -293,6 +301,18 @@
       const label = opt.closest('.field-wrap')?.querySelector('label')?.textContent?.trim();
       opt.text = label ? 'Select ' + label : 'Select an option';
     }
+  });
+
+  document.addEventListener("DOMContentLoaded", function() {
+    // Automatically hooks into your django form student element ID
+    new TomSelect("#id_student", {
+        create: false,
+        sortField: {
+            field: "text",
+            direction: "asc"
+        },
+        placeholder: "Type to search existing student..."
+    });
   });
 </script>
 
