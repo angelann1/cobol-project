@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.utils import timezone
 from .models import Student, MedicalRecord, Appointment, Medicine, StockMovement
 from .forms import StudentForm, MedicalRecordForm, AppointmentForm, MedicineForm
+from django.views.decorators.http import require_POST
 
 
 # ── DASHBOARD ──────────────────────────────
@@ -184,12 +185,21 @@ def appointment_add(request):
 @login_required
 def appointment_edit(request, pk):
     appointment = get_object_or_404(Appointment, pk=pk)
-    form = AppointmentForm(request.POST or None, instance=appointment)
+
+    form = AppointmentForm(
+        request.POST or None,
+        instance=appointment
+    )
+
     if request.method == 'POST' and form.is_valid():
         form.save()
         messages.success(request, 'Appointment updated.')
         return redirect('appointment_list')
-    return render(request, 'clinic/form.html', {'form': form, 'title': 'Edit Appointment'})
+
+    return render(request, 'clinic/edit_appointment.html', {
+        'form': form,
+        'appointment': appointment,
+    })
 
 
 
@@ -202,6 +212,29 @@ def appointment_delete(request, pk):
         messages.success(request, 'Appointment deleted.')
     return redirect('appointment_list')
 
+
+@login_required
+@require_POST
+def appointment_update_status(request, pk):
+    appointment = get_object_or_404(Appointment, pk=pk)
+    new_status  = request.POST.get('status', '').strip()
+    reason      = request.POST.get('cancelled_reason', '').strip()
+ 
+    if new_status not in {'Scheduled', 'Completed', 'Cancelled'}:
+        messages.error(request, 'Invalid status.')
+        return redirect('appointment_list')
+ 
+    if new_status == 'Cancelled' and not reason:
+        messages.error(request, 'Please provide a cancellation reason.')
+        return redirect('appointment_list')
+ 
+    appointment.status = new_status
+    appointment.cancelled_reason = reason if new_status == 'Cancelled' else ''
+    appointment.save()
+ 
+    labels = {'Completed': 'marked as completed', 'Cancelled': 'cancelled', 'Scheduled': 'reset to scheduled'}
+    messages.success(request, f'Appointment {labels[new_status]}.')
+    return redirect('appointment_list')
 
 
 

@@ -118,6 +118,7 @@ class Appointment(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Scheduled')
     assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     notes = models.CharField(max_length=200, blank=True)
+    cancelled_reason = models.CharField(max_length=300, blank=True, default='')
 
     def __str__(self):
         return f"{self.student} — {self.date} {self.time}"

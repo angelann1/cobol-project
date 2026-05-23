@@ -1,451 +1,18 @@
 {% extends 'clinic/base.html' %}
 {% block content %}
 
-<style>
-  .page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.8rem;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-
-  .page-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #1a1a2e;
-    margin: 0;
-  }
-
-  .btn-add {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    padding: 0.6rem 1.3rem;
-    border-radius: 10px;
-    background: linear-gradient(135deg, #e83e8c, #c2185b);
-    color: white;
-    border: none;
-    font-size: 0.85rem;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.2s;
-    box-shadow: 0 3px 12px rgba(232,62,140,0.3);
-    transition: background-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
-  }
-
-  .btn-add:hover {
-    box-shadow: 0 5px 18px rgba(232,62,140,0.4);
-    background: linear-gradient(135deg, #ff5c8a, #ff7096);
-    color: white;
-    transform: translateY(-1px);
-  }
-
-  .table-card {
-    background: white;
-    border-radius: 16px;
-    box-shadow: 0 2px 20px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04);
-    overflow: hidden;
-  }
-
-  .appt-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.875rem;
-  }
-
-  .appt-table thead tr {
-    background: linear-gradient(135deg, #f9e4ef, #fdf0f6);
-    border-bottom: 2px solid #f0d6e8;
-  }
-
-  .appt-table th {
-    padding: 0.95rem 1.3rem;
-    text-align: left;
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.9px;
-    color: #c2185b;
-    white-space: nowrap;
-  }
-
-  .appt-table tbody tr {
-    border-bottom: 1px solid #f5f7fb;
-    transition: background 0.15s;
-  }
-
-  .appt-table tbody tr:last-child { border-bottom: none; }
-  .appt-table tbody tr:hover { background: #fdf7fa; }
-
-  .appt-table td {
-    padding: 1rem 1.3rem;
-    vertical-align: middle;
-  }
-
-  .student-name {
-    font-weight: 600;
-    color: #1a1a2e;
-    font-size: 0.88rem;
-  }
-
-  .student-id-sub {
-    font-size: 0.75rem;
-    color: #c2185b;
-    font-family: monospace;
-    font-weight: 600;
-    background: #fdf0f6;
-    padding: 0.1rem 0.45rem;
-    border-radius: 5px;
-    border: 1px solid #f0d6e8;
-    display: inline-block;
-    margin-top: 0.2rem;
-  }
-
-  .date-text {
-    font-weight: 600;
-    color: #1a1a2e;
-    font-size: 0.85rem;
-    white-space: nowrap;
-  }
-
-  .time-text {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    background: #f5f7fb;
-    border: 1px solid #e8eaf0;
-    border-radius: 6px;
-    padding: 0.25rem 0.6rem;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: #4a5068;
-    white-space: nowrap;
-  }
-
-  .purpose-text {
-    color: #5a6070;
-    font-size: 0.84rem;
-  }
-
-  .status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    padding: 0.3rem 0.85rem;
-    border-radius: 20px;
-    font-size: 0.73rem;
-    font-weight: 700;
-    letter-spacing: 0.4px;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-
-  .status-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    flex-shrink: 0;
-    display: inline-block;
-  }
-
-  .badge-scheduled  { background: #e8f4fd; color: #1565c0; }
-  .badge-scheduled .status-dot  { background: #1565c0; }
-  .badge-completed  { background: #e8f5e9; color: #2e7d32; }
-  .badge-completed .status-dot  { background: #2e7d32; }
-  .badge-cancelled  { background: #fdecea; color: #c62828; }
-  .badge-cancelled .status-dot  { background: #c62828; }
-  .badge-default    { background: #f0f2f7; color: #5a6070; }
-  .badge-default .status-dot    { background: #9098aa; }
-
-  .assigned-cell {
-    display: flex;
-    align-items: center;
-    gap: 0.45rem;
-    color: #2a2e40;
-    font-size: 0.85rem;
-    font-weight: 500;
-  }
-
-  .assigned-cell i {
-    color: #c2185b;
-    font-size: 1rem;
-    flex-shrink: 0;
-  }
-
-  /* Action buttons */
-  .action-btns {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .btn-edit {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    padding: 0.35rem 0.85rem;
-    border-radius: 8px;
-    background: #eef2ff;
-    color: #3b4fd8;
-    border: 1px solid #d4d9f7;
-    font-size: 0.78rem;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
-
-  .btn-edit:hover {
-    background: #3b4fd8;
-    color: white;
-    border-color: #3b4fd8;
-    text-decoration: none;
-  }
-
-  .btn-delete {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    padding: 0.35rem 0.85rem;
-    border-radius: 8px;
-    background: #fdecea;
-    color: #c62828;
-    border: 1px solid #ffcdd2;
-    font-size: 0.78rem;
-    font-weight: 600;
-    text-decoration: none;
-    cursor: pointer;
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
-
-  .btn-delete:hover {
-    background: #c62828;
-    color: white;
-    border-color: #c62828;
-  }
-
-  /* Empty state */
-  .empty-state {
-    text-align: center;
-    padding: 4rem 1rem;
-    color: #9098aa;
-  }
-
-  .empty-state i {
-    font-size: 3rem;
-    color: #f0c4d8;
-    display: block;
-    margin-bottom: 0.75rem;
-  }
-
-  .empty-state p {
-    font-size: 0.9rem;
-    margin: 0;
-  }
-
-  /* Delete confirmation modal */
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(26,26,46,0.45);
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .modal-overlay.active {
-    display: flex;
-  }
-
-  .modal-box {
-    background: white;
-    border-radius: 16px;
-    padding: 2rem;
-    max-width: 400px;
-    width: 90%;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-    text-align: center;
-    animation: modalIn 0.2s ease;
-  }
-
-  @keyframes modalIn {
-    from { transform: scale(0.92); opacity: 0; }
-    to   { transform: scale(1);    opacity: 1; }
-  }
-
-  .modal-icon {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: #fdecea;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1rem;
-  }
-
-  .modal-icon i {
-    font-size: 1.6rem;
-    color: #c62828;
-  }
-
-  .modal-title {
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: #1a1a2e;
-    margin-bottom: 0.4rem;
-  }
-
-  .modal-subtitle {
-    font-size: 0.84rem;
-    color: #7a8099;
-    margin-bottom: 1.5rem;
-  }
-
-  .modal-actions {
-    display: flex;
-    gap: 0.75rem;
-    justify-content: center;
-  }
-
-  .btn-modal-cancel {
-    padding: 0.6rem 1.4rem;
-    border-radius: 9px;
-    background: #f5f7fb;
-    color: #4a5068;
-    border: 1.5px solid #e8eaf0;
-    font-size: 0.875rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .btn-modal-cancel:hover {
-    background: #eceef5;
-  }
-
-  .btn-modal-confirm {
-    padding: 0.6rem 1.4rem;
-    border-radius: 9px;
-    background: linear-gradient(135deg, #e53935, #c62828);
-    color: white;
-    border: none;
-    font-size: 0.875rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: 0 3px 10px rgba(198,40,40,0.3);
-  }
-
-  .btn-modal-confirm:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 5px 16px rgba(198,40,40,0.4);
-  }
-
-  /* Responsive Mobile Layout CSS Changes */
-  @media screen and (max-width: 768px) {
-    .page-header {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-    
-    .btn-add {
-      width: 100%;
-      justify-content: center;
-    }
-
-    .table-card {
-      background: transparent;
-      box-shadow: none;
-      border-radius: 0;
-    }
-
-    /* Force traditional table styling to display like rows of mobile cards */
-    .appt-table, 
-    .appt-table thead, 
-    .appt-table tbody, 
-    .appt-table th, 
-    .appt-table td, 
-    .appt-table tr { 
-      display: block; 
-    }
-    
-    /* Hide the primary headers entirely on mobile */
-    .appt-table thead tr { 
-      position: absolute;
-      top: -9999px;
-      left: -9999px;
-    }
-    
-    .appt-table tbody tr {
-      background: white;
-      border: 1px solid rgba(0,0,0,0.06);
-      border-radius: 12px;
-      margin-bottom: 1rem;
-      padding: 0.5rem 0;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.03);
-    }
-    
-    .appt-table tbody tr:hover {
-      background: white;
-    }
-
-    .appt-table td { 
-      border: none;
-      position: relative;
-      padding: 0.6rem 1rem 0.6rem 45%; 
-      text-align: right;
-    }
-    
-    /* Inject mobile inline descriptions using data attributes */
-    .appt-table td:before { 
-      position: absolute;
-      top: 50%;
-      left: 1rem;
-      transform: translateY(-50%);
-      width: 40%; 
-      padding-right: 10px; 
-      white-space: nowrap;
-      text-align: left;
-      font-weight: 700;
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: #c2185b;
-      content: attr(data-label);
-    }
-
-    .student-id-sub {
-      margin-top: 0;
-    }
-
-    .action-btns {
-      justify-content: flex-end;
-    }
-
-    .btn-edit, .btn-delete {
-      padding: 0.4rem 0.75rem;
-    }
-  }
-</style>
-
-<!-- Delete Confirmation Modal -->
-<div class="modal-overlay" id="deleteModal">
-  <div class="modal-box">
-    <div class="modal-icon">
-      <i class="bi bi-trash3"></i>
+<div id="deleteModal" class="hidden fixed inset-0 bg-slate-900/45 z-50 flex items-center justify-center p-4 opacity-0 transition-opacity duration-200">
+  <div class="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl text-center transform scale-95 transition-transform duration-200" id="deleteModalBox">
+    <div class="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
+      <i class="bi bi-trash3 text-2xl text-red-700"></i>
     </div>
-    <div class="modal-title">Delete Appointment?</div>
-    <div class="modal-subtitle">This action cannot be undone. The appointment will be permanently removed.</div>
-    <div class="modal-actions">
-      <button class="btn-modal-cancel" onclick="closeDeleteModal()">Cancel</button>
-      <form id="deleteForm" method="post" style="display:inline;">
+    <h3 class="text-lg font-bold text-slate-900 mb-1">Delete Appointment?</h3>
+    <p class="text-sm text-slate-500 mb-6">This action cannot be undone. The appointment will be permanently removed.</p>
+    <div class="flex gap-3 justify-center">
+      <button type="button" class="px-5 py-2.5 rounded-lg bg-slate-50 text-slate-600 border border-slate-200 text-sm font-semibold hover:bg-slate-100 transition-colors cursor-pointer" onclick="closeModal('deleteModal')">Cancel</button>
+      <form id="deleteForm" method="post" class="inline">
         {% csrf_token %}
-        <button type="submit" class="btn-modal-confirm">
+        <button type="submit" class="px-5 py-2.5 rounded-lg bg-gradient-to-r from-red-600 to-red-700 text-white text-sm font-semibold shadow-md hover:from-red-700 hover:to-red-800 transition-all transform hover:-translate-y-0.5">
           <i class="bi bi-trash3 me-1"></i> Yes, Delete
         </button>
       </form>
@@ -453,100 +20,218 @@
   </div>
 </div>
 
-<div class="page-header">
-  <h4 class="page-title">
-    <i class="bi bi-calendar2-check me-2" style="color:#c2185b;"></i>Appointments
+<div id="cancelModal" class="hidden fixed inset-0 bg-slate-900/45 z-50 flex items-center justify-center p-4 opacity-0 transition-opacity duration-200">
+  <div class="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl text-center transform scale-95 transition-transform duration-200" id="cancelModalBox">
+    <div class="w-14 h-14 rounded-full bg-orange-50 flex items-center justify-center mx-auto mb-4">
+      <i class="bi bi-x-circle text-2xl text-orange-600"></i>
+    </div>
+    <h3 class="text-lg font-bold text-slate-900 mb-1">Cancel Appointment?</h3>
+    <p class="text-sm text-slate-500 mb-4">Please provide a reason so the student can be informed.</p>
+    
+    <form id="cancelForm" method="post">
+      {% csrf_token %}
+      <input type="hidden" name="status" value="Cancelled">
+      <label class="block text-left text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider" for="cancelReasonInput">Reason for cancellation</label>
+      <textarea id="cancelReasonInput"
+                name="cancelled_reason"
+                class="w-full px-3 py-2.5 border-2 border-slate-200 rounded-lg text-sm font-sans resize-y mb-5 focus:outline-none focus:border-pink-600 focus:ring-4 focus:ring-pink-600/10 transition-all"
+                rows="3"
+                placeholder="e.g. Doctor unavailable, please reschedule…"
+                required></textarea>
+      <div class="flex gap-3 justify-center">
+        <button type="button" class="px-5 py-2.5 rounded-lg bg-slate-50 text-slate-600 border border-slate-200 text-sm font-semibold hover:bg-slate-100 transition-colors cursor-pointer" onclick="closeModal('cancelModal')">Go Back</button>
+        <button type="submit" class="px-5 py-2.5 rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 text-white text-sm font-semibold shadow-md hover:from-orange-600 hover:to-orange-700 transition-all transform hover:-translate-y-0.5">
+          <i class="bi bi-x-circle me-1"></i> Confirm Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="flex flex-wrap items-center justify-between gap-4 mb-7">
+  <h4 class="text-xl font-bold text-slate-950 m-0 flex items-center">
+    <i class="bi bi-calendar2-check me-2 text-[#c2185b]"></i>Appointments
   </h4>
-  <a href="{% url 'appointment_add' %}" class="btn-add">
+  <a href="{% url 'appointment_add' %}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-br from-[#e83e8c] to-[#c2185b] text-white text-sm font-semibold shadow-[0_3px_12px_rgba(232,62,140,0.3)] hover:shadow-[0_5px_18px_rgba(232,62,140,0.4)] hover:from-[#ff5c8a] hover:to-[#ff7096] hover:-translate-y-0.5 transition-all">
     <i class="bi bi-plus-lg"></i> Schedule Appointment
   </a>
 </div>
 
-<div class="table-card">
-  <table class="appt-table">
-    <thead>
-      <tr>
-        <th>Student Name</th>
-        <th>Date</th>
-        <th>Time</th>
-        <th>Purpose</th>
-        <th>Status</th>
-        <th>Assigned To</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for appointment in appointments %}
-      <tr>
-        <td data-label="Student">
-          <span class="student-name">{{ appointment.student.last_name }}, {{ appointment.student.first_name }}</span>
-          <br>
-          <span class="student-id-sub">{{ appointment.student.student_id }}</span>
-        </td>
-        <td data-label="Date"><span class="date-text">{{ appointment.date }}</span></td>
-        <td data-label="Time">
-          <span class="time-text">
-            <i class="bi bi-clock" style="font-size:0.7rem;"></i>
-            {{ appointment.time }}
-          </span>
-        </td>
-        <td data-label="Purpose"><span class="purpose-text">{{ appointment.purpose }}</span></td>
-        <td data-label="Status">
-          {% if appointment.status == 'Scheduled' %}
-            <span class="status-badge badge-scheduled"><span class="status-dot"></span>{{ appointment.status }}</span>
-          {% elif appointment.status == 'Completed' %}
-            <span class="status-badge badge-completed"><span class="status-dot"></span>{{ appointment.status }}</span>
-          {% elif appointment.status == 'Cancelled' %}
-            <span class="status-badge badge-cancelled"><span class="status-dot"></span>{{ appointment.status }}</span>
-          {% else %}
-            <span class="status-badge badge-default"><span class="status-dot"></span>{{ appointment.status }}</span>
-          {% endif %}
-        </td>
-        <td data-label="Assigned To">
-          <span class="assigned-cell">
-            <i class="bi bi-person-circle"></i>
-            {{ appointment.assigned_to }}
-          </span>
-        </td>
-        <td data-label="Actions">
-          <div class="action-btns">
-            <a href="{% url 'appointment_edit' appointment.pk %}" class="btn-edit">
-              <i class="bi bi-pencil"></i> Edit
-            </a>
-            <button class="btn-delete"
-              onclick="openDeleteModal('{% url 'appointment_delete' appointment.pk %}')">
-              <i class="bi bi-trash3"></i> Delete
-            </button>
-          </div>
-        </td>
-      </tr>
-      {% empty %}
-      <tr>
-        <td colspan="7" style="padding: 0;">
-          <div class="empty-state">
-            <i class="bi bi-calendar-x"></i>
-            <p>No appointments scheduled yet.</p>
-          </div>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+<div class="bg-white rounded-2xl shadow-[0_2px_20px_rgba(0,0,0,0.06)] border border-black/5 overflow-hidden">
+  <div class="w-full overflow-x-auto scrolling-touch">
+    <table class="w-full border-collapse text-sm text-left">
+      <thead>
+        <tr class="bg-gradient-to-r from-[#f9e4ef] to-[#fdf0f6] border-b-2 border-[#f0d6e8]">
+          <th class="p-4 font-bold text-[11px] uppercase tracking-widest text-[#c2185b] whitespace-nowrap">Student Name</th>
+          <th class="p-4 font-bold text-[11px] uppercase tracking-widest text-[#c2185b] whitespace-nowrap">Date</th>
+          <th class="p-4 font-bold text-[11px] uppercase tracking-widest text-[#c2185b] whitespace-nowrap">Time</th>
+          <th class="p-4 font-bold text-[11px] uppercase tracking-widest text-[#c2185b] whitespace-nowrap">Purpose</th>
+          <th class="p-4 font-bold text-[11px] uppercase tracking-widest text-[#c2185b] whitespace-nowrap">Status</th>
+          <th class="p-4 font-bold text-[11px] uppercase tracking-widest text-[#c2185b] whitespace-nowrap min-w-[300px] text-center">Actions</th>
+          <th class="p-4 font-bold text-[11px] uppercase tracking-widest text-[#c2185b] whitespace-nowrap min-w-[150px]">Assigned To</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100">
+        {% for appointment in appointments %}
+        <tr class="hover:bg-[#fdf7fa] transition-colors">
+          <td class="p-4 align-middle">
+            <span class="font-semibold text-slate-900 text-[14px]">{{ appointment.student.last_name }}, {{ appointment.student.first_name }}</span>
+            <div class="mt-1">
+              <span class="text-xs text-[#c2185b] font-mono font-semibold bg-[#fdf0f6] px-1.5 py-0.5 rounded border border-[#f0d6e8] inline-block">
+                {{ appointment.student.student_id }}
+              </span>
+            </div>
+          </td>
+
+          <td class="p-4 align-middle whitespace-nowrap">
+            <span class="font-semibold text-slate-900 text-[13px]">{{ appointment.date }}</span>
+          </td>
+
+          <td class="p-4 align-middle whitespace-nowrap">
+            <span class="inline-flex items-center gap-1 bg-slate-50 border border-slate-200 rounded-md px-2 py-1 text-xs font-semibold text-slate-600">
+              <i class="bi bi-clock text-[11px]"></i>
+              {{ appointment.time }}
+            </span>
+          </td>
+
+          <td class="p-4 align-middle text-slate-600 text-[13.5px]">
+            {{ appointment.purpose }}
+          </td>
+
+          <td class="p-4 align-middle whitespace-nowrap">
+            {% if appointment.status == 'Scheduled' %}
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase bg-blue-50 text-blue-700">
+                <span class="w-1.5 h-1.5 rounded-full bg-blue-700"></span>Scheduled
+              </span>
+            {% elif appointment.status == 'Completed' %}
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase bg-green-50 text-green-700">
+                <span class="w-1.5 h-1.5 rounded-full bg-green-700"></span>Completed
+              </span>
+            {% elif appointment.status == 'Cancelled' %}
+              <div class="inline-block">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase bg-red-50 text-red-700">
+                  <span class="w-1.5 h-1.5 rounded-full bg-red-700"></span>Cancelled
+                </span>
+                {% if appointment.cancelled_reason %}
+                  <span class="block mt-1 text-[11px] text-slate-400 italic max-w-[160px] truncate" title="{{ appointment.cancelled_reason }}">
+                    ⓘ {{ appointment.cancelled_reason|truncatechars:28 }}
+                  </span>
+                {% endif %}
+              </div>
+            {% else %}
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase bg-slate-100 text-slate-600">
+                <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>{{ appointment.status }}
+              </span>
+            {% endif %}
+          </td>
+
+          <td class="p-4 align-middle whitespace-nowrap text-center">
+            <div class="flex items-center justify-center gap-1.5">
+              {% if appointment.status == 'Scheduled' %}
+                {# Complete #}
+                <form method="post" action="{% url 'appointment_update_status' appointment.pk %}" class="inline-block">
+                  {% csrf_token %}
+                  <input type="hidden" name="status" value="Completed">
+                  <button type="submit" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-green-200 bg-green-50/50 text-xs font-semibold text-green-700 hover:bg-green-700 hover:text-white hover:border-green-700 transition-all cursor-pointer">
+                    <i class="bi bi-check-circle"></i> Complete
+                  </button>
+                </form>
+
+                {# Cancel #}
+                <button type="button" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-red-200 bg-red-50/30 text-xs font-semibold text-red-700 hover:bg-red-700 hover:text-white hover:border-red-700 transition-all cursor-pointer"
+                        onclick="openCancelModal('{% url 'appointment_update_status' appointment.pk %}')">
+                  <i class="bi bi-x-circle"></i> Cancel
+                </button>
+              {% else %}
+                {# Reset #}
+                <form method="post" action="{% url 'appointment_update_status' appointment.pk %}" class="inline-block">
+                  {% csrf_token %}
+                  <input type="hidden" name="status" value="Scheduled">
+                  <input type="hidden" name="cancelled_reason" value="">
+                  <button type="submit" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-slate-300 bg-slate-50 text-xs font-semibold text-slate-600 hover:bg-slate-200 hover:text-slate-800 transition-all cursor-pointer">
+                    <i class="bi bi-arrow-counterclockwise"></i> Reset
+                  </button>
+                </form>
+              {% endif %}
+
+              <a href="{% url 'appointment_edit' appointment.pk %}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-indigo-100 bg-indigo-50/50 text-xs font-semibold text-indigo-600 hover:bg-indigo-600 hover:text-white hover:border-indigo-600 transition-all no-underline">
+                <i class="bi bi-pencil"></i> Edit
+              </a>
+
+              <button type="button" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-red-200 bg-red-50/50 text-xs font-semibold text-red-700 hover:bg-red-700 hover:text-white hover:border-red-700 transition-all cursor-pointer"
+                      onclick="openDeleteModal('{% url 'appointment_delete' appointment.pk %}')">
+                <i class="bi bi-trash3"></i> Delete
+              </button>
+            </div>
+          </td>
+
+          <td class="p-4 align-middle whitespace-nowrap">
+            <span class="inline-flex items-center gap-1.5 text-slate-800 font-medium">
+              <i class="bi bi-person-circle text-[#c2185b] text-base leading-none"></i>
+              {{ appointment.assigned_to|default_if_none:"Unassigned" }}
+            </span>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="7" class="p-0">
+            <div class="text-center py-16 text-slate-400">
+              <i class="bi bi-calendar-x text-5xl text-[#f0c4d8] block mb-3"></i>
+              <p class="text-sm m-0">No appointments scheduled yet.</p>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <script>
-  function openDeleteModal(deleteUrl) {
-    document.getElementById('deleteForm').action = deleteUrl;
-    document.getElementById('deleteModal').classList.add('active');
+  function closeModal(id) {
+    const modal = document.getElementById(id);
+    const box = document.getElementById(id + 'Box');
+    
+    box.classList.add('scale-95');
+    modal.classList.replace('opacity-100', 'opacity-0');
+    
+    setTimeout(() => {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }, 150);
   }
 
-  function closeDeleteModal() {
-    document.getElementById('deleteModal').classList.remove('active');
-  }
-
-  document.getElementById('deleteModal').addEventListener('click', function(e) {
-    if (e.target === this) closeDeleteModal();
+  document.querySelectorAll('[id$="Modal"]').forEach(el => {
+    el.addEventListener('click', function(e) {
+      if (e.target === this) closeModal(this.id);
+    });
   });
+
+  function openDeleteModal(url) {
+    document.getElementById('deleteForm').action = url;
+    const modal = document.getElementById('deleteModal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    
+    setTimeout(() => {
+      modal.classList.replace('opacity-0', 'opacity-100');
+      document.getElementById('deleteModalBox').classList.remove('scale-95');
+    }, 10);
+  }
+
+  function openCancelModal(url) {
+    document.getElementById('cancelForm').action = url;
+    document.getElementById('cancelReasonInput').value = '';
+    const modal = document.getElementById('cancelModal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    
+    setTimeout(() => {
+      modal.classList.replace('opacity-0', 'opacity-100');
+      document.getElementById('cancelModalBox').classList.remove('scale-95');
+      document.getElementById('cancelReasonInput').focus();
+    }, 10);
+  }
 </script>
 
 {% endblock %}
