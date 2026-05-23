@@ -20,7 +20,6 @@
   }
   .rec-header-left p { font-size: 0.82rem; color: #9098aa; margin: 0; }
 
-  /* Add Record Button */
   .btn-add-rec {
     display: inline-flex;
     align-items: center;
@@ -46,7 +45,6 @@
   }
   .btn-add-rec:active { transform: translateY(0); }
 
-  /* ── Summary Strip ── */
   .rec-summary {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -100,7 +98,6 @@
     text-transform: uppercase; letter-spacing: 0.4px; margin-top: 2px;
   }
 
-  /* ── Toolbar ── */
   .rec-toolbar {
     display: flex; gap: 0.7rem; margin-bottom: 1.2rem; flex-wrap: wrap; align-items: center;
   }
@@ -129,7 +126,6 @@
   .rec-table tbody tr:hover { background: #fdf7fa; }
   .rec-table td { padding: 1rem 1.2rem; vertical-align: middle; }
 
-  /* Data Layout Elements */
   .student-avatar-rec {
     width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, #f48fb1, #c2185b);
     color: white; font-weight: 700; font-size: 0.78rem; display: inline-flex; align-items: center; justify-content: center;
@@ -166,7 +162,6 @@
   }
   .btn-view-rec:hover { background: linear-gradient(135deg, #e83e8c, #c2185b); color: white; border-color: transparent; }
 
-  /* ── Overlays & Modals ── */
   .detail-overlay, .add-overlay {
     display: none; position: fixed; inset: 0; background: rgba(26,26,46,0.5); z-index: 9999;
     align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(3px);
@@ -200,7 +195,6 @@
 
   .detail-modal-body, .add-modal-body { padding: 1.5rem; }
 
-  /* Sections & Layout Elements inside Modals */
   .form-section-title, .modal-section-title {
     font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
     color: #c2185b; margin: 1.2rem 0 0.8rem; display: flex; align-items: center; gap: 0.5rem;
@@ -213,7 +207,6 @@
   .form-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #5a6070; }
   .form-label span.req { color: #e83e8c; margin-left: 2px; }
 
-  /* Dynamic Custom Model Form Inputs overrides */
   .form-control-rec {
     padding: 0.6rem 0.9rem; border: 1.5px solid #e2e6f0; border-radius: 10px;
     font-size: 0.85rem; color: #1a1a2e; background: white; outline: none; width: 100%; box-sizing: border-box;
@@ -221,7 +214,6 @@
   .form-control-rec:focus { border-color: #e83e8c; box-shadow: 0 0 0 3px rgba(232,62,140,0.1); }
   textarea.form-control-rec { resize: vertical; min-height: 70px; }
 
-  /* Vital Cards layout */
   .vitals-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-bottom: 1.3rem; }
   .vital-card { background: #fdf0f6; border: 1px solid #f0d6e8; border-radius: 12px; padding: 0.8rem 0.5rem; text-align: center; }
   .vital-card-icon { font-size: 1.1rem; color: #e83e8c; margin-bottom: 0.2rem; }
@@ -236,61 +228,25 @@
   .referred-big.yes { background: #fdecea; color: #c62828; }
   .referred-big.no  { background: #e8f5e9; color: #2e7d32; }
 
-  /* ── 📱 MEDIA QUERIES FOR RESPONSIVENESS ── */
-  
-  /* Tablets and small laptops (under 992px) */
+  /* ── Media Queries ── */
   @media (max-width: 992px) {
-    .rec-summary {
-      grid-template-columns: repeat(2, 1fr);
-    }
+    .rec-summary { grid-template-columns: repeat(2, 1fr); }
   }
-
-  /* Medium devices (under 768px) */
   @media (max-width: 768px) {
-    .form-grid-4 {
-      grid-template-columns: repeat(2, 1fr);
-    }
-    .vitals-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-    .detail-modal-body, .add-modal-body {
-      padding: 1rem;
-    }
-    .footer-actions-wrap {
-      flex-direction: column-reverse;
-    }
-    .footer-actions-wrap button {
-      width: 100%;
-    }
+    .form-grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .vitals-grid { grid-template-columns: repeat(2, 1fr); }
+    .detail-modal-body, .add-modal-body { padding: 1rem; }
+    .footer-actions-wrap { flex-direction: column-reverse; }
+    .footer-actions-wrap button { width: 100%; }
   }
-
-  /* Mobile devices (under 576px) */
   @media (max-width: 576px) {
-    .rec-header {
-      flex-direction: column;
-      align-items: stretch;
-    }
-    .btn-add-rec {
-      justify-content: center;
-    }
-    .rec-summary {
-      grid-template-columns: 1fr;
-    }
-    .form-grid-2, .form-grid-4 {
-      grid-template-columns: 1fr;
-    }
-    .vitals-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-    .detail-modal-head, .add-modal-head {
-      padding: 1rem;
-    }
-    /* Stack details footer section elements easily on tiny screens */
-    .detail-footer-box {
-      flex-direction: column;
-      align-items: flex-start !important;
-      gap: 1rem;
-    }
+    .rec-header { flex-direction: column; align-items: stretch; }
+    .btn-add-rec { justify-content: center; }
+    .rec-summary { grid-template-columns: 1fr; }
+    .form-grid-2, .form-grid-4 { grid-template-columns: 1fr; }
+    .vitals-grid { grid-template-columns: repeat(2, 1fr); }
+    .detail-modal-head, .add-modal-head { padding: 1rem; }
+    .detail-footer-box { flex-direction: column; align-items: flex-start !important; gap: 1rem; }
   }
 </style>
 
@@ -343,7 +299,6 @@
 </div>
 
 <div class="rec-card">
-  <!-- Added responsive container block around table structure -->
   <div class="rec-table-responsive">
     <table class="rec-table" id="recordsTable">
       <thead>
@@ -590,7 +545,6 @@
   function openAddModal() { document.getElementById('addOverlay').classList.add('active'); }
   function closeAddModal() { document.getElementById('addOverlay').classList.remove('active'); }
 
-  // Search filter routing logic
   document.getElementById('recSearch').addEventListener('input', function() {
     const query = this.value.toLowerCase().trim();
     const rows = document.querySelectorAll('#recordsTable tbody tr');
@@ -606,7 +560,6 @@
     });
   });
 
-  // Open Detail Drawer modal mapping logic
   function openDetail(date, student, complaint, diagnosis, treatment, dispensed, notes, attendant, bp, temp, w, h, referred) {
     document.getElementById('mdDate').innerText = date;
     document.getElementById('mdStudent').innerText = student;

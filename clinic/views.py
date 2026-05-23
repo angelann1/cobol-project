@@ -6,8 +6,6 @@ from .models import Student, MedicalRecord, Appointment, Medicine, StockMovement
 from .forms import StudentForm, MedicalRecordForm, AppointmentForm, MedicineForm
 
 
-
-
 # ── DASHBOARD ──────────────────────────────
 @login_required
 def dashboard(request):
@@ -18,7 +16,6 @@ def dashboard(request):
     total_appointments = Appointment.objects.count()
     upcoming_appointments = Appointment.objects.filter(status='Scheduled').order_by('date', 'time')[:5]
     recent_records = MedicalRecord.objects.all().order_by('-date')[:5]
-
 
     context = {
         'total_students': total_students,
@@ -113,10 +110,8 @@ def medical_record_list(request):
     else:
         form = MedicalRecordForm()
 
-
     all_records = MedicalRecord.objects.select_related('student', 'recorded_by').all().order_by('-date', '-id')
     today = timezone.localdate()
-
 
     context = {
         'records': all_records,
@@ -129,21 +124,17 @@ def medical_record_list(request):
     return render(request, 'clinic/medical_record_list.html', context)
 
 
-
-
 @login_required
 def record_add(request, student_pk):
     """
     Handles logging encounters directly linked from an explicit Student profile context.
     """
     student = get_object_or_404(Student, pk=student_pk)
-   
     if request.method == 'POST':
         # Create a mutable copy of POST data to inject the target student id safely
         data = request.POST.copy()
         data['student'] = str(student.pk)
         form = MedicalRecordForm(data)
-       
         if form.is_valid():
             record = form.save(commit=False)
             record.student = student
@@ -157,10 +148,7 @@ def record_add(request, student_pk):
     else:
         # Pre-select student identity and make the field read-only/hidden in standalone layouts
         form = MedicalRecordForm(initial={'student': student})
-       
     return render(request, 'clinic/form.html', {'form': form, 'title': f'New Record — {student}'})
-
-
 
 
 @login_required
@@ -170,8 +158,6 @@ def medical_record_delete(request, pk):
         record.delete()
         messages.success(request, "Medical record deleted successfully!")
     return redirect('medical_record_list')
-
-
 
 
 # ── APPOINTMENTS ───────────────────────────
@@ -286,6 +272,3 @@ def medicine_restock(request, pk):
             )
             messages.success(request, f'Restocked {qty} units of {medicine.name}.')
     return redirect('medicine_list')
-
-
-

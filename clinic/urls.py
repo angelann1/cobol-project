@@ -33,12 +33,6 @@ urlpatterns = [
     path('medicines/delete/<int:pk>/', views.medicine_delete, name='medicine_delete'),
     path('medicines/restock/<int:pk>/', views.medicine_restock, name='medicine_restock'),
     path('medical-records/', views.medical_record_list, name='medical_record_list'),
-    path('records/',views.medical_record_list, name='medical_records'),
+    path('records/', views.medical_record_list, name='medical_records'),
     path('records/add/', views.medical_record_list, name='add_medical_record'),
 ]
-   
-
-
-
-
-

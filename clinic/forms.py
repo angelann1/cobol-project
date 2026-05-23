@@ -1,7 +1,6 @@
 from django import forms
 from .models import Student, MedicalRecord, Appointment, Medicine, MedicalRecord
 
-
 COURSE_CHOICES = [
     ('', 'Select Course or Strand'),
     ('Senior High School', (
@@ -40,8 +39,6 @@ class StudentForm(forms.ModelForm):
         }
 
 
-
-
 class MedicalRecordForm(forms.ModelForm):
     student = forms.ModelChoiceField(
         queryset=Student.objects.all().order_by('last_name', 'first_name'),
@@ -72,19 +69,11 @@ class MedicalRecordForm(forms.ModelForm):
             'referred_to_hospital': forms.CheckboxInput(attrs={'class': 'form-check-input', 'style': 'transform: scale(1.3); margin-left:10px;'})
         }
 
-
-
-
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Automatically links up form fields with your frontend layout classes
         for field_name, field in self.fields.items():
-            # Apply class to everything EXCEPT checkboxes
             if not isinstance(field.widget, forms.CheckboxInput):
                 field.widget.attrs.update({'class': 'form-control-rec'})
-
-
 
 
 class AppointmentForm(forms.ModelForm):
@@ -97,49 +86,35 @@ class AppointmentForm(forms.ModelForm):
         }
 
 
-
-
 class MedicineForm(forms.ModelForm):
     class Meta:
         model = Medicine
         fields = ['name', 'generic_name', 'unit', 'quantity', 'low_stock_threshold', 'expiry_date', 'description']
         widgets = {
-            'name':               forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. Paracetamol'}),
-            'generic_name':       forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. Acetaminophen'}),
-            'unit':               forms.Select(attrs={'class': 'form-control'}),
-            'quantity':           forms.NumberInput(attrs={'class': 'form-control', 'min': 0}),
-            'low_stock_threshold':forms.NumberInput(attrs={'class': 'form-control', 'min': 1}),
-            'expiry_date':        forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-            'description':        forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
+            'name':                forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. Paracetamol'}),
+            'generic_name':        forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. Acetaminophen'}),
+            'unit':                forms.Select(attrs={'class': 'form-control'}),
+            'quantity':            forms.NumberInput(attrs={'class': 'form-control', 'min': 0}),
+            'low_stock_threshold': forms.NumberInput(attrs={'class': 'form-control', 'min': 1}),
+            'expiry_date':         forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'description':         forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
         }
-
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if 'unit' in self.fields:
-            # 1. Handle ForeignKey relations
             self.fields['unit'].empty_label = "Select Unit"
-           
-            # 2. Handle CharField choice lists (removes Django's fallback dashes option)
             if hasattr(self.fields['unit'], 'choices'):
                 cleaned_choices = [choice for choice in self.fields['unit'].choices if choice[0] != '']
-                # Insert a clean placeholder text structure at the start instead
                 self.fields['unit'].choices = [('', 'Select Unit')] + cleaned_choices
-
-
 
 
 # class MedicalRecordForm(forms.ModelForm):
 #     class Meta:
 #         model = MedicalRecord
-#         # Update this list to match ONLY the field names that exist inside your models.py file
 #         fields = ['student', 'complaint', 'diagnosis', 'treatment']
-       
+#
 #     def __init__(self, *args, **kwargs):
 #         super().__init__(*args, **kwargs)
-#         # Apply the layout CSS classes to match the look of your UI dashboard modal
 #         for field_name, field in self.fields.items():
 #             field.widget.attrs.update({'class': 'form-control-rec'})
-
-
-
