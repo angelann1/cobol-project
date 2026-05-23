@@ -13,16 +13,17 @@
   * { font-family: 'Segoe UI', sans-serif; }
   body { background: linear-gradient(135deg, #fce4ec, #f3e5f5, #ede7f6); min-height: 100vh; }
 
+  /* --- Responsive Sidebar System --- */
   .sidebar {
     min-height: 100vh;
     background: linear-gradient(180deg, #f48fb1, #f06292, #ec407a);
-    width: 320px;
+    width: 280px; /* Slightly slimmed down for better screen efficiency */
     position: fixed;
     top: 0; left: 0;
     padding-top: 1rem;
     box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-    overflow: hidden;
-    z-index: 999;
+    z-index: 1040;
+    transition: transform 0.3s ease; /* Fluid sliding motion on mobile */
   }
   .sidebar .brand {
     padding: 1rem 1.2rem 1.2rem;
@@ -77,41 +78,65 @@
     align-items: center;
     gap: 6px;
   }
-  .toggle-track {
-    width: 36px; height: 20px;
-    background: rgba(255,255,255,0.3);
-    border-radius: 999px;
-    position: relative;
-    transition: 0.3s;
-  }
-  .toggle-knob {
-    position: absolute;
-    top: 3px; left: 3px;
-    width: 14px; height: 14px;
-    background: white;
-    border-radius: 50%;
-    transition: 0.3s;
-  }
 
+  /* Responsive Main Content Layout */
   .main-content {
-    margin-left: 320px;
-    padding: 2rem;
+    margin-left: 280px;
+    padding: 2rem 1.5rem;
     position: relative;
     z-index: 1;
+    transition: margin-left 0.3s ease;
   }
 
-  .card-stat {
+  /* Mobile Navbar Top Header Banner */
+  .mobile-header {
+    display: none;
+    background: white;
+    padding: 0.75rem 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* Dark background mask overlay when mobile sidebar is open */
+  .sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 1035;
+  }
+
+  /* --- Responsiveness Media Queries (Breakpoints) --- */
+  @media (max-width: 991.98px) {
+    .sidebar {
+      transform: translateX(-100%); /* Hides sidebar completely offscreen by default */
+    }
+    .sidebar.show {
+      transform: translateX(0); /* Slides sidebar in smoothly */
+    }
+    .main-content {
+      margin-left: 0; /* Content drops down and takes up full width on small screens */
+      padding: 1.5rem 1rem;
+    }
+    .mobile-header {
+      display: flex; /* Displays the hamburger banner row exclusively on mobile */
+    }
+    .sidebar-backdrop.show {
+      display: block;
+    }
+  }
+
+  /* UI Component Cleanups */
+  .card-stat, .table-card {
     background: white;
     border-radius: 16px;
     padding: 1.5rem;
     box-shadow: 0 2px 12px rgba(171,71,188,.1);
     border: none;
-  }
-  .table-card {
-    background: white;
-    border-radius: 16px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 12px rgba(171,71,188,.1);
   }
   .table thead tr {
     background: linear-gradient(90deg, #f48fb1, #ec407a);
@@ -127,196 +152,61 @@
   .table tbody tr:hover { background: #fce4ec; }
   .table td { vertical-align: middle; font-size: .9rem; padding: .8rem 1rem; }
 
+  /* Buttons and controls styling fixes */
+  .btn-primary, .btn-outline-primary, .btn-outline-secondary, .btn-danger, .btn-success {
+    border-radius: 20px;
+    font-size: .85rem;
+    white-space: nowrap; /* Prevents text from ugly wrapping or breaking in small action cells */
+  }
   .btn-primary {
     background: linear-gradient(135deg, #f48fb1, #ec407a);
     border: none;
-    border-radius: 20px;
     padding: .4rem 1.2rem;
     font-weight: 500;
   }
-  .btn-primary:hover {
-    background: linear-gradient(135deg, #e91e63, #c2185b);
-    border: none;
-  }
-  .btn-outline-primary {
-    border-color: #ec407a;
-    color: #ec407a;
-    border-radius: 20px;
-    padding: .3rem 1rem;
-    font-size: .85rem;
-  }
-  .btn-outline-primary:hover {
-    background: #ec407a;
-    color: white;
-  }
-  .btn-outline-secondary {
-    border-radius: 20px;
-    padding: .4rem 1.2rem;
-  }
-  .btn-danger {
-    border-radius: 20px;
-    padding: .3rem 1rem;
-    font-size: .85rem;
-  }
-  .btn-success {
-    border-radius: 20px;
-    padding: .3rem 1rem;
-    font-size: .85rem;
-  }
+  .btn-primary:hover { background: linear-gradient(135deg, #e91e63, #c2185b); }
 
   .form-control, .form-select {
     border-radius: 10px;
     border: 1.5px solid #e1bee7;
     padding: .5rem 1rem;
   }
-  .form-control:focus, .form-select:focus {
-    border-color: #ec407a;
-    box-shadow: 0 0 0 .2rem rgba(236,64,122,.15);
-  }
-  .form-label { font-weight: 500; color: #2d3142; }
 
-  .badge-low {
-    background: #fce4ec;
-    color: #c62828;
-    border-radius: 20px;
-    padding: 3px 10px;
-    font-size: .8rem;
-    font-weight: 500;
-  }
-  .badge-ok {
-    background: #e8f5e9;
-    color: #2e7d32;
-    border-radius: 20px;
-    padding: 3px 10px;
-    font-size: .8rem;
-    font-weight: 500;
-  }
+  /* Animations & Overlays */
+  @keyframes slideDown { from { opacity: 0; transform: translate(-50%, -20px); } to { opacity: 1; transform: translate(-50%, 0); } }
+  @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; transform: translate(-50%, -10px); } }
 
-  .page-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #c2185b;
-    margin-bottom: 0;
-  }
-
-  .stat-icon {
-    width: 56px; height: 56px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-  }
-  .stat-icon.purple { background: #f3e5f5; color: #ab47bc; }
-  .stat-icon.pink { background: #fce4ec; color: #e91e63; }
-  .stat-icon.orange { background: #fff3e0; color: #ff9800; }
-  .stat-icon.blue { background: #e3f2fd; color: #2196f3; }
-
-  @keyframes slideDown {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; transform: translateY(-10px); }
-  }
-
-  /* Logout Modal */
   .logout-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.45);
-    z-index: 99999;
-    align-items: center;
-    justify-content: center;
-    animation: fadeInOverlay 0.2s ease;
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 99999; align-items: center; justify-content: center;
   }
-  .logout-overlay.show {
-    display: flex;
-  }
-  @keyframes fadeInOverlay {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  .logout-modal {
-    background: white;
-    border-radius: 20px;
-    padding: 2rem;
-    width: 340px;
-    text-align: center;
-    box-shadow: 0 20px 60px rgba(236,64,122,0.25);
-    animation: popIn 0.25s ease;
-  }
-  @keyframes popIn {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
-  }
-  .logout-modal .logout-icon {
-    width: 64px; height: 64px;
-    background: #fce4ec;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1rem;
-    font-size: 1.8rem;
-    color: #e83e8c;
-  }
-  .logout-modal h5 {
-    font-weight: 700;
-    color: #1a1a2e;
-    margin-bottom: 0.4rem;
-  }
-  .logout-modal p {
-    font-size: 0.88rem;
-    color: #8892a4;
-    margin-bottom: 1.5rem;
-  }
-  .logout-modal .btn-logout-confirm {
-    background: linear-gradient(135deg, #e83e8c, #c2185b);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    padding: 0.6rem 1.5rem;
-    font-weight: 600;
-    font-size: 0.9rem;
-    cursor: pointer;
-    width: 100%;
-    margin-bottom: 0.6rem;
-    transition: all 0.2s;
-  }
-  .logout-modal .btn-logout-confirm:hover {
-    box-shadow: 0 4px 15px rgba(232,62,140,0.4);
-    transform: translateY(-1px);
-  }
-  .logout-modal .btn-logout-cancel {
-    background: #f5f5f5;
-    color: #5a6070;
-    border: none;
-    border-radius: 10px;
-    padding: 0.6rem 1.5rem;
-    font-weight: 500;
-    font-size: 0.9rem;
-    cursor: pointer;
-    width: 100%;
-    transition: all 0.2s;
-  }
-  .logout-modal .btn-logout-cancel:hover {
-    background: #ebebeb;
-  }
+  .logout-overlay.show { display: flex; }
+  .logout-modal { background: white; border-radius: 20px; padding: 2rem; width: 90%; max-width: 340px; text-align: center; box-shadow: 0 20px 60px rgba(236,64,122,0.25); }
+  .logout-modal .logout-icon { width: 64px; height: 64px; background: #fce4ec; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 1.8rem; color: #e83e8c; }
+  .logout-modal .btn-logout-confirm { background: linear-gradient(135deg, #e83e8c, #c2185b); color: white; border: none; border-radius: 10px; padding: 0.6rem 1.5rem; font-weight: 600; font-size: 0.9rem; width: 100%; margin-bottom: 0.6rem; }
+  .logout-modal .btn-logout-cancel { background: #f5f5f5; color: #5a6070; border: none; border-radius: 10px; padding: 0.6rem 1.5rem; font-weight: 500; font-size: 0.9rem; width: 100%; }
 </style>
 </head>
 <body>
+
 {% if user.is_authenticated %}
+<!-- Mobile Top Header (Revealed below 992px width) -->
+<div class="mobile-header">
+  <div class="d-flex align-items-center gap-2">
+    <img src="{% static 'clinic/images/logo.png' %}" alt="FCU Logo" style="width:38px; height:35px; object-fit:contain; border-radius:50%;">
+    <span class="fw-bold text-pink-600" style="color:#c2185b; font-size:1rem;">FCU Clinic</span>
+  </div>
+  <button class="btn border-0 p-1" onclick="toggleSidebar()" aria-label="Toggle Navigation">
+    <i class="bi bi-list fs-2 text-pink-600" style="color:#ec407a;"></i>
+  </button>
+</div>
 
+<!-- Backdrop backdrop shadow mask overlay for closing active drawer -->
+<div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar()"></div>
 
-<div class="sidebar">
-
+<!-- Drawer Sidebar navigation -->
+<div class="sidebar" id="sidebarMenu">
   <div class="brand">
-   <img src="{% static 'clinic/images/logo.png' %}" 
-     alt="FCU Logo"
-     style="width:55px;height:50px;object-fit:contain;border-radius:50%;padding:1px;flex-shrink:0;">
+    <img src="{% static 'clinic/images/logo.png' %}" alt="FCU Logo" style="width:55px;height:50px;object-fit:contain;border-radius:50%;padding:1px;flex-shrink:0;">
     <div>
       <div class="brand-text">FCU School Clinic</div>
       <div style="font-size:.95rem;color:rgba(255,255,255,.7);">Medical Records System</div>
@@ -332,32 +222,15 @@
 
   <div class="nav-section mt-2">Clinic</div>
   <a href="{% url 'medicine_list' %}"><i class="bi bi-capsule-pill"></i>Medicines</a>
-  <a href="{% url 'medical_record_list' %}" onclick="closeSidebar()"><i class="bi bi-file-earmark-medical"></i>Medical Records</a>
+  <a href="{% url 'medical_record_list' %}"><i class="bi bi-file-earmark-medical"></i>Medical Records</a>
   <a href="{% url 'appointment_list' %}"><i class="bi bi-calendar-check"></i>Appointments</a>
 
   <div class="user-bottom">
     <div class="user-info">
       <i class="bi bi-person-circle"></i>{{ user.username }}
     </div>
-    <!-- Logout button triggers modal -->
     <div style="padding:0 8px;">
-      <button onclick="showLogoutModal()" style="
-        width:100%;
-        display:flex;
-        align-items:center;
-        gap:8px;
-        padding:.5rem 1.2rem;
-        border-radius:8px;
-        border:none;
-        background:none;
-        color:rgba(255,255,255,0.9);
-        font-size:.9rem;
-        cursor:pointer;
-        transition:background .2s;
-        text-align:left;
-      "
-      onmouseover="this.style.background='rgba(255,255,255,0.25)'"
-      onmouseout="this.style.background='none'">
+      <button onclick="showLogoutModal()" style="width:100%; display:flex; align-items:center; gap:8px; padding:.5rem 1.2rem; border-radius:8px; border:none; background:none; color:rgba(255,255,255,0.9); font-size:.9rem; cursor:pointer; text-align:left;">
         <i class="bi bi-box-arrow-left"></i>Logout
       </button>
     </div>
@@ -367,71 +240,39 @@
 <!-- Logout Confirmation Modal -->
 <div class="logout-overlay" id="logoutOverlay" onclick="hideLogoutModal(event)">
   <div class="logout-modal">
-    <div class="logout-icon">
-      <i class="bi bi-box-arrow-left"></i>
-    </div>
+    <div class="logout-icon"><i class="bi bi-box-arrow-left"></i></div>
     <h5>Log out?</h5>
     <p>Are you sure you want to log out of the School Clinic System?</p>
     <form method="post" action="{% url 'logout' %}">
       {% csrf_token %}
-      <button type="submit" class="btn-logout-confirm">
-        Yes, log me out
-      </button>
+      <button type="submit" class="btn-logout-confirm">Yes, log me out</button>
     </form>
-    <button onclick="hideLogoutModal()" class="btn-logout-cancel">
-      Cancel
-    </button>
+    <button onclick="hideLogoutModal(null)" class="btn-logout-cancel">Cancel</button>
   </div>
 </div>
 
 <div class="main-content">
 {% endif %}
 
+  <!-- Toast Notification Engine Messages Container -->
   {% if messages %}
-  <div style="
-    position: fixed;
-    top: 1.2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-  ">
+  <div style="position: fixed; top: 1.2rem; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; width: 90%; max-width: 360px;">
     {% for message in messages %}
-    <div class="toast-item" style="
-      display: flex;
-      align-items: center;
-      width: 100%;
-      max-width: 360px;
-      padding: 0.85rem 1.2rem;
-      background: white;
-      border-radius: 12px;
-      border: 1px solid #fce4ec;
-      box-shadow: 0 4px 20px rgba(236,64,122,0.15);
-      animation: slideDown 0.3s ease;
-    " role="alert">
+    <div class="toast-item" style="display: flex; align-items: center; width: 100%; padding: 0.85rem 1.2rem; background: white; border-radius: 12px; border: 1px solid #fce4ec; box-shadow: 0 4px 20px rgba(236,64,122,0.15); animation: slideDown 0.3s ease;" role="alert">
       {% if message.tags == 'error' %}
       <div style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;background:#fee2e2;border-radius:50%;flex-shrink:0;">
-        <svg style="width:16px;height:16px;" fill="#dc2626" viewBox="0 0 20 20">
-          <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
-        </svg>
+        <svg style="width:16px;height:16px;" fill="#dc2626" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
       </div>
       {% else %}
       <div style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;background:#fce4ec;border-radius:50%;flex-shrink:0;">
-        <svg style="width:16px;height:16px;" fill="#e83e8c" viewBox="0 0 20 20">
-          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-        </svg>
+        <svg style="width:16px;height:16px;" fill="#e83e8c" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
       </div>
       {% endif %}
       <div style="margin-left:0.75rem;font-size:0.88rem;font-weight:500;color:#1a1a2e;flex:1;">
         {{ message }}
       </div>
-      <button onclick="closeToast(this)" style="margin-left:auto;background:none;border:none;color:#f48fb1;cursor:pointer;padding:0.3rem;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;">
-        <svg style="width:12px;height:12px;" fill="none" viewBox="0 0 14 14">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-        </svg>
+      <button onclick="closeToast(this)" style="margin-left:auto;background:none;border:none;color:#f48fb1;cursor:pointer;padding:0.3rem;display:inline-flex;">
+        <svg style="width:12px;height:12px;" fill="none" viewBox="0 0 14 14"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/></svg>
       </button>
     </div>
     {% endfor %}
@@ -444,7 +285,17 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  // Toast
+  // Mobile Sidebar Toggle Logic
+  function toggleSidebar() {
+    const sidebar = document.getElementById('sidebarMenu');
+    const backdrop = document.getElementById('sidebarBackdrop');
+    if (sidebar && backdrop) {
+      sidebar.classList.toggle('show');
+      backdrop.classList.toggle('show');
+    }
+  }
+
+  // Toast Functionality
   function closeToast(btn) {
     const toast = btn.closest('.toast-item');
     toast.style.animation = 'fadeOut 0.3s ease forwards';
@@ -452,12 +303,14 @@
   }
   document.querySelectorAll('.toast-item').forEach(toast => {
     setTimeout(() => {
-      toast.style.animation = 'fadeOut 0.3s ease forwards';
-      setTimeout(() => toast.remove(), 300);
+      if(toast) {
+        toast.style.animation = 'fadeOut 0.3s ease forwards';
+        setTimeout(() => toast.remove(), 300);
+      }
     }, 2500);
   });
 
-  // Logout modal
+  // Logout modal mechanics
   function showLogoutModal() {
     document.getElementById('logoutOverlay').classList.add('show');
   }
@@ -466,9 +319,8 @@
       document.getElementById('logoutOverlay').classList.remove('show');
     }
   }
-  // Close on Escape key
   document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') hideLogoutModal();
+    if (e.key === 'Escape') hideLogoutModal(null);
   });
 </script>
 </body>

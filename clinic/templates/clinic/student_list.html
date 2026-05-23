@@ -2,8 +2,12 @@
 {% block content %}
 
 
+
+
 <style>
   * { box-sizing: border-box; }
+
+
 
 
   /* Header */
@@ -17,6 +21,8 @@
   }
 
 
+
+
   .page-title {
     font-size: 1.5rem;
     font-weight: 700;
@@ -28,7 +34,11 @@
   }
 
 
+
+
   .page-title i { color: #c2185b; }
+
+
 
 
   .btn-add {
@@ -48,11 +58,13 @@
     white-space: nowrap;     /* FIX ⑤: button text never wraps */
     transition: background-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
   }
-  .btn-add:hover { 
+  .btn-add:hover {
     background: linear-gradient(135deg, #ff5c8a, #ff7096);
     color: white;
     transform: translateY(-1px);
    }
+
+
 
 
   /* Stats Strip */
@@ -62,6 +74,8 @@
     gap: 1rem;
     margin-bottom: 1.5rem;
   }
+
+
 
 
   .stat-box {
@@ -79,6 +93,8 @@
   .stat-box:hover { transform: translateY(-2px); }
 
 
+
+
   .stat-icon-wrap {
     width: 42px; height: 42px;
     border-radius: 11px;
@@ -86,6 +102,8 @@
     font-size: 1.1rem;
     flex-shrink: 0;
   }
+
+
 
 
   .stat-label { font-size: 0.7rem; color: #8892a4; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -98,6 +116,8 @@
   }
 
 
+
+
   /* Toolbar */
   .toolbar {
     display: flex;
@@ -108,11 +128,15 @@
   }
 
 
+
+
   .search-wrap {
     position: relative;
     flex: 1;
     min-width: 200px;        /* FIX ③: slightly smaller min so it fits with filters */
   }
+
+
 
 
   .search-wrap i {
@@ -124,6 +148,8 @@
     font-size: 0.95rem;
     pointer-events: none;
   }
+
+
 
 
   #live-search {
@@ -141,6 +167,8 @@
   #live-search:focus { border-color: #e83e8c; box-shadow: 0 0 0 3px rgba(232,62,140,0.1); }
 
 
+
+
   .search-clear {
     position: absolute;
     right: 0.8rem;
@@ -156,6 +184,8 @@
     line-height: 1;
   }
   .search-clear:hover { color: #c2185b; }
+
+
 
 
   .filter-select {
@@ -176,6 +206,8 @@
   .filter-select:focus { border-color: #e83e8c; }
 
 
+
+
   .results-count {
     font-size: 0.78rem;
     color: #8892a4;
@@ -186,7 +218,11 @@
   }
 
 
+
+
   .results-count span { color: #c2185b; font-weight: 700; }
+
+
 
 
   /* Table Card */
@@ -198,11 +234,15 @@
   }
 
 
+
+
   /* FIX ②: scroll wrapper so table never breaks the page layout */
   .table-scroll {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
+
+
 
 
   .students-table {
@@ -212,10 +252,14 @@
   }
 
 
+
+
   .students-table thead tr {
     background: linear-gradient(135deg, #f9e4ef, #fdf0f6);
     border-bottom: 2px solid #f0d6e8;
   }
+
+
 
 
   .students-table th {
@@ -231,11 +275,15 @@
   }
 
 
+
+
   .students-table th.sortable {
     cursor: pointer;
     transition: background 0.15s;
   }
   .students-table th.sortable:hover { background: #f5d5e8; }
+
+
 
 
   .sort-icon {
@@ -251,10 +299,14 @@
   .sort-icon .down { border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 5px solid #c2185b; }
 
 
+
+
   th.sort-asc  .sort-icon { opacity: 1; }
   th.sort-asc  .sort-icon .down { opacity: 0.2; }
   th.sort-desc .sort-icon { opacity: 1; }
   th.sort-desc .sort-icon .up   { opacity: 0.2; }
+
+
 
 
   /* Rows */
@@ -265,14 +317,20 @@
   }
 
 
+
+
   @keyframes fadeRow {
     from { opacity: 0; transform: translateY(6px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
 
+
+
   .students-table tbody tr:last-child { border-bottom: none; }
   .students-table tbody tr:hover { background: #fdf7fa; }
+
+
 
 
   .students-table td {
@@ -280,6 +338,8 @@
     color: #2a2e40;
     vertical-align: middle;
   }
+
+
 
 
   /* Cell styles */
@@ -297,6 +357,8 @@
   }
 
 
+
+
   .student-avatar {
     width: 34px; height: 34px;
     border-radius: 9px;
@@ -312,11 +374,15 @@
   }
 
 
+
+
   .student-name {
     font-weight: 600;
     color: #1a1a2e;
     white-space: nowrap;     /* keep name on one line — table scrolls horizontally */
   }
+
+
 
 
   .year-pill {
@@ -329,6 +395,8 @@
     color: #8b1a4a;
     white-space: nowrap;
   }
+
+
 
 
   .section-dot {
@@ -344,6 +412,8 @@
   }
 
 
+
+
   .contact-text {
     color: #5a6070;
     font-size: 0.82rem;
@@ -352,12 +422,16 @@
   }
 
 
+
+
   /* Action buttons */
   .action-wrap {
     display: flex;
     gap: 0.4rem;
     flex-wrap: nowrap;       /* keep View+Edit on one row; table scrolls */
   }
+
+
 
 
   .btn-view, .btn-edit {
@@ -377,12 +451,16 @@
   }
 
 
+
+
   .btn-view:hover, .btn-edit:hover {
     background: linear-gradient(135deg, #e83e8c, #c2185b);
     color: white;
     border-color: transparent;
     box-shadow: 0 3px 10px rgba(232,62,140,0.3);
   }
+
+
 
 
   /* Empty row */
@@ -392,6 +470,8 @@
     color: #9098aa;
   }
   .empty-icon { font-size: 3rem; color: #f0c4d8; display: block; margin-bottom: 0.6rem; }
+
+
 
 
   /* No results banner */
@@ -406,6 +486,8 @@
   #no-results i { font-size: 2.5rem; color: #f0c4d8; display: block; margin-bottom: 0.5rem; }
 
 
+
+
   /* Highlight match */
   mark {
     background: #fce4ec;
@@ -416,7 +498,11 @@
   }
 
 
+
+
   /* ── Breakpoints ── */
+
+
 
 
   /* Tablet: 2-col stats */
@@ -425,13 +511,19 @@
   }
 
 
+
+
   /* Mobile: stack toolbar, tighten table */
   @media (max-width: 700px) {
     .stats-strip { grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
 
 
+
+
     .stat-box { padding: 0.75rem 0.9rem; gap: 0.6rem; }
     .stat-val  { font-size: 1.2rem; }
+
+
 
 
     .toolbar { flex-direction: column; align-items: stretch; }
@@ -439,12 +531,18 @@
     .results-count { margin-left: 0; }
 
 
+
+
     .students-table th,
     .students-table td { padding: 0.7rem 0.8rem; }
 
 
+
+
     .students-table { font-size: 0.8rem; }
   }
+
+
 
 
   /* Small phones: even tighter */
@@ -455,8 +553,12 @@
     .stat-label { font-size: 0.65rem; }
 
 
+
+
     .students-table th,
     .students-table td { padding: 0.6rem 0.6rem; font-size: 0.75rem; }
+
+
 
 
     .btn-view, .btn-edit { padding: 0.3rem 0.55rem; font-size: 0.7rem; }
@@ -467,6 +569,8 @@
 </style>
 
 
+
+
 <div class="page-header">
   <h4 class="page-title">
     <i class="bi bi-people-fill"></i> Students
@@ -475,6 +579,8 @@
     <i class="bi bi-plus-lg"></i> Add Student
   </a>
 </div>
+
+
 
 
 <div class="stats-strip">
@@ -542,13 +648,19 @@
   </select>
 
 
+
+
   <select class="filter-select" id="section-filter" onchange="applyFilters()">
     <option value="">All Sections</option>
   </select>
 
 
+
+
   <div class="results-count">Showing <span id="shown-label">0</span> of {{ students|length }} students</div>
 </div>
+
+
 
 
 <div class="table-card">
@@ -617,6 +729,8 @@
   </div><!-- /.table-scroll -->
 
 
+
+
   <div id="no-results">
     <i class="bi bi-search"></i>
     <div style="font-size:0.9rem;margin-bottom:0.3rem;">No students match your search.</div>
@@ -625,15 +739,21 @@
 </div>
 
 
+
+
 <div id="loadingSpinner" style="text-align:center; padding:20px; display:none; font-weight:600; background:white; border-radius:0 0 16px 16px;">
   <div class="spinner-border text-pink" role="status" style="width: 1.3rem; height: 1.3rem; border-color: #e83e8c #fdf0f6 #fdf0f6; border-style: solid; border-width: 2px; border-radius: 50%; display: inline-block; animation: spin 0.75s linear infinite; margin-right: 8px; vertical-align: middle;"></div>
   <span style="font-size:13px; color:#c2185b; vertical-align: middle;">Loading more students...</span>
 </div>
 
 
+
+
 <style>
   @keyframes spin { to { transform: rotate(360deg); } }
 </style>
+
+
 
 
 <script>
@@ -642,10 +762,14 @@
   let sortCol = -1, sortDir = 1;
 
 
+
+
   const ITEMS_PER_PAGE = 15;
   let currentVisibleCount = ITEMS_PER_PAGE;
   let filteredRows = [...allRows];
   let isThrottled = false;
+
+
 
 
   const sections = [...new Set(allRows.map(r => r.dataset.section).filter(Boolean))].sort();
@@ -655,6 +779,8 @@
     o.value = s; o.textContent = 'Section ' + s;
     secSel.appendChild(o);
   });
+
+
 
 
   function updateStats(matchedRows) {
@@ -667,11 +793,15 @@
   }
 
 
+
+
   function highlight(text, term) {
     if (!term) return text;
     const re = new RegExp('(' + term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')', 'gi');
     return text.replace(re, '<mark>$1</mark>');
   }
+
+
 
 
   function applyFilters() {
@@ -680,7 +810,11 @@
     const sec  = document.getElementById('section-filter').value;
 
 
+
+
     document.getElementById('clear-btn').style.display = q ? 'block' : 'none';
+
+
 
 
     filteredRows = allRows.filter(row => {
@@ -692,7 +826,11 @@
     });
 
 
+
+
     allRows.forEach(row => row.style.display = 'none');
+
+
 
 
     const rowsToDisplay = filteredRows.slice(0, currentVisibleCount);
@@ -715,10 +853,14 @@
     });
 
 
+
+
     document.getElementById('no-results').style.display = filteredRows.length === 0 ? 'block' : 'none';
     updateStats(filteredRows);
     checkScrollRequirement();
   }
+
+
 
 
   function handleScroll() {
@@ -739,12 +881,16 @@
   }
 
 
+
+
   function checkScrollRequirement() {
     if (currentVisibleCount < filteredRows.length && document.documentElement.scrollHeight <= window.innerHeight) {
       currentVisibleCount += ITEMS_PER_PAGE;
       applyFilters();
     }
   }
+
+
 
 
   function clearSearch() {
@@ -755,10 +901,14 @@
   }
 
 
+
+
   document.getElementById('live-search').addEventListener('input', () => {
     currentVisibleCount = ITEMS_PER_PAGE;
     applyFilters();
   });
+
+
 
 
   function sortTable(col) {
@@ -779,12 +929,24 @@
   }
 
 
+
+
   window.addEventListener('scroll', handleScroll);
   applyFilters();
 </script>
 
 
+
+
 {% endblock %}
+
+
+
+
+
+
+
+
 
 
 

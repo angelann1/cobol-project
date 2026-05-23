@@ -265,7 +265,7 @@
   }
   .empty-state i { font-size: 3rem; color: #f0c4d8; display: block; margin-bottom: 0.8rem; }
 
-  /* Restock modal */
+  /* Restock / Delete modals */
   .modal-overlay {
     display: none;
     position: fixed;
@@ -328,7 +328,6 @@
   #no-results-med i { font-size: 2.5rem; color: #f0c4d8; display: block; margin-bottom: 0.5rem; }
 </style>
 
-<!-- Header -->
 <div class="med-header">
   <h4 class="page-title"><i class="bi bi-capsule-pill"></i> Medicine Inventory</h4>
   <a href="{% url 'medicine_add' %}" class="btn-add">
@@ -336,7 +335,6 @@
   </a>
 </div>
 
-<!-- Stats -->
 <div class="stats-strip">
   <div class="stat-box">
     <div class="stat-icon-wrap" style="background:#fdf0f6;">
@@ -367,7 +365,6 @@
   </div>
 </div>
 
-<!-- Search -->
 <div class="toolbar">
   <div class="search-wrap">
     <i class="bi bi-search"></i>
@@ -375,7 +372,6 @@
   </div>
 </div>
 
-<!-- Cards -->
 {% if medicines %}
 <div class="med-grid" id="med-grid">
   {% for med in medicines %}
@@ -392,7 +388,6 @@
       </div>
     </div>
 
-    <!-- Stock bar -->
     <div class="med-stock-wrap">
       <div class="stock-row">
         <span class="stock-label">Stock</span>
@@ -409,7 +404,6 @@
       </div>
     </div>
 
-    <!-- Badges -->
     <div class="med-badges">
       {% if med.quantity == 0 %}
         <span class="badge-pill badge-empty"><i class="bi bi-x-circle-fill"></i> Out of Stock</span>
@@ -426,7 +420,6 @@
 
     <div class="med-divider"></div>
 
-    <!-- Actions (slide up on hover) -->
     <div class="med-actions">
       <button class="btn-act btn-restock"
               onclick="openRestock({{ med.pk }}, '{{ med.name }}')">
@@ -435,10 +428,11 @@
       <a href="{% url 'medicine_edit' med.pk %}" class="btn-act btn-edit-med">
         <i class="bi bi-pencil"></i> Edit
       </a>
-      <form method="post" action="{% url 'medicine_delete' med.pk %}" style="flex:1;"
-            onsubmit="return confirm('Delete {{ med.name }}?')">
+      
+      <form id="delete-form-{{ med.pk }}" method="post" action="{% url 'medicine_delete' med.pk %}" style="flex:1;">
         {% csrf_token %}
-        <button type="submit" class="btn-act btn-del" style="width:100%;">
+        <button type="button" class="btn-act btn-del" style="width:100%;" 
+                onclick="openDeleteModal({{ med.pk }}, '{{ med.name }}')">
           <i class="bi bi-trash"></i> Delete
         </button>
       </form>
@@ -462,27 +456,62 @@
 </div>
 {% endif %}
 
-<!-- Restock Modal -->
 <div class="modal-overlay" id="restockModal" onclick="closeRestock(event)">
-  <div class="modal-box">
-    <h5><i class="bi bi-plus-circle-fill"></i> Restock Medicine</h5>
-    <p id="restock-name" style="font-size:0.85rem;color:#8892a4;margin-bottom:1rem;"></p>
+  <div class="modal-box" style=" solid #c2185b; padding: 2rem; max-width: 380px;">
+    <h5><i class="bi bi-plus-circle-fill" style="color:#c2185b;"></i> Restock Medicine</h5>
+    <p id="restock-name" style="font-size:0.88rem; color:#4b5563; font-weight: 600; margin-bottom:1.25rem;"></p>
+    
     <form method="post" id="restock-form">
       {% csrf_token %}
       <label class="modal-label">Quantity to Add</label>
       <input type="number" name="quantity" class="modal-input" min="1" placeholder="e.g. 50" required>
+      
       <label class="modal-label">Notes (optional)</label>
       <input type="text" name="notes" class="modal-input" placeholder="e.g. Monthly restock">
-      <div class="modal-btns">
-        <button type="submit" class="btn-confirm"><i></i> Confirm Restock</button>
-        <button type="button" class="btn-cancel-modal" onclick="closeRestock()">Cancel</button>
+      
+      <div class="modal-btns" style="display: flex; gap: 10px; margin-top: 1.5rem;">
+        <button type="submit" class="btn-confirm"
+                style="background: linear-gradient(135deg, #e83e8c, #c2185b); transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 12px rgba(194,24,91,0.25);"
+                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(194,24,91,0.45)'; this.style.background='linear-gradient(135deg, #d81b60, #ad1457)';"
+                onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 12px rgba(194,24,91,0.25)'; this.style.background='linear-gradient(135deg, #e83e8c, #c2185b)';">
+          Confirm Restock
+        </button>
+        <button type="button" class="btn-cancel-modal" onclick="closeRestock()"
+                style="background: #f5f5f5; color: #5a6070; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); border: 1px solid transparent;"
+                onmouseover="this.style.background='#e0e0e0'; this.style.color='#1a1a2e'; this.style.borderColor='#d1d5db';"
+                onmouseout="this.style.background='#f5f5f5'; this.style.color='#5a6070'; this.style.borderColor='transparent';">
+          Cancel
+        </button>
       </div>
     </form>
   </div>
 </div>
 
+
+<div class="modal-overlay" id="deleteModal" onclick="closeDeleteModal(event)">
+  <div class="modal-box" style=" solid #c2185b; padding: 2rem; max-width: 380px;">
+    <h5><i class="bi bi-exclamation-triangle-fill" style="color:#c2185b;"></i> Delete Medicine?</h5>
+    <p id="delete-modal-text" style="font-size:0.88rem; color:#4b5563; line-height:1.5; margin-bottom:1.75rem;"></p>
+    
+    <div class="modal-btns" style="display: flex; gap: 10px; margin-top: 1rem;">
+      <button type="button" id="confirm-delete-btn" class="btn-confirm" 
+              style="background: linear-gradient(135deg, #e53935, #c62828); transition: all 0.25s ease; box-shadow: 0 4px 12px rgba(198,40,40,0.25);"
+              onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 18px rgba(198,40,40,0.4)';"
+              onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 12px rgba(198,40,40,0.25)';">
+        Delete
+      </button>
+      <button type="button" class="btn-cancel-modal" onclick="closeDeleteModal()"
+              style="background: #f5f5f5; color: #5a6070; transition: all 0.25s ease; border: 1px solid transparent;"
+              onmouseover="this.style.background='#e0e0e0'; this.style.color='#1a1a2e'; this.style.borderColor='#d1d5db';"
+              onmouseout="this.style.background='#f5f5f5'; this.style.color='#5a6070'; this.style.borderColor='transparent';">
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
+
 <script>
-  // Search
+  // Search filter configuration
   const cards = Array.from(document.querySelectorAll('.med-card'));
   document.getElementById('med-search').addEventListener('input', function() {
     const q = this.value.toLowerCase().trim();
@@ -495,18 +524,48 @@
     document.getElementById('no-results-med').style.display = found === 0 ? 'block' : 'none';
   });
 
-  // Restock modal
+  // Restock modal handling
   function openRestock(pk, name) {
     document.getElementById('restock-form').action = `/medicines/restock/${pk}/`;
     document.getElementById('restock-name').textContent = name;
     document.getElementById('restockModal').classList.add('show');
   }
   function closeRestock(e) {
-    if (!e || e.target === document.getElementById('restockModal')) {
+    if (!e || e.target === document.getElementById('restockModal') || e.target.classList.contains('btn-cancel-modal')) {
+      document.getElementById('restockModal').classList.remove('remove');
       document.getElementById('restockModal').classList.remove('show');
     }
   }
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeRestock(); });
-</script>
 
-{% endblock %}  
+  // Tracking details for deletion choice execution
+  let activeDeleteFormId = null;
+
+  function openDeleteModal(pk, name) {
+    activeDeleteFormId = `delete-form-${pk}`;
+    document.getElementById('delete-modal-text').innerHTML = `Are you sure you want to delete <strong>${name}</strong>? This action will permanently remove this record from the system.`;
+    document.getElementById('deleteModal').classList.add('show');
+  }
+
+  function closeDeleteModal(e) {
+    if (!e || e.target === document.getElementById('deleteModal') || e.target.classList.contains('btn-cancel-modal')) {
+      document.getElementById('deleteModal').classList.remove('show');
+      activeDeleteFormId = null;
+    }
+  }
+
+  // Execute targeted delete route once confirmed
+  document.getElementById('confirm-delete-btn').addEventListener('click', function() {
+    if (activeDeleteFormId) {
+      document.getElementById(activeDeleteFormId).submit();
+    }
+  });
+
+  // Structural keydown escapes
+  document.addEventListener('keydown', e => { 
+    if (e.key === 'Escape') {
+      closeRestock();
+      closeDeleteModal();
+    }
+  });
+</script>
+{% endblock %}

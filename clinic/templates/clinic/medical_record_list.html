@@ -53,7 +53,7 @@
     gap: 1rem;
     margin-bottom: 1.8rem;
   }
-  .rec-sum-box {
+  .rec-summary-box {
     background: white;
     border-radius: 16px;
     padding: 1.1rem 1.3rem;
@@ -66,8 +66,8 @@
     overflow: hidden;
     transition: transform 0.2s;
   }
-  .rec-sum-box:hover { transform: translateY(-2px); }
-  .rec-sum-box::after {
+  .rec-summary-box:hover { transform: translateY(-2px); }
+  .rec-summary-box::after {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
@@ -90,9 +90,7 @@
   .rsb-green  .rsb-icon { background: #e8f5e9; color: #43a047; }
   .rsb-orange .rsb-icon { background: #fff8e1; color: #ff9800; }
 
-  .rsb-num {
-    font-size: 1.7rem; font-weight: 800; line-height: 1;
-  }
+  .rsb-num { font-size: 1.7rem; font-weight: 800; line-height: 1; }
   .rsb-pink   .rsb-num { color: #e83e8c; }
   .rsb-blue   .rsb-num { color: #2196f3; }
   .rsb-green  .rsb-num { color: #43a047; }
@@ -104,632 +102,235 @@
 
   /* ── Toolbar ── */
   .rec-toolbar {
-    display: flex;
-    gap: 0.7rem;
-    margin-bottom: 1.2rem;
-    flex-wrap: wrap;
-    align-items: center;
+    display: flex; gap: 0.7rem; margin-bottom: 1.2rem; flex-wrap: wrap; align-items: center;
   }
-  .rec-search-wrap {
-    position: relative; flex: 1; min-width: 200px;
-  }
+  .rec-search-wrap { position: relative; flex: 1; min-width: 200px; }
   .rec-search-wrap i {
     position: absolute; left: 0.9rem; top: 50%;
-    transform: translateY(-50%); color: #c2185b;
-    font-size: 0.9rem; pointer-events: none;
+    transform: translateY(-50%); color: #c2185b; font-size: 0.9rem; pointer-events: none;
   }
   .rec-search {
-    width: 100%;
-    padding: 0.6rem 1rem 0.6rem 2.4rem;
-    border: 1.5px solid #e2e6f0;
-    border-radius: 10px;
-    font-size: 0.85rem;
-    background: white; color: #1a1a2e; outline: none;
-    transition: border-color 0.2s; font-family: inherit;
+    width: 100%; padding: 0.6rem 1rem 0.6rem 2.4rem;
+    border: 1.5px solid #e2e6f0; border-radius: 10px; font-size: 0.85rem;
+    background: white; color: #1a1a2e; outline: none; transition: border-color 0.2s; font-family: inherit;
   }
   .rec-search:focus { border-color: #e83e8c; box-shadow: 0 0 0 3px rgba(232,62,140,0.1); }
 
-  /* ── Records Table Card ── */
-  .rec-card {
-    background: white;
-    border-radius: 18px;
-    box-shadow: 0 2px 20px rgba(0,0,0,0.06);
-    overflow: hidden;
-  }
-  .rec-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.87rem;
-  }
-  .rec-table thead tr {
-    background: linear-gradient(135deg, #fce4ec, #fdf0f6);
-    border-bottom: 2px solid #f0d6e8;
-  }
+  /* ── Table Card & Responsive Table Wrap ── */
+  .rec-card { background: white; border-radius: 18px; box-shadow: 0 2px 20px rgba(0,0,0,0.06); overflow: hidden; }
+  .rec-table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .rec-table { width: 100%; border-collapse: collapse; font-size: 0.87rem; }
+  .rec-table thead tr { background: linear-gradient(135deg, #fce4ec, #fdf0f6); border-bottom: 2px solid #f0d6e8; }
   .rec-table th {
-    padding: 1rem 1.2rem;
-    text-align: left;
-    font-size: 0.68rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #c2185b;
-    white-space: nowrap;
+    padding: 1rem 1.2rem; text-align: left; font-size: 0.68rem; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 1px; color: #c2185b; white-space: nowrap;
   }
-  .rec-table tbody tr {
-    border-bottom: 1px solid #f5f7fb;
-    transition: background 0.15s;
-    animation: fadeRow 0.3s ease both;
-  }
-  @keyframes fadeRow {
-    from { opacity: 0; transform: translateY(5px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .rec-table tbody tr:last-child { border-bottom: none; }
+  .rec-table tbody tr { border-bottom: 1px solid #f5f7fb; transition: background 0.15s; }
   .rec-table tbody tr:hover { background: #fdf7fa; }
   .rec-table td { padding: 1rem 1.2rem; vertical-align: middle; }
 
-  /* Cell styles */
+  /* Data Layout Elements */
   .student-avatar-rec {
-    width: 36px; height: 36px;
-    border-radius: 10px;
-    background: linear-gradient(135deg, #f48fb1, #c2185b);
-    color: white; font-weight: 700; font-size: 0.78rem;
-    display: inline-flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, #f48fb1, #c2185b);
+    color: white; font-weight: 700; font-size: 0.78rem; display: inline-flex; align-items: center; justify-content: center;
     flex-shrink: 0; margin-right: 0.6rem;
   }
-  .student-name-rec {
-    font-weight: 600; color: #1a1a2e; font-size: 0.87rem;
-  }
+  .student-name-rec { font-weight: 600; color: #1a1a2e; font-size: 0.87rem; }
   .student-id-rec {
-    font-size: 0.72rem; color: #c2185b; font-family: monospace;
-    font-weight: 600; background: #fdf0f6; padding: 0.1rem 0.4rem;
-    border-radius: 5px; border: 1px solid #f0d6e8;
-    display: inline-block; margin-top: 2px;
+    font-size: 0.72rem; color: #c2185b; font-family: monospace; font-weight: 600;
+    background: #fdf0f6; padding: 0.1rem 0.4rem; border-radius: 5px; border: 1px solid #f0d6e8; display: inline-block; margin-top: 2px;
   }
   .date-chip-rec {
-    display: inline-flex; align-items: center; gap: 0.3rem;
-    background: #fdf0f6; border: 1px solid #f0d6e8;
-    border-radius: 8px; padding: 0.3rem 0.7rem;
-    font-size: 0.78rem; font-weight: 600; color: #c2185b; white-space: nowrap;
+    display: inline-flex; align-items: center; gap: 0.3rem; background: #fdf0f6;
+    border: 1px solid #f0d6e8; border-radius: 8px; padding: 0.3rem 0.7rem; font-size: 0.78rem; font-weight: 600; color: #c2185b;
+    white-space: nowrap;
   }
-  .complaint-text {
-    font-weight: 600; color: #1a1a2e; font-size: 0.85rem;
-  }
-  .vitals-wrap {
-    display: flex; flex-wrap: wrap; gap: 0.35rem;
-  }
+  .complaint-text { font-weight: 600; color: #1a1a2e; font-size: 0.85rem; }
+  .vitals-wrap { display: flex; flex-wrap: wrap; gap: 0.35rem; min-width: 120px; }
   .vital-chip {
-    display: inline-flex; align-items: center; gap: 0.2rem;
-    background: #f5f7fb; border: 1px solid #e8eaf0;
-    border-radius: 6px; padding: 0.18rem 0.55rem;
-    font-size: 0.72rem; font-weight: 600; color: #4a5068; white-space: nowrap;
+    display: inline-flex; align-items: center; gap: 0.2rem; background: #f5f7fb;
+    border: 1px solid #e8eaf0; border-radius: 6px; padding: 0.18rem 0.55rem; font-size: 0.72rem; font-weight: 600; color: #4a5068;
+    white-space: nowrap;
   }
-  .referred-badge {
-    display: inline-flex; align-items: center; gap: 0.3rem;
-    padding: 0.2rem 0.65rem; border-radius: 999px;
-    font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
-  }
+  .referred-badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.2rem 0.65rem; border-radius: 999px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; white-space: nowrap; }
   .referred-yes { background: #fdecea; color: #c62828; }
   .referred-no  { background: #e8f5e9; color: #2e7d32; }
-
-  .recorded-by-wrap {
-    display: flex; align-items: center; gap: 0.4rem;
-    font-size: 0.82rem; color: #5a6070;
-  }
+  .recorded-by-wrap { display: flex; align-items: center; gap: 0.4rem; font-size: 0.82rem; color: #5a6070; white-space: nowrap; }
   .recorded-by-wrap i { color: #c2185b; }
 
-  /* View detail button */
   .btn-view-rec {
-    display: inline-flex; align-items: center; gap: 0.3rem;
-    padding: 0.35rem 0.85rem; border-radius: 8px;
-    border: 1.5px solid #f0d6e8; background: white;
-    color: #c2185b; font-size: 0.75rem; font-weight: 600;
-    text-decoration: none; transition: all 0.2s; white-space: nowrap;
-    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.35rem 0.85rem;
+    border-radius: 8px; border: 1.5px solid #f0d6e8; background: white; color: #c2185b;
+    font-size: 0.75rem; font-weight: 600; text-decoration: none; transition: all 0.2s; cursor: pointer;
+    white-space: nowrap;
   }
-  .btn-view-rec:hover {
-    background: linear-gradient(135deg, #e83e8c, #c2185b);
-    color: white; border-color: transparent;
-    box-shadow: 0 3px 10px rgba(232,62,140,0.3);
-  }
+  .btn-view-rec:hover { background: linear-gradient(135deg, #e83e8c, #c2185b); color: white; border-color: transparent; }
 
-  /* Empty state */
-  .rec-empty {
-    text-align: center; padding: 4rem 1rem; color: #b0b8c8;
+  /* ── Overlays & Modals ── */
+  .detail-overlay, .add-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(26,26,46,0.5); z-index: 9999;
+    align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(3px);
   }
-  .rec-empty i { font-size: 3.5rem; color: #f0c4d8; display: block; margin-bottom: 0.75rem; }
-  .rec-empty p { font-size: 0.9rem; margin: 0; }
-
-  /* ── Detail Modal ── */
-  .detail-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(26,26,46,0.5);
-    z-index: 9999;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-    backdrop-filter: blur(3px);
-  }
-  .detail-overlay.active { display: flex; }
-  .detail-modal {
-    background: white;
-    border-radius: 20px;
-    width: 100%;
-    max-width: 620px;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-    animation: popIn 0.25s ease;
+  .detail-overlay.active, .add-overlay.active { display: flex; }
+  
+  .detail-modal, .add-modal {
+    background: white; border-radius: 20px; width: 100%; max-width: 680px; max-height: 90vh;
+    overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.2); animation: popIn 0.25s ease;
   }
   @keyframes popIn { from{transform:scale(0.95);opacity:0;} to{transform:scale(1);opacity:1;} }
-  .detail-modal-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1.3rem 1.5rem;
-    border-bottom: 1px solid #f0d6e8;
-    background: linear-gradient(135deg, #fce4ec, #fdf0f6);
-    border-radius: 20px 20px 0 0;
-    position: sticky;
-    top: 0;
-    z-index: 1;
+
+  .detail-modal-head, .add-modal-head {
+    display: flex; align-items: center; justify-content: space-between; padding: 1.3rem 1.5rem;
+    border-bottom: 1px solid #f0d6e8; border-radius: 20px 20px 0 0; position: sticky; top: 0; z-index: 1;
+    gap: 1rem;
   }
-  .detail-modal-head h6 {
-    font-size: 1rem; font-weight: 800; color: #1a1a2e; margin: 0;
+  .detail-modal-head { background: linear-gradient(135deg, #fce4ec, #fdf0f6); }
+  .add-modal-head { background: linear-gradient(135deg, #e83e8c, #c2185b); color: white; }
+  .detail-modal-head h6, .add-modal-head h6 { font-size: 1rem; font-weight: 800; margin: 0; word-break: break-word; }
+  .add-modal-head h6 { color: white; }
+  .add-modal-head p { font-size: 0.75rem; color: rgba(255,255,255,0.8); margin: 0.15rem 0 0; }
+
+  .detail-close-btn, .add-close-btn {
+    width: 32px; height: 32px; border-radius: 8px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;
   }
-  .detail-close-btn {
-    width: 32px; height: 32px;
-    border-radius: 8px; border: none;
-    background: white; color: #5a6070;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; font-size: 1rem; transition: all 0.2s;
-  }
+  .detail-close-btn { background: white; color: #5a6070; }
   .detail-close-btn:hover { background: #fdecea; color: #c62828; }
-  .detail-modal-body { padding: 1.5rem; }
+  .add-close-btn { background: rgba(255,255,255,0.2); color: white; }
+  .add-close-btn:hover { background: rgba(255,255,255,0.3); }
 
-  /* Modal sections */
-  .modal-section-title {
-    font-size: 0.72rem; font-weight: 800;
-    text-transform: uppercase; letter-spacing: 1px;
-    color: #c2185b; margin-bottom: 0.8rem;
-    display: flex; align-items: center; gap: 0.5rem;
-  }
-  .modal-section-title::after {
-    content: ''; flex: 1; height: 1px; background: #f0d6e8;
-  }
+  .detail-modal-body, .add-modal-body { padding: 1.5rem; }
 
-  /* Vitals grid */
-  .vitals-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0.75rem;
-    margin-bottom: 1.3rem;
+  /* Sections & Layout Elements inside Modals */
+  .form-section-title, .modal-section-title {
+    font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+    color: #c2185b; margin: 1.2rem 0 0.8rem; display: flex; align-items: center; gap: 0.5rem;
   }
-  .vital-card {
-    background: #fdf0f6;
-    border: 1px solid #f0d6e8;
-    border-radius: 12px;
-    padding: 0.9rem 0.7rem;
-    text-align: center;
-    transition: all 0.2s;
-  }
-  .vital-card:hover {
-    background: linear-gradient(135deg, #fce4ec, #fdf0f6);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(232,62,140,0.12);
-  }
-  .vital-card-icon {
-    font-size: 1.1rem; color: #e83e8c; margin-bottom: 0.3rem;
-  }
-  .vital-card-val {
-    font-size: 1rem; font-weight: 800; color: #1a1a2e;
-  }
-  .vital-card-label {
-    font-size: 0.68rem; color: #9098aa; font-weight: 600;
-    text-transform: uppercase; letter-spacing: 0.3px; margin-top: 2px;
-  }
+  .form-section-title::after, .modal-section-title::after { content: ''; flex: 1; height: 1px; background: #f0d6e8; }
+  
+  .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 1rem; }
+  .form-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; }
+  .form-group { display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 0.8rem; }
+  .form-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #5a6070; }
+  .form-label span.req { color: #e83e8c; margin-left: 2px; }
 
-  /* Info rows in modal */
-  .modal-info-row {
-    display: flex; flex-direction: column;
-    gap: 0.25rem; margin-bottom: 1rem;
+  /* Dynamic Custom Model Form Inputs overrides */
+  .form-control-rec {
+    padding: 0.6rem 0.9rem; border: 1.5px solid #e2e6f0; border-radius: 10px;
+    font-size: 0.85rem; color: #1a1a2e; background: white; outline: none; width: 100%; box-sizing: border-box;
   }
-  .modal-info-label {
-    font-size: 0.72rem; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.5px; color: #9098aa;
-  }
-  .modal-info-val {
-    font-size: 0.9rem; color: #1a1a2e; font-weight: 500;
-    background: #fafbfd; border: 1px solid #f0f2f7;
-    border-radius: 8px; padding: 0.6rem 0.9rem;
-    line-height: 1.5;
-  }
+  .form-control-rec:focus { border-color: #e83e8c; box-shadow: 0 0 0 3px rgba(232,62,140,0.1); }
+  textarea.form-control-rec { resize: vertical; min-height: 70px; }
 
-  /* Modal 2-col grid */
-  .modal-grid-2 {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 0 1rem;
-  }
+  /* Vital Cards layout */
+  .vitals-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-bottom: 1.3rem; }
+  .vital-card { background: #fdf0f6; border: 1px solid #f0d6e8; border-radius: 12px; padding: 0.8rem 0.5rem; text-align: center; }
+  .vital-card-icon { font-size: 1.1rem; color: #e83e8c; margin-bottom: 0.2rem; }
+  .vital-card-val { font-size: 0.95rem; font-weight: 800; color: #1a1a2e; }
+  .vital-card-label { font-size: 0.65rem; color: #9098aa; font-weight: 600; text-transform: uppercase; }
 
-  /* Referred badge in modal */
-  .referred-big {
-    display: inline-flex; align-items: center; gap: 0.4rem;
-    padding: 0.4rem 1rem; border-radius: 999px;
-    font-size: 0.82rem; font-weight: 700;
-  }
+  .modal-info-row { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 0.9rem; }
+  .modal-info-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: #9098aa; }
+  .modal-info-val { font-size: 0.88rem; color: #1a1a2e; background: #fafbfd; border: 1px solid #f0f2f7; border-radius: 8px; padding: 0.55rem 0.85rem; line-height: 1.4; }
+
+  .referred-big { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.4rem 1rem; border-radius: 999px; font-size: 0.82rem; font-weight: 700; }
   .referred-big.yes { background: #fdecea; color: #c62828; }
   .referred-big.no  { background: #e8f5e9; color: #2e7d32; }
 
-  /* ── Add Record Form Modal ── */
-  .add-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(26,26,46,0.5);
-    z-index: 9998;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-    backdrop-filter: blur(3px);
-  }
-  .add-overlay.active { display: flex; }
-  .add-modal {
-    background: white;
-    border-radius: 20px;
-    width: 100%;
-    max-width: 680px;
-    max-height: 92vh;
-    overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-    animation: popIn 0.25s ease;
-  }
-  .add-modal-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1.3rem 1.5rem;
-    border-bottom: 1px solid #f0d6e8;
-    background: linear-gradient(135deg, #e83e8c, #c2185b);
-    border-radius: 20px 20px 0 0;
-    position: sticky;
-    top: 0;
-    z-index: 1;
-  }
-  .add-modal-head h6 {
-    font-size: 1rem; font-weight: 800; color: white; margin: 0;
-  }
-  .add-modal-head p {
-    font-size: 0.75rem; color: rgba(255,255,255,0.75); margin: 0.15rem 0 0;
-  }
-  .add-close-btn {
-    width: 32px; height: 32px;
-    border-radius: 8px; border: none;
-    background: rgba(255,255,255,0.2); color: white;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; font-size: 1rem; transition: all 0.2s;
-    flex-shrink: 0;
-  }
-  .add-close-btn:hover { background: rgba(255,255,255,0.3); }
-
-  .add-modal-body { padding: 1.5rem; }
-
-  /* Form field styles */
-  .form-section-title {
-    font-size: 0.72rem; font-weight: 800;
-    text-transform: uppercase; letter-spacing: 1px;
-    color: #c2185b; margin: 1.2rem 0 0.8rem;
-    display: flex; align-items: center; gap: 0.5rem;
-  }
-  .form-section-title:first-child { margin-top: 0; }
-  .form-section-title::after {
-    content: ''; flex: 1; height: 1px; background: #f0d6e8;
-  }
-  .form-grid-2 {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 1rem;
-  }
-  .form-grid-4 {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem;
-  }
-  .form-group {
-    display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 0.75rem;
-  }
-  .form-group:last-child { margin-bottom: 0; }
-  .form-label {
-    font-size: 0.72rem; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.5px; color: #5a6070;
-  }
-  .form-label span.req { color: #e83e8c; margin-left: 2px; }
-  .form-control-rec {
-    padding: 0.6rem 0.9rem;
-    border: 1.5px solid #e2e6f0;
-    border-radius: 10px;
-    font-size: 0.85rem;
-    color: #1a1a2e;
-    background: white;
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    font-family: inherit;
-    width: 100%;
-    box-sizing: border-box;
-  }
-  .form-control-rec:focus {
-    border-color: #e83e8c;
-    box-shadow: 0 0 0 3px rgba(232,62,140,0.1);
-  }
-  .form-control-rec::placeholder { color: #c0c7d4; }
-  textarea.form-control-rec { resize: vertical; min-height: 80px; }
-  select.form-control-rec { cursor: pointer; }
-
-  /* Referred toggle */
-  .referred-toggle-wrap {
-    display: flex; gap: 0.5rem; margin-top: 0.1rem;
-  }
-  .ref-btn {
-    flex: 1; padding: 0.55rem; border-radius: 10px;
-    border: 1.5px solid #e2e6f0; background: white;
-    font-size: 0.82rem; font-weight: 700; cursor: pointer;
-    transition: all 0.2s; font-family: inherit;
-    display: flex; align-items: center; justify-content: center; gap: 0.35rem;
-  }
-  .ref-btn.active-yes {
-    background: #fdecea; border-color: #c62828; color: #c62828;
-  }
-  .ref-btn.active-no {
-    background: #e8f5e9; border-color: #2e7d32; color: #2e7d32;
-  }
-  .ref-btn:not(.active-yes):not(.active-no) { color: #9098aa; }
-
-  /* ── Searchable Student Picker ── */
-  .student-picker { position: relative; }
-  .sp-input-wrap { position: relative; display: flex; align-items: center; }
-  .sp-search-icon {
-    position: absolute; left: 0.9rem;
-    color: #c2185b; font-size: 0.85rem; pointer-events: none; z-index: 1;
-  }
-  .sp-chevron {
-    position: absolute; right: 0.9rem;
-    color: #9098aa; font-size: 0.8rem; pointer-events: none;
-    transition: transform 0.2s;
-  }
-  .sp-chevron.open { transform: rotate(180deg); color: #c2185b; }
-  .sp-search-input {
-    width: 100%;
-    padding: 0.6rem 2.4rem 0.6rem 2.4rem;
-    border: 1.5px solid #e2e6f0;
-    border-radius: 10px;
-    font-size: 0.85rem;
-    color: #1a1a2e; background: white; outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    font-family: inherit; cursor: pointer; box-sizing: border-box;
-  }
-  .sp-search-input:focus,
-  .sp-search-input.open {
-    border-color: #e83e8c;
-    box-shadow: 0 0 0 3px rgba(232,62,140,0.1);
-    cursor: text;
-  }
-  .sp-search-input::placeholder { color: #c0c7d4; }
-  .sp-search-input.selected { font-weight: 600; }
-
-  .sp-dropdown {
-    display: none; position: absolute;
-    top: calc(100% + 4px); left: 0; right: 0;
-    background: white;
-    border: 1.5px solid #f0d6e8;
-    border-radius: 12px;
-    box-shadow: 0 8px 30px rgba(232,62,140,0.15);
-    z-index: 9999; overflow: hidden;
-    animation: spDrop 0.15s ease;
-  }
-  @keyframes spDrop {
-    from { opacity: 0; transform: translateY(-6px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .sp-dropdown.open { display: block; }
-
-  /* Filter bar */
-  .sp-filter-bar {
-    display: flex; align-items: center; gap: 0.5rem;
-    padding: 0.5rem 0.6rem;
-    background: linear-gradient(135deg, #fce4ec, #fdf0f6);
-    border-bottom: 1px solid #f0d6e8;
-  }
-  .sp-year-select {
-    flex: 1; padding: 0.35rem 0.6rem;
-    border: 1.5px solid #f0d6e8; border-radius: 8px;
-    font-size: 0.75rem; color: #c2185b; font-weight: 600;
-    background: white; outline: none; cursor: pointer;
-    font-family: inherit;
-  }
-  .sp-year-select:focus { border-color: #e83e8c; }
-  .sp-count-badge {
-    font-size: 0.7rem; font-weight: 700; color: #9098aa;
-    white-space: nowrap; padding: 0.2rem 0.5rem;
-    background: white; border-radius: 20px;
-    border: 1px solid #f0d6e8;
+  /* ── 📱 MEDIA QUERIES FOR RESPONSIVENESS ── */
+  
+  /* Tablets and small laptops (under 992px) */
+  @media (max-width: 992px) {
+    .rec-summary {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 
-  .sp-list { max-height: 230px; overflow-y: auto; padding: 0.3rem; }
-  .sp-list::-webkit-scrollbar { width: 5px; }
-  .sp-list::-webkit-scrollbar-thumb { background: #f0d6e8; border-radius: 10px; }
-
-  .sp-item {
-    display: flex; align-items: center; gap: 0.7rem;
-    padding: 0.55rem 0.75rem; border-radius: 8px;
-    cursor: pointer; transition: background 0.15s;
-  }
-  .sp-item:hover { background: #fdf0f6; }
-  .sp-item.sp-active { background: linear-gradient(135deg, #fce4ec, #fdf0f6); }
-  .sp-item-avatar {
-    width: 34px; height: 34px; border-radius: 9px;
-    background: linear-gradient(135deg, #f48fb1, #c2185b);
-    color: white; font-weight: 700; font-size: 0.75rem;
-    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-  }
-  .sp-item.sp-active .sp-item-avatar { background: linear-gradient(135deg, #e83e8c, #c2185b); }
-  .sp-item-name { font-size: 0.84rem; font-weight: 600; color: #1a1a2e; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .sp-item-meta { display: flex; align-items: center; gap: 0.3rem; margin-top: 1px; flex-wrap: nowrap; }
-  .sp-item-id   { font-size: 0.69rem; color: #c2185b; font-family: monospace; font-weight: 700;
-                  background: #fdf0f6; padding: 0.05rem 0.35rem; border-radius: 4px; border: 1px solid #f0d6e8; }
-  .sp-item-dot  { font-size: 0.65rem; color: #ccc; }
-  .sp-item-year { font-size: 0.69rem; color: #5a6070; font-weight: 600; }
-  .sp-item-sec  { font-size: 0.69rem; color: #5a6070; font-weight: 600; }
-
-  .sp-no-results { text-align: center; padding: 1.2rem 1rem; color: #b0b8c8; font-size: 0.82rem; }
-
-  /* Dark mode picker */
-  html.dark .sp-search-input { background: #12102A !important; border-color: #3B2F80 !important; color: #EDE8FF !important; }
-  html.dark .sp-dropdown { background: #1E1D52 !important; border-color: #3B2F80 !important; }
-  html.dark .sp-filter-bar { background: linear-gradient(135deg, #2A2668, #1E1D52) !important; border-color: #3B2F80 !important; }
-  html.dark .sp-year-select { background: #12102A !important; border-color: #3B2F80 !important; color: #C79DD7 !important; }
-  html.dark .sp-count-badge { background: #12102A !important; border-color: #3B2F80 !important; }
-  html.dark .sp-item:hover,
-  html.dark .sp-item.sp-active { background: #2A2668 !important; }
-  html.dark .sp-item-name { color: #EDE8FF !important; }
-  html.dark .sp-item-id { background: #2A2668 !important; border-color: #3B2F80 !important; color: #C79DD7 !important; }
-  html.dark .sp-item-year,
-  html.dark .sp-item-sec { color: #8AACCF !important; }
-
-  /* Form submit row */
-  .form-submit-row {
-    display: flex; justify-content: flex-end; gap: 0.7rem;
-    margin-top: 1.4rem; padding-top: 1.2rem;
-    border-top: 1px solid #f0d6e8;
-  }
-  .btn-cancel-rec {
-    padding: 0.6rem 1.3rem; border-radius: 10px;
-    border: 1.5px solid #e2e6f0; background: white;
-    color: #5a6070; font-size: 0.85rem; font-weight: 600;
-    cursor: pointer; transition: all 0.2s; font-family: inherit;
-  }
-  .btn-cancel-rec:hover { border-color: #c2185b; color: #c2185b; }
-  .btn-submit-rec {
-    display: inline-flex; align-items: center; gap: 0.45rem;
-    padding: 0.6rem 1.5rem; border-radius: 10px;
-    border: none;
-    background: linear-gradient(135deg, #e83e8c, #c2185b);
-    color: white; font-size: 0.85rem; font-weight: 700;
-    cursor: pointer; transition: all 0.2s;
-    box-shadow: 0 4px 14px rgba(232,62,140,0.35);
-    font-family: inherit;
-  }
-  .btn-submit-rec:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(232,62,140,0.45);
-  }
-  .btn-submit-rec:disabled {
-    opacity: 0.7; cursor: not-allowed; transform: none;
+  /* Medium devices (under 768px) */
+  @media (max-width: 768px) {
+    .form-grid-4 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .vitals-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .detail-modal-body, .add-modal-body {
+      padding: 1rem;
+    }
+    .footer-actions-wrap {
+      flex-direction: column-reverse;
+    }
+    .footer-actions-wrap button {
+      width: 100%;
+    }
   }
 
-  /* Toast notification */
-  .rec-toast {
-    position: fixed; bottom: 1.5rem; right: 1.5rem;
-    background: #1a1a2e; color: white;
-    padding: 0.8rem 1.3rem; border-radius: 12px;
-    font-size: 0.85rem; font-weight: 600;
-    display: flex; align-items: center; gap: 0.5rem;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-    z-index: 99999;
-    transform: translateY(20px); opacity: 0;
-    transition: all 0.3s ease;
-    pointer-events: none;
-  }
-  .rec-toast.show { transform: translateY(0); opacity: 1; }
-  .rec-toast.success i { color: #66bb6a; }
-  .rec-toast.error i { color: #ef5350; }
-
-  /* Dark mode */
-  html.dark .rec-card,
-  html.dark .rec-sum-box { background: #1E1D52 !important; border-color: #3B2F80 !important; }
-  html.dark .rec-header-left h4 { color: #EDE8FF !important; }
-  html.dark .rec-header-left p { color: #8AACCF !important; }
-  html.dark .rsb-label { color: #8AACCF !important; }
-  html.dark .rec-table thead tr { background: linear-gradient(135deg, #2A2668, #3B2F80) !important; border-color: #3B2F80 !important; }
-  html.dark .rec-table th { color: #C79DD7 !important; }
-  html.dark .rec-table tbody tr { border-color: #2A2668 !important; }
-  html.dark .rec-table tbody tr:hover { background: #2A2668 !important; }
-  html.dark .rec-table td { color: #C9C0E8 !important; }
-  html.dark .student-name-rec { color: #EDE8FF !important; }
-  html.dark .complaint-text { color: #EDE8FF !important; }
-  html.dark .vital-chip { background: #2A2668 !important; border-color: #3B2F80 !important; color: #C9C0E8 !important; }
-  html.dark .rec-search { background: #1E1D52 !important; color: #EDE8FF !important; border-color: #3B2F80 !important; }
-  html.dark .detail-modal,
-  html.dark .add-modal { background: #1E1D52 !important; }
-  html.dark .detail-modal-head { background: linear-gradient(135deg, #2A2668, #3B2F80) !important; border-color: #3B2F80 !important; }
-  html.dark .detail-modal-head h6 { color: #EDE8FF !important; }
-  html.dark .detail-close-btn { background: #1E1D52 !important; color: #C79DD7 !important; }
-  html.dark .vital-card { background: #2A2668 !important; border-color: #3B2F80 !important; }
-  html.dark .vital-card-val { color: #EDE8FF !important; }
-  html.dark .modal-info-val { background: #12102A !important; border-color: #3B2F80 !important; color: #EDE8FF !important; }
-  html.dark .modal-section-title,
-  html.dark .form-section-title { color: #C79DD7 !important; }
-  html.dark .modal-section-title::after,
-  html.dark .form-section-title::after { background: #3B2F80 !important; }
-  html.dark .recorded-by-wrap { color: #C9C0E8 !important; }
-  html.dark .form-control-rec { background: #12102A !important; border-color: #3B2F80 !important; color: #EDE8FF !important; }
-  html.dark .form-label { color: #8AACCF !important; }
-  html.dark .ref-btn { background: #12102A !important; border-color: #3B2F80 !important; color: #8AACCF !important; }
-  html.dark .btn-cancel-rec { background: #12102A !important; border-color: #3B2F80 !important; color: #8AACCF !important; }
-  html.dark .form-submit-row { border-color: #3B2F80 !important; }
-
-  /* Responsive */
-  @media (max-width: 900px) {
-    .rec-summary { grid-template-columns: repeat(2, 1fr); }
-    .vitals-grid { grid-template-columns: repeat(2, 1fr); }
-    .modal-grid-2, .form-grid-2 { grid-template-columns: 1fr; }
-    .form-grid-4 { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media (max-width: 600px) {
-    .rec-summary { grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
-    .rec-header { flex-direction: column; }
-    .rec-card { overflow-x: auto; }
-    .rec-table { min-width: 640px; }
-    .vitals-grid, .form-grid-4 { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media (max-width: 480px) {
-    .rec-summary { grid-template-columns: 1fr 1fr; }
-    .form-grid-4 { grid-template-columns: 1fr 1fr; }
+  /* Mobile devices (under 576px) */
+  @media (max-width: 576px) {
+    .rec-header {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .btn-add-rec {
+      justify-content: center;
+    }
+    .rec-summary {
+      grid-template-columns: 1fr;
+    }
+    .form-grid-2, .form-grid-4 {
+      grid-template-columns: 1fr;
+    }
+    .vitals-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .detail-modal-head, .add-modal-head {
+      padding: 1rem;
+    }
+    /* Stack details footer section elements easily on tiny screens */
+    .detail-footer-box {
+      flex-direction: column;
+      align-items: flex-start !important;
+      gap: 1rem;
+    }
   }
 </style>
 
 <div class="rec-header">
   <div class="rec-header-left">
-    <h4><i class="bi bi-file-earmark-medical me-2" style="color:#c2185b;"></i>Medical Records</h4>
-    <p>All student clinic visit records and health information</p>
+    <h4>Medical Logs & Health Records</h4>
+    <p>Manage, log, and look up student medical logs securely.</p>
   </div>
   <button class="btn-add-rec" onclick="openAddModal()">
-    <i class="bi bi-plus-lg"></i> Add Record
+    <i class="bi bi-plus-circle-fill"></i> Add New Record
   </button>
 </div>
 
 <div class="rec-summary">
-  <div class="rec-sum-box rsb-pink">
-    <div class="rsb-icon"><i class="bi bi-file-medical"></i></div>
+  <div class="rec-summary-box rsb-pink">
+    <div class="rsb-icon"><i class="bi bi-journal-medical"></i></div>
     <div>
       <div class="rsb-num">{{ total_records }}</div>
-      <div class="rsb-label">Total Records</div>
+      <div class="rsb-label">Total Visits</div>
     </div>
   </div>
-  <div class="rec-sum-box rsb-blue">
+  <div class="rec-summary-box rsb-blue">
     <div class="rsb-icon"><i class="bi bi-people"></i></div>
     <div>
       <div class="rsb-num">{{ unique_students }}</div>
       <div class="rsb-label">Students Seen</div>
     </div>
   </div>
-  <div class="rec-sum-box rsb-orange">
+  <div class="rec-summary-box rsb-green">
+    <div class="rsb-icon"><i class="bi bi-calendar2-day"></i></div>
+    <div>
+      <div class="rsb-num">{{ today_count }}</div>
+      <div class="rsb-label">Logged Today</div>
+    </div>
+  </div>
+  <div class="rec-summary-box rsb-orange">
     <div class="rsb-icon"><i class="bi bi-hospital"></i></div>
     <div>
       <div class="rsb-num">{{ referred_count }}</div>
-      <div class="rsb-label">Referred</div>
-    </div>
-  </div>
-  <div class="rec-sum-box rsb-green">
-    <div class="rsb-icon"><i class="bi bi-calendar-check"></i></div>
-    <div>
-      <div class="rsb-num">{{ today_count }}</div>
-      <div class="rsb-label">Today</div>
+      <div class="rsb-label">Hospital Referrals</div>
     </div>
   </div>
 </div>
@@ -737,461 +338,284 @@
 <div class="rec-toolbar">
   <div class="rec-search-wrap">
     <i class="bi bi-search"></i>
-    <input type="text" class="rec-search" id="rec-search"
-      placeholder="Search student name, complaint, diagnosis..." oninput="searchRecs()">
+    <input type="text" id="recSearch" class="rec-search" placeholder="Filter by student ID, full name, or chief complaint...">
   </div>
 </div>
 
 <div class="rec-card">
-  <table class="rec-table" id="rec-table">
-    <thead>
-      <tr>
-        <th>Student</th>
-        <th>Date</th>
-        <th>Chief Complaint</th>
-        <th>Vitals</th>
-        <th>Referred</th>
-        <th>Recorded By</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody id="rec-tbody">
-      {% for r in records %}
-      <tr data-search="{{ r.student.last_name|lower }} {{ r.student.first_name|lower }} {{ r.chief_complaint|lower }} {{ r.diagnosis|lower }}">
-        <td>
-          <div style="display:flex;align-items:center;">
-            <div class="student-avatar-rec">
-              {{ r.student.first_name|slice:":1" }}{{ r.student.last_name|slice:":1" }}
+  <!-- Added responsive container block around table structure -->
+  <div class="rec-table-responsive">
+    <table class="rec-table" id="recordsTable">
+      <thead>
+        <tr>
+          <th>Logged Date</th>
+          <th>Student Information</th>
+          <th>Chief Complaint</th>
+          <th>Vitals Summary</th>
+          <th>Hospital Referral</th>
+          <th>Attendant Staff</th>
+          <th style="text-align: center;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in records %}
+        <tr data-student-id="{{ r.student.student_id }}" data-student-name="{{ r.student.first_name }} {{ r.student.last_name }}" data-complaint="{{ r.chief_complaint }}">
+          <td>
+            <span class="date-chip-rec"><i class="bi bi-calendar3"></i> {{ r.date|date:"M d, Y" }}</span>
+          </td>
+          <td>
+            <div style="display: flex; align-items: center;">
+              <div class="student-avatar-rec">
+                {{ r.student.first_name|slice:":1" }}{{ r.student.last_name|slice:":1" }}
+              </div>
+              <div>
+                <div class="student-name-rec" style="white-space: nowrap;">{{ r.student.last_name }}, {{ r.student.first_name }}</div>
+                <div class="student-id-rec">{{ r.student.student_id }}</div>
+              </div>
             </div>
-            <div>
-              <div class="student-name-rec">{{ r.student.last_name }}, {{ r.student.first_name }}</div>
-              <div class="student-id-rec">{{ r.student.student_id }}</div>
+          </td>
+          <td><span class="complaint-text">{{ r.chief_complaint }}</span></td>
+          <td>
+            <div class="vitals-wrap">
+              {% if r.temperature %}<span class="vital-chip"><i class="bi bi-thermometer-half text-danger"></i> {{ r.temperature }}°C</span>{% endif %}
+              {% if r.blood_pressure %}<span class="vital-chip"><i class="bi bi-heart-pulse-fill text-primary"></i> {{ r.blood_pressure }}</span>{% endif %}
             </div>
-          </div>
-        </td>
-        <td>
-          <span class="date-chip-rec">
-            <i class="bi bi-calendar3" style="font-size:0.7rem;"></i>{{ r.date }}
-          </span>
-        </td>
-        <td>
-          <div class="complaint-text">{{ r.chief_complaint }}</div>
-          <div style="font-size:0.76rem;color:#9098aa;margin-top:2px;">{{ r.diagnosis|truncatechars:40 }}</div>
-        </td>
-        <td>
-          <div class="vitals-wrap">
-            {% if r.weight_kg %}<span class="vital-chip"><i class="bi bi-lightning" style="font-size:0.65rem;"></i>{{ r.weight_kg }}kg</span>{% endif %}
-            {% if r.height_cm %}<span class="vital-chip"><i class="bi bi-arrows-vertical" style="font-size:0.65rem;"></i>{{ r.height_cm }}cm</span>{% endif %}
-            {% if r.blood_pressure %}<span class="vital-chip"><i class="bi bi-heart-pulse" style="font-size:0.65rem;"></i>{{ r.blood_pressure }}</span>{% endif %}
-            {% if r.temperature %}<span class="vital-chip"><i class="bi bi-thermometer-half" style="font-size:0.65rem;"></i>{{ r.temperature }}°C</span>{% endif %}
-            {% if not r.weight_kg and not r.height_cm and not r.blood_pressure and not r.temperature %}
-              <span style="font-size:0.78rem;color:#b0b8c8;">No vitals</span>
+          </td>
+          <td>
+            {% if r.referred_to_hospital %}
+              <span class="referred-badge referred-yes"><i class="bi bi-exclamation-triangle-fill"></i> Yes</span>
+            {% else %}
+              <span class="referred-badge referred-no"><i class="bi bi-check-circle-fill"></i> No</span>
             {% endif %}
-          </div>
-        </td>
-        <td>
-          {% if r.referred_to_hospital %}
-            <span class="referred-badge referred-yes"><i class="bi bi-hospital"></i>Yes</span>
-          {% else %}
-            <span class="referred-badge referred-no"><i class="bi bi-check"></i>No</span>
-          {% endif %}
-        </td>
-        <td>
-          <span class="recorded-by-wrap">
-            <i class="bi bi-person-circle"></i>{{ r.recorded_by }}
-          </span>
-        </td>
-        <td>
-          <button class="btn-view-rec"
-            onclick="openDetail(
-              '{{ r.student.get_full_name }}',
-              '{{ r.student.student_id }}',
-              '{{ r.date }}',
+          </td>
+          <td>
+            <div class="recorded-by-wrap">
+              <i class="bi bi-person-badge-fill"></i>
+              <span>{{ r.recorded_by.get_full_name|default:r.recorded_by.username }}</span>
+            </div>
+          </td>
+          <td style="text-align: center;">
+            <button class="btn-view-rec" onclick="openDetail(
+              '{{ r.date|date:'F d, Y' }}',
+              '{{ r.student.last_name }}, {{ r.student.first_name }} ({{ r.student.student_id }})',
               '{{ r.chief_complaint|escapejs }}',
               '{{ r.diagnosis|escapejs }}',
               '{{ r.treatment_given|escapejs }}',
               '{{ r.medicines_dispensed|escapejs }}',
               '{{ r.notes|escapejs }}',
-              '{{ r.weight_kg|default:'' }}',
-              '{{ r.height_cm|default:'' }}',
-              '{{ r.blood_pressure|default:'' }}',
-              '{{ r.temperature|default:'' }}',
-              {{ r.referred_to_hospital|yesno:'true,false' }},
-              '{{ r.recorded_by }}'
+              '{{ r.recorded_by.get_full_name|default:r.recorded_by.username|escapejs }}',
+              '{{ r.blood_pressure|escapejs }}',
+              '{{ r.temperature|escapejs }}',
+              '{{ r.weight_kg|escapejs }}',
+              '{{ r.height_cm|escapejs }}',
+              {{ r.referred_to_hospital|yesno:'true,false' }}
             )">
-            <i class="bi bi-eye"></i> View
-          </button>
-        </td>
-      </tr>
-      {% empty %}
-      <tr>
-        <td colspan="7">
-          <div class="rec-empty">
-            <i class="bi bi-file-earmark-x"></i>
-            <p>No medical records found.</p>
-          </div>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-</div>
-
-<div class="add-overlay" id="addOverlay" onclick="closeAddOnBg(event)">
-  <div class="add-modal">
-    <div class="add-modal-head">
-      <div>
-        <h6><i class="bi bi-plus-circle me-2"></i>Add Medical Record</h6>
-        <p>Fill in the student's clinic visit details</p>
-      </div>
-      <button class="add-close-btn" onclick="closeAddModal()">
-        <i class="bi bi-x-lg"></i>
-      </button>
-    </div>
-
-    <div class="add-modal-body">
-      <form method="POST" action="{% url 'add_medical_record' %}" id="addRecordForm">
-        {% csrf_token %}
-
-        <div class="form-section-title"><i class="bi bi-person-badge"></i>Student & Visit Info</div>
-        <div class="form-grid-2">
-          <div class="form-group">
-            <label class="form-label">Student <span class="req">*</span></label>
-
-            <div class="student-picker" id="studentPicker">
-              <div class="sp-input-wrap">
-                <i class="bi bi-search sp-search-icon"></i>
-                <input
-                  type="text"
-                  id="spSearch"
-                  class="sp-search-input"
-                  placeholder="Search name, ID, or section…"
-                  autocomplete="off"
-                  onclick="openPicker()"
-                  oninput="filterStudents(this.value)"
-                >
-                <i class="bi bi-chevron-down sp-chevron" id="spChevron"></i>
-              </div>
-
-              <input type="hidden" name="student" id="spValue" required>
-
-              <div class="sp-dropdown" id="spDropdown">
-
-                <div class="sp-filter-bar">
-                  <select id="spYearFilter" class="sp-year-select" onchange="filterStudents(document.getElementById('spSearch').value)" onclick="event.stopPropagation()">
-                    <option value="">All Year Levels</option>
-                    <option value="Grade 7">Grade 7</option>
-                    <option value="Grade 8">Grade 8</option>
-                    <option value="Grade 9">Grade 9</option>
-                    <option value="Grade 10">Grade 10</option>
-                    <option value="Grade 11">Grade 11</option>
-                    <option value="Grade 12">Grade 12</option>
-                    <option value="1st Year">1st Year</option>
-                    <option value="2nd Year">2nd Year</option>
-                    <option value="3rd Year">3rd Year</option>
-                    <option value="4th Year">4th Year</option>
-                  </select>
-                  <span class="sp-count-badge" id="spCount">0 students</span>
-                </div>
-
-                <div class="sp-list" id="spList">
-                  {% for student in students %}
-                  <div class="sp-item" 
-                       data-id="{{ student.id }}" 
-                       data-name="{{ student.last_name }}, {{ student.first_name }}" 
-                       data-uid="{{ student.student_id }}"
-                       data-year="{{ student.year_level }}"
-                       data-sec="{{ student.section }}"
-                       onclick="selectStudent('{{ student.id }}', '{{ student.last_name }}, {{ student.first_name }} ({{ student.student_id }})')">
-                    <div class="sp-item-avatar">
-                      {{ student.first_name|slice:":1" }}{{ student.last_name|slice:":1" }}
-                    </div>
-                    <div style="overflow: hidden;">
-                      <div class="sp-item-name">{{ student.last_name }}, {{ student.first_name }}</div>
-                      <div class="sp-item-meta">
-                        <span class="sp-item-id">{{ student.student_id }}</span>
-                        <span class="sp-item-dot">•</span>
-                        <span class="sp-item-year">{{ student.year_level }}</span>
-                        {% if student.section %}
-                        <span class="sp-item-dot">•</span>
-                        <span class="sp-item-sec">{{ student.section }}</span>
-                        {% endif %}
-                      </div>
-                    </div>
-                  </div>
-                  {% empty %}
-                  <div class="sp-no-results">No students in database.</div>
-                  {% endfor %}
-                  <div class="sp-no-results" id="spNoResults" style="display: none;">No student found.</div>
-                </div>
-                </div>
+              <i class="bi bi-eye-fill"></i> View Details
+            </button>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="7">
+            <div style="text-align: center; padding: 4rem 1rem; color: #b0b8c8;">
+              <i class="bi bi-folder-x" style="font-size: 3.5rem; color: #f0c4d8; display: block; margin-bottom: 0.75rem;"></i>
+              <p>No health care logs found in the database repository context.</p>
             </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Chief Complaint <span class="req">*</span></label>
-            <input type="text" name="chief_complaint" class="form-control-rec" placeholder="Reason for clinic visit..." required>
-          </div>
-        </div>
-
-        <div class="form-section-title"><i class="bi bi-heart-pulse"></i>Vitals & Measurements</div>
-        <div class="form-grid-4">
-          <div class="form-group">
-            <label class="form-label">Blood Pressure</label>
-            <input type="text" name="blood_pressure" class="form-control-rec" placeholder="120/80">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Temperature (°C)</label>
-            <input type="number" name="temperature" step="0.1" class="form-control-rec" placeholder="36.5">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Weight (kg)</label>
-            <input type="number" name="weight_kg" step="0.01" class="form-control-rec" placeholder="50">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Height (cm)</label>
-            <input type="number" name="height_cm" step="0.01" class="form-control-rec" placeholder="160">
-          </div>
-        </div>
-
-        <div class="form-section-title"><i class="bi bi-journal-medical"></i>Assessment & Treatment</div>
-        <div class="form-group">
-          <label class="form-label">Diagnosis</label>
-          <textarea name="diagnosis" class="form-control-rec" placeholder="Medical diagnosis assessment..."></textarea>
-        </div>
-        <div class="form-grid-2" style="margin-top: 0.75rem;">
-          <div class="form-group">
-            <label class="form-label">Treatment Given</label>
-            <textarea name="treatment_given" class="form-control-rec" placeholder="Treatment, counseling or care..."></textarea>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Medicines Dispensed</label>
-            <textarea name="medicines_dispensed" class="form-control-rec" placeholder="Item name and dosage..."></textarea>
-          </div>
-        </div>
-
-        <div class="form-grid-2" style="margin-top: 0.75rem; align-items: center;">
-          <div class="form-group">
-            <label class="form-label">Referred to Hospital?</label>
-            <div class="referred-toggle-wrap">
-              <input type="hidden" name="referred_to_hospital" id="referredInput" value="false">
-              <button type="button" class="ref-btn" id="refYes" onclick="setReferred(true)">
-                <i class="bi bi-exclamation-triangle"></i> Yes
-              </button>
-              <button type="button" class="ref-btn active-no" id="refNo" onclick="setReferred(false)">
-                <i class="bi bi-check-circle"></i> No
-              </button>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Remarks / Internal Notes</label>
-            <input type="text" name="notes" class="form-control-rec" placeholder="Additional observations...">
-          </div>
-        </div>
-
-        <div class="form-submit-row">
-          <button type="button" class="btn-cancel-rec" onclick="closeAddModal()">Cancel</button>
-          <button type="submit" class="btn-submit-rec"><i class="bi bi-save"></i> Save Record</button>
-        </div>
-      </form>
-    </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
 </div>
 
-<div class="detail-overlay" id="detailOverlay" onclick="closeDetailOnBg(event)">
+<div class="detail-overlay" id="detailOverlay" onclick="if(event.target===this) closeDetail()">
   <div class="detail-modal">
     <div class="detail-modal-head">
-      <div>
-        <h6 id="mdName">Student Medical Case</h6>
-        <span class="student-id-rec" id="mdId" style="margin-top:4px;"></span>
-      </div>
-      <button class="detail-close-btn" onclick="closeDetail()">
-        <i class="bi bi-x-lg"></i>
-      </button>
+      <h6 id="mdStudent">Student Medical Log Details</h6>
+      <button class="detail-close-btn" onclick="closeDetail()"><i class="bi bi-x-lg"></i></button>
     </div>
     <div class="detail-modal-body">
-      <div class="modal-section-title"><i class="bi bi-clock-history"></i>Visit Timeline</div>
-      <div class="modal-grid-2">
-        <div class="modal-info-row">
-          <span class="modal-info-label">Date of Visit</span>
-          <div class="modal-info-val" id="mdDate"></div>
-        </div>
-        <div class="modal-info-row">
-          <span class="modal-info-label">Attending Officer</span>
-          <div class="modal-info-val" id="mdBy"></div>
-        </div>
+      <div class="modal-info-row">
+        <span class="modal-info-label">Encounter Log Timestamp</span>
+        <div class="modal-info-val" id="mdDate" style="font-weight: 700; color: #c2185b;">--</div>
       </div>
-
-      <div class="modal-section-title"><i class="bi bi-heart-pulse"></i>Vitals Log</div>
+      
+      <div class="modal-section-title"><i class="bi bi-heart-fill"></i> Patient Vitals Evaluation Metrics</div>
       <div class="vitals-grid">
         <div class="vital-card">
-          <div class="vital-card-icon"><i class="bi bi-heart-pulse"></i></div>
+          <div class="vital-card-icon"><i class="bi bi-activity"></i></div>
           <div class="vital-card-val" id="mdBp">--</div>
-          <div class="vital-card-label">BP</div>
+          <div class="vital-card-label">Blood Pressure</div>
         </div>
         <div class="vital-card">
-          <div class="vital-card-icon"><i class="bi bi-thermometer-half"></i></div>
+          <div class="vital-card-icon"><i class="bi bi-thermometer-high"></i></div>
           <div class="vital-card-val" id="mdTemp">--</div>
-          <div class="vital-card-label">Temp</div>
+          <div class="vital-card-label">Temperature</div>
         </div>
         <div class="vital-card">
-          <div class="vital-card-icon"><i class="bi bi-lightning"></i></div>
+          <div class="vital-card-icon"><i class="bi bi-speedometer2"></i></div>
           <div class="vital-card-val" id="mdWeight">--</div>
           <div class="vital-card-label">Weight</div>
         </div>
         <div class="vital-card">
-          <div class="vital-card-icon"><i class="bi bi-arrows-vertical"></i></div>
+          <div class="vital-card-icon"><i class="bi bi-rulers"></i></div>
           <div class="vital-card-val" id="mdHeight">--</div>
           <div class="vital-card-label">Height</div>
         </div>
       </div>
 
-      <div class="modal-section-title"><i class="bi bi-chat-right-text"></i>Clinical Notes</div>
+      <div class="modal-section-title"><i class="bi bi-person-fill-exclamation"></i> Diagnostic Record Evaluation Summary</div>
+      
       <div class="modal-info-row">
-        <span class="modal-info-label">Chief Complaint</span>
-        <div class="modal-info-val" id="mdComplaint" style="font-weight:600;"></div>
+        <span class="modal-info-label">Chief Complaint Reported</span>
+        <div class="modal-info-val" id="mdComplaint">--</div>
       </div>
       <div class="modal-info-row">
-        <span class="modal-info-label">Diagnosis</span>
-        <div class="modal-info-val" id="mdDiagnosis"></div>
+        <span class="modal-info-label">Clinical Impression / Assessment Diagnosis</span>
+        <div class="modal-info-val" id="mdDiagnosis">--</div>
       </div>
       <div class="modal-info-row">
-        <span class="modal-info-label">Treatment Given</span>
-        <div class="modal-info-val" id="mdTreatment"></div>
+        <span class="modal-info-label">Treatment Provided / Interventions Applied</span>
+        <div class="modal-info-val" id="mdTreatment">--</div>
       </div>
       <div class="modal-info-row">
         <span class="modal-info-label">Medicines Dispensed</span>
-        <div class="modal-info-val" id="mdDispensed"></div>
+        <div class="modal-info-val" id="mdDispensed">--</div>
       </div>
-      <div class="modal-grid-2">
-        <div class="modal-info-row">
-          <span class="modal-info-label">Hospital Referral</span>
-          <div style="margin-top:2px;"><span id="mdReferred"></span></div>
+      <div class="modal-info-row">
+        <span class="modal-info-label">Clinical Nursing / Progression Notes</span>
+        <div class="modal-info-val" id="mdNotes">--</div>
+      </div>
+
+      <div class="detail-footer-box" style="margin-top: 1.2rem; display: flex; justify-content: space-between; align-items: center; background: #fafbfd; padding: 0.75rem 1rem; border: 1px solid #f0f2f7; border-radius: 12px;">
+        <div>
+          <span style="font-size: 0.72rem; font-weight: 700; color: #9098aa; text-transform: uppercase; display: block; margin-bottom: 2px;">Attendant Staff</span>
+          <span id="mdBy" style="font-size: 0.88rem; font-weight: 600; color: #1a1a2e;">--</span>
         </div>
-        <div class="modal-info-row">
-          <span class="modal-info-label">Remarks</span>
-          <div class="modal-info-val" id="mdNotes"></div>
+        <div id="mdReferred" class="referred-big no">
+          <i class="bi bi-check-circle-fill"></i> No Referral Required
         </div>
       </div>
     </div>
   </div>
 </div>
 
+<div class="add-overlay" id="addOverlay">
+  <div class="add-modal">
+    <div class="add-modal-head">
+      <div>
+        <h6>Log New Encounter Record</h6>
+        <p>Save clinical consultations, vital evaluations, and treatments</p>
+      </div>
+      <button class="add-close-btn" onclick="closeAddModal()"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="add-modal-body">
+      
+      <form method="POST" action="{% url 'medical_record_list' %}">
+        {% csrf_token %}
+        
+        <div class="form-section-title"><i class="bi bi-person-check-fill"></i> Patient Core Identity Mapping</div>
+        <div class="form-group">
+          <label class="form-label">Select Student Identity Target <span class="req">*</span></label>
+          {{ form.student }}
+        </div>
+
+        <div class="form-section-title"><i class="bi bi-heart-pulse"></i> Entry Objective Vitals & Metrics Assessment</div>
+        <div class="form-grid-4">
+          <div class="form-group">
+            <label class="form-label">Blood Pressure</label>
+            {{ form.blood_pressure }}
+          </div>
+          <div class="form-group">
+            <label class="form-label">Temp (°C)</label>
+            {{ form.temperature }}
+          </div>
+          <div class="form-group">
+            <label class="form-label">Weight (kg)</label>
+            {{ form.weight_kg }}
+          </div>
+          <div class="form-group">
+            <label class="form-label">Height (cm)</label>
+            {{ form.height_cm }}
+          </div>
+        </div>
+
+        <div class="form-section-title"><i class="bi bi-clipboard2-pulse-fill"></i> Clinical Consultation & Treatment Summary</div>
+        <div class="form-group">
+          <label class="form-label">Chief Complaint <span class="req">*</span></label>
+          {{ form.chief_complaint }}
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Diagnosis / Assessment</label>
+            {{ form.diagnosis }}
+          </div>
+          <div class="form-group">
+            <label class="form-label">Treatment Given</label>
+            {{ form.treatment_given }}
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Medicines Dispensed</label>
+            {{ form.medicines_dispensed }}
+          </div>
+          <div class="form-group">
+            <label class="form-label">Hospital Referral Action Status</label>
+            <div style="margin-top: 0.4rem;">
+              {{ form.referred_to_hospital }} <span style="font-size: 0.82rem; font-weight: 600; color: #4a5068; margin-left: 4px;">Check if student requires hospital transfer</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 0.4rem;">
+          <label class="form-label">Progression Nursing Notes</label>
+          {{ form.notes }}
+        </div>
+
+        <div class="footer-actions-wrap" style="margin-top: 1.8rem; display: flex; justify-content: flex-end; gap: 0.6rem; border-top: 1px solid #f0d6e8; padding-top: 1.2rem;">
+          <button type="submit" style="padding: 0.65rem 1.5rem; background: linear-gradient(135deg, #e83e8c, #c2185b); color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 0.85rem; box-shadow: 0 4px 12px rgba(232,62,140,0.2);">Save Health Record Log</button>
+          <button type="button" onclick="closeAddModal()" style="padding: 0.65rem 1.5rem; background: #fafbfd; border: 1.5px solid #e2e6f0; border-radius: 10px; color: #5a6070; font-weight: 700; cursor: pointer; font-size: 0.85rem;">Cancel Action</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
 <script>
-  // Global View Controls
-  function openAddModal() { document.getElementById('addOverlay').classList.add('active'); updateStudentCount(); }
-  function closeAddModal() { document.getElementById('addOverlay').classList.remove('active'); resetPicker(); }
-  function closeAddOnBg(e) { if(e.target.id === 'addOverlay') closeAddModal(); }
+  function openAddModal() { document.getElementById('addOverlay').classList.add('active'); }
+  function closeAddModal() { document.getElementById('addOverlay').classList.remove('active'); }
 
-  // Search Records Table Filter
-  function searchRecs() {
-    let q = document.getElementById('rec-search').value.toLowerCase();
-    let rows = document.querySelectorAll('#rec-tbody tr[data-search]');
-    rows.forEach(r => {
-      let txt = r.getAttribute('data-search');
-      r.style.display = txt.includes(q) ? '' : 'none';
-    });
-  }
-
-  // Handle Dropdown UI Interactions
-  function openPicker() {
-    document.getElementById('spDropdown').classList.add('open');
-    document.getElementById('spChevron').classList.add('open');
-    document.getElementById('spSearch').classList.add('open');
-  }
-  function closePicker() {
-    document.getElementById('spDropdown').classList.remove('open');
-    document.getElementById('spChevron').classList.remove('open');
-    document.getElementById('spSearch').classList.remove('open');
-  }
-  
-  // Close picker on outside window click
-  window.addEventListener('click', function(e) {
-    if (!document.getElementById('studentPicker').contains(e.target)) {
-      closePicker();
-    }
-  });
-
-  // Dynamic Filtering for Selector Checkbox Dropdown
-  function filterStudents(searchVal) {
-    let q = searchVal.toLowerCase().strip ? searchVal.toLowerCase().strip() : searchVal.toLowerCase();
-    let yearFilter = document.getElementById('spYearFilter').value;
-    let items = document.querySelectorAll('#spList .sp-item');
-    let visibleCount = 0;
-
-    items.forEach(item => {
-      let name = item.getAttribute('data-name').toLowerCase();
-      let uid = item.getAttribute('data-id').toLowerCase();
-      let year = item.getAttribute('data-year');
-      let sec = item.getAttribute('data-sec').toLowerCase();
-
-      let matchSearch = name.includes(q) || uid.includes(q) || sec.includes(q);
-      let matchYear = yearFilter === "" || year === yearFilter;
-
-      if (matchSearch && matchYear) {
-        item.style.display = 'flex';
-        visibleCount++;
+  // Search filter routing logic
+  document.getElementById('recSearch').addEventListener('input', function() {
+    const query = this.value.toLowerCase().trim();
+    const rows = document.querySelectorAll('#recordsTable tbody tr');
+    rows.forEach(row => {
+      const id = row.getAttribute('data-student-id')?.toLowerCase() || '';
+      const name = row.getAttribute('data-student-name')?.toLowerCase() || '';
+      const comp = row.getAttribute('data-complaint')?.toLowerCase() || '';
+      if(id.includes(query) || name.includes(query) || comp.includes(query)) {
+        row.style.display = '';
       } else {
-        item.style.display = 'none';
+        row.style.display = 'none';
       }
     });
+  });
 
-    document.getElementById('spCount').innerText = `${visibleCount} student${visibleCount !== 1 ? 's' : ''}`;
-    document.getElementById('spNoResults').style.display = (visibleCount === 0 && items.length > 0) ? 'block' : 'none';
-  }
-
-  function updateStudentCount() {
-    let items = document.querySelectorAll('#spList .sp-item');
-    document.getElementById('spCount').innerText = `${items.length} student${items.length !== 1 ? 's' : ''}`;
-  }
-
-  function selectStudent(id, text) {
-    document.getElementById('spValue').value = id;
-    let input = document.getElementById('spSearch');
-    input.value = text;
-    input.classList.add('selected');
-    
-    // Highlight selected active item accentuation
-    document.querySelectorAll('#spList .sp-item').forEach(i => i.classList.remove('sp-active'));
-    event.currentTarget.classList.add('sp-active');
-    closePicker();
-  }
-  
-
-  function resetPicker() {
-    document.getElementById('spValue').value = '';
-    let input = document.getElementById('spSearch');
-    input.value = '';
-    input.classList.remove('selected');
-    document.getElementById('spYearFilter').value = '';
-    document.getElementById('addRecordForm').reset();
-    setReferred(false);
-    document.querySelectorAll('#spList .sp-item').forEach(i => { i.style.display = 'flex'; i.classList.remove('sp-active'); });
-  }
-
-  // Toggle Referred values
-  function setReferred(val) {
-    document.getElementById('referredInput').value = val ? "true" : "false";
-    if (val) {
-      document.getElementById('refYes').classList.add('active-yes');
-      document.getElementById('refNo').classList.remove('active-no');
-    } else {
-      document.getElementById('refYes').classList.remove('active-yes');
-      document.getElementById('refNo').classList.add('active-no');
-    }
-  }
-
-  // Detail Modal Initialization Mapping
-  function openDetail(name, uid, date, complaint, diagnosis, treatment, dispensed, notes, w, h, bp, temp, referred, Attendant) {
-    document.getElementById('mdName').innerText = name;
-    document.getElementById('mdId').innerText = uid;
+  // Open Detail Drawer modal mapping logic
+  function openDetail(date, student, complaint, diagnosis, treatment, dispensed, notes, attendant, bp, temp, w, h, referred) {
     document.getElementById('mdDate').innerText = date;
+    document.getElementById('mdStudent').innerText = student;
     document.getElementById('mdComplaint').innerText = complaint || 'None';
     document.getElementById('mdDiagnosis').innerText = diagnosis || 'No evaluation noted.';
     document.getElementById('mdTreatment').innerText = treatment || 'None recorded.';
     document.getElementById('mdDispensed').innerText = dispensed || 'None dispensed.';
     document.getElementById('mdNotes').innerText = notes || '--';
-    document.getElementById('mdBy').innerText = Attendant || 'System staff';
+    document.getElementById('mdBy').innerText = attendant || 'System staff';
     
     document.getElementById('mdBp').innerText = bp || '--';
     document.getElementById('mdTemp').innerText = temp ? temp + ' °C' : '--';
@@ -1201,15 +625,15 @@
     let refBadge = document.getElementById('mdReferred');
     if (referred) {
       refBadge.className = "referred-big yes";
-      refBadge.innerHTML = "<i class='bi bi-exclamation-triangle-fill me-1'></i>Referred to Hospital";
+      refBadge.innerHTML = "<i class='bi bi-exclamation-triangle-fill'></i> Referred to Hospital";
     } else {
       refBadge.className = "referred-big no";
-      refBadge.innerHTML = "<i class='bi bi-check-circle-fill me-1'></i>No Referral Required";
+      refBadge.innerHTML = "<i class='bi bi-check-circle-fill'></i> No Referral Required";
     }
     document.getElementById('detailOverlay').classList.add('active');
   }
 
   function closeDetail() { document.getElementById('detailOverlay').classList.remove('active'); }
-  function closeDetailOnBg(e) { if(e.target.id === 'detailOverlay') closeDetail(); }
 </script>
+
 {% endblock %}

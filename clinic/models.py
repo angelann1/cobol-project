@@ -42,14 +42,15 @@ class MedicalRecord(models.Model):
     blood_pressure = models.CharField(max_length=20, blank=True)
     temperature = models.DecimalField(max_digits=4, decimal_places=1, null=True, blank=True)
     chief_complaint = models.CharField(max_length=200)
-    diagnosis = models.TextField()
-    treatment_given = models.TextField()
+    diagnosis = models.TextField(blank=True)          # ← allow blank
+    treatment_given = models.TextField(blank=True)    # ← allow blank
     medicines_dispensed = models.TextField(blank=True)
     referred_to_hospital = models.BooleanField(default=False)
     notes = models.TextField(blank=True)
 
     def __str__(self):
         return f"{self.student} — {self.date}"
+
 
 
 class Medicine(models.Model):

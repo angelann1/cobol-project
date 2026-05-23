@@ -7,6 +7,8 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.8rem;
+    flex-wrap: wrap;
+    gap: 1rem;
   }
 
   .page-title {
@@ -343,6 +345,92 @@
     transform: translateY(-1px);
     box-shadow: 0 5px 16px rgba(198,40,40,0.4);
   }
+
+  /* Responsive Mobile Layout CSS Changes */
+  @media screen and (max-width: 768px) {
+    .page-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .btn-add {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .table-card {
+      background: transparent;
+      box-shadow: none;
+      border-radius: 0;
+    }
+
+    /* Force traditional table styling to display like rows of mobile cards */
+    .appt-table, 
+    .appt-table thead, 
+    .appt-table tbody, 
+    .appt-table th, 
+    .appt-table td, 
+    .appt-table tr { 
+      display: block; 
+    }
+    
+    /* Hide the primary headers entirely on mobile */
+    .appt-table thead tr { 
+      position: absolute;
+      top: -9999px;
+      left: -9999px;
+    }
+    
+    .appt-table tbody tr {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      padding: 0.5rem 0;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+    }
+    
+    .appt-table tbody tr:hover {
+      background: white;
+    }
+
+    .appt-table td { 
+      border: none;
+      position: relative;
+      padding: 0.6rem 1rem 0.6rem 45%; 
+      text-align: right;
+    }
+    
+    /* Inject mobile inline descriptions using data attributes */
+    .appt-table td:before { 
+      position: absolute;
+      top: 50%;
+      left: 1rem;
+      transform: translateY(-50%);
+      width: 40%; 
+      padding-right: 10px; 
+      white-space: nowrap;
+      text-align: left;
+      font-weight: 700;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #c2185b;
+      content: attr(data-label);
+    }
+
+    .student-id-sub {
+      margin-top: 0;
+    }
+
+    .action-btns {
+      justify-content: flex-end;
+    }
+
+    .btn-edit, .btn-delete {
+      padding: 0.4rem 0.75rem;
+    }
+  }
 </style>
 
 <!-- Delete Confirmation Modal -->
@@ -390,20 +478,20 @@
     <tbody>
       {% for appointment in appointments %}
       <tr>
-        <td>
+        <td data-label="Student">
           <span class="student-name">{{ appointment.student.last_name }}, {{ appointment.student.first_name }}</span>
           <br>
           <span class="student-id-sub">{{ appointment.student.student_id }}</span>
         </td>
-        <td><span class="date-text">{{ appointment.date }}</span></td>
-        <td>
+        <td data-label="Date"><span class="date-text">{{ appointment.date }}</span></td>
+        <td data-label="Time">
           <span class="time-text">
             <i class="bi bi-clock" style="font-size:0.7rem;"></i>
             {{ appointment.time }}
           </span>
         </td>
-        <td><span class="purpose-text">{{ appointment.purpose }}</span></td>
-        <td>
+        <td data-label="Purpose"><span class="purpose-text">{{ appointment.purpose }}</span></td>
+        <td data-label="Status">
           {% if appointment.status == 'Scheduled' %}
             <span class="status-badge badge-scheduled"><span class="status-dot"></span>{{ appointment.status }}</span>
           {% elif appointment.status == 'Completed' %}
@@ -414,13 +502,13 @@
             <span class="status-badge badge-default"><span class="status-dot"></span>{{ appointment.status }}</span>
           {% endif %}
         </td>
-        <td>
+        <td data-label="Assigned To">
           <span class="assigned-cell">
             <i class="bi bi-person-circle"></i>
             {{ appointment.assigned_to }}
           </span>
         </td>
-        <td>
+        <td data-label="Actions">
           <div class="action-btns">
             <a href="{% url 'appointment_edit' appointment.pk %}" class="btn-edit">
               <i class="bi bi-pencil"></i> Edit
@@ -434,7 +522,7 @@
       </tr>
       {% empty %}
       <tr>
-        <td colspan="7">
+        <td colspan="7" style="padding: 0;">
           <div class="empty-state">
             <i class="bi bi-calendar-x"></i>
             <p>No appointments scheduled yet.</p>
@@ -459,8 +547,6 @@
   document.getElementById('deleteModal').addEventListener('click', function(e) {
     if (e.target === this) closeDeleteModal();
   });
-
-  
 </script>
 
 {% endblock %}
